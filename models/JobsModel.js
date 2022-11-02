@@ -5,7 +5,7 @@ const postedJobs = mongoose.Schema({
         type: String,
         required: [true, 'Please Username'],
     },
-    /*jobTitle: {
+    jobTitle: {
         type: String,
         required: [true, 'Please enter the job title'],
     },
@@ -18,22 +18,22 @@ const postedJobs = mongoose.Schema({
         required: [true, 'Please enter the Employers contact'],
     },
     DeadlineDate: {
-        type: String,
+        type: Date,
         required: [false, 'Please enter the DeadlineDate'],
     },  
     Category: {
         type: String,
         required: [true, 'Please enter the Category'],
     },
-    Location: {
+    EMPLOYER_EMAIL: {
         type: String,
-        required: [true, 'Please enter the Location'],
+        required: [true, 'Please enter the EMPLOYER EMAIL'],
     },
-    */
-    text: {
+    
+    Employers_Name:{
         type: String,
-        required: [true, 'Please enter the Location'],
-    },
+        required: [true, 'Please enter the Employers Name'], 
+    }
 })
 
 var Jobs = mongoose.model('PostedJobs', postedJobs)
