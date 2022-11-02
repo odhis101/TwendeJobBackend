@@ -2,11 +2,10 @@ import mongoose from "mongoose";
 
 const postedJobs = mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User',
+        type: String,
+        required: [true, 'Please Username'],
     },
-    jobTitle: {
+    /*jobTitle: {
         type: String,
         required: [true, 'Please enter the job title'],
     },
@@ -27,6 +26,11 @@ const postedJobs = mongoose.Schema({
         required: [true, 'Please enter the Category'],
     },
     Location: {
+        type: String,
+        required: [true, 'Please enter the Location'],
+    },
+    */
+    text: {
         type: String,
         required: [true, 'Please enter the Location'],
     },
