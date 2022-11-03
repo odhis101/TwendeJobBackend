@@ -55,7 +55,14 @@ const Getme = asyncHandler( async (req , res) => {
     res.status(200).json({
         _id: _id,
         phoneNumber
+        
 })
+
+})
+const getUsers = asyncHandler( async (req , res) => {
+const userExists = await User.find({})
+  
+res.status(200).json(userExists)
 })
 
  const generateToken = (id) => {
@@ -65,4 +72,4 @@ const Getme = asyncHandler( async (req , res) => {
     });
 }
 
-export {registerUser,loginUser,Getme};
+export {registerUser,loginUser,Getme,getUsers};
