@@ -7,6 +7,7 @@ import postRoutes from './routes/posts.js';
 import usersRoutes from './routes/userRoutes.js';
 //import jobRoutes from './routes/jobRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
+import darajaRoutes from './routes/daraja.js';
 import dotenv from 'dotenv';
 
 
@@ -18,6 +19,7 @@ app.use(cors());
 app.use('/posts', postRoutes);
 app.use('/users', usersRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/daraja', darajaRoutes);
 
 const CONNECTION_URL = 'mongodb+srv://odhis101:natasha12@cluster0.r1d9hq1.mongodb.net/?retryWrites=true&w=majority';
 
