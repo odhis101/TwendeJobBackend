@@ -2,6 +2,7 @@ import  express  from "express";
 //import {access_token,register_url} from "../controllers/daraja.js";
 import request from 'request';
 import bodyParser from 'body-parser';
+import asyncHandler from 'express-async-handler';
 const router = express.Router();
 router.get ('/access_token', getaccess_token, (req, res)=>{
     res.status (200).json({
@@ -26,10 +27,10 @@ router.get ('/register', getaccess_token,(req, res)=>{
                 "Authorization":auth
             },
             json:{
-                "ShortCode": "600987",
-                "ResponseType": "Complete",
-                "ConfirmationURL": "http://192.168.0.35:5000/confirmation",
-                "ValidationURL": "http://192.168.0.35:5000/daraja/validation"
+                "ShortCode": "600730",
+                "ResponseType": "Completed",
+                "ConfirmationURL": "https://be71-196-207-148-228.ap.ngrok.io/daraja/confirmation",
+                "ValidationURL": "https://be71-196-207-148-228.ap.ngrok.io/daraja/validation"
                 
 
               }
@@ -52,8 +53,8 @@ router.get ('/register', getaccess_token,(req, res)=>{
 
 
 function getaccess_token(req, res,next){
-    let consumer_key = "aSUmderYVHuVGUhyEl3dWF7kBt1fOWej";
-    let consumer_secret = "G0k2bp5urvkWkf79";
+    let consumer_key = "rAUu1dXQKMzvA6AG2TBAWJ5GPOZFMPTj";
+    let consumer_secret = "IkbzJoLUZcOeiQaF";
     let url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     let auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
     request(
@@ -68,7 +69,7 @@ function getaccess_token(req, res,next){
                 console.log(error);
             } else {
                req.access_token = JSON.parse(body).access_token;
-                next();
+                next()
                 
             }
   
@@ -83,15 +84,20 @@ router.post ('/confirmation', getaccess_token,(req, res)=>{
 });
 
 
-router.get ('/validation', getaccess_token,(req, res)=>{
+router.post ('/validation', getaccess_token,(req, res)=>{
     console.log('validation');
     console.log(req.body);
-    res.status(200).send("User Page");
+    //res.status(200).send("User Page");
+});
+router.post ('/getdata', getaccess_token,(req, res)=>{
+    //res.status(200).send("User Page");
+    console.log(req.body);
 });
 
 router.get ('/simulate',  getaccess_token, (req, res)=>{
     let url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate";
     let auth = "Bearer "+ req.access_token;
+    
     request(
         {
             url :url,
@@ -104,7 +110,7 @@ router.get ('/simulate',  getaccess_token, (req, res)=>{
                     "CommandID": "CustomerPayBillOnline",
                     "Amount": "1",
                     "Msisdn": "254708374149",
-                    "BillRefNumber": "testapi"
+                    "BillRefNumber": "twendejob"
                 }
         },
         function (error, response, body) {
@@ -117,5 +123,51 @@ router.get ('/simulate',  getaccess_token, (req, res)=>{
         
     )
 })
-
+router.post('/stkpush', getaccess_token,asyncHandler(async (req, res)=>{
+    let url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+    let auth = "Bearer "+ req.access_token;
+   const {number,amount} = req.body; 
+    let datenow = new Date() 
+    let passkey ='MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5'
+    const timestamp = datenow.getFullYear()+ ""+""+datenow.getMonth()+""+""+datenow.getDate()+""+""+datenow.getHours()+""+""+datenow.getMinutes()+""+""+datenow.getSeconds();
+    const Passwords = new Buffer.from("174379" + passkey + timestamp).toString('base64');
+    console.log(req.body)
+    request(
+        
+        {
+            url :url,
+              method : "POST",
+            headers:{
+                "Authorization":auth
+                },
+                json:{
+                    "BusinessShortCode": "174379",
+                    "Password":'MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5', 
+                    "Timestamp":'20200430183949',
+                    "TransactionType": "CustomerPayBillOnline",
+                    "Amount": amount,
+                    "PartyA": number,
+                    "PartyB": "174379",
+                    "PhoneNumber": number,
+                    "CallBackURL": "https://898e-196-207-148-228.eu.ngrok.io/daraja/stk_callback",
+                    "AccountReference": "testapi",
+                    "TransactionDesc": "testapi"
+                }
+        },
+        function (error, response, body) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('hiiii')
+                res.status(200).json(body);
+            }
+        }
+        
+    )
+}))
+router.post('/stk_callback', (req, res)=>{
+    console.log("stk");
+    res.status(200).send("User Page");
+    console.log(req.body);
+})
 export default router;
