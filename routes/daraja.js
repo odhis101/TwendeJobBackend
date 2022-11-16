@@ -3,6 +3,8 @@ import  express  from "express";
 import request from 'request';
 import bodyParser from 'body-parser';
 import asyncHandler from 'express-async-handler';
+import Subscriptions from '../models/darajaModels.js';
+
 const router = express.Router();
 router.get ('/access_token', getaccess_token, (req, res)=>{
     res.status (200).json({
@@ -165,9 +167,17 @@ router.post('/stkpush', getaccess_token,asyncHandler(async (req, res)=>{
         
     )
 }))
-router.post('/stk_callback', (req, res)=>{
-    console.log("stk");
-    res.status(200).send("User Page");
-    console.log(req.body);
-})
+router.post('/stk_callback',asyncHandler(async (req, res)=>{
+    let Check_success = req.body.Body.stkCallback;
+    console.log(Check_success);
+    if (Check_success == 0){
+        console.log('success')
+    }
+    else{
+        console.log('fail')
+    }
+
+}));
 export default router;
+
+

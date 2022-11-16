@@ -45,6 +45,8 @@ const loginUser = asyncHandler(async(req , res) => {
         });
     } else {
         res.status(401);
+        
+        
         throw new Error('Invalid phone number or password');
     }
     // generateToken(JWT);
