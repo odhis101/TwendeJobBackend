@@ -3,7 +3,9 @@ import  express  from "express";
 import request from 'request';
 import bodyParser from 'body-parser';
 import asyncHandler from 'express-async-handler';
-import Subscriptions from '../models/darajaModels.js';
+
+import User from "../models/darajaModels.js"
+import { Getsubscribers} from "../controllers/daraja.js";
 
 const router = express.Router();
 router.get ('/access_token', getaccess_token, (req, res)=>{
@@ -125,15 +127,21 @@ router.get ('/simulate',  getaccess_token, (req, res)=>{
         
     )
 })
-router.post('/stkpush', getaccess_token,asyncHandler(async (req, res)=>{
+const middleware = (req, res, next) => {
+    req.name = "lahiru";
+    next();
+  };
+router.post('/stkpush',middleware,getaccess_token,asyncHandler(async (req, res)=>{
     let url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     let auth = "Bearer "+ req.access_token;
-   const {number,amount} = req.body; 
+    const {number,amount,id} = req.body;
+   req.name = "james"
+ 
     let datenow = new Date() 
     let passkey ='MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5'
     const timestamp = datenow.getFullYear()+ ""+""+datenow.getMonth()+""+""+datenow.getDate()+""+""+datenow.getHours()+""+""+datenow.getMinutes()+""+""+datenow.getSeconds();
     const Passwords = new Buffer.from("174379" + passkey + timestamp).toString('base64');
-    console.log(req.body)
+
     request(
         
         {
@@ -147,37 +155,53 @@ router.post('/stkpush', getaccess_token,asyncHandler(async (req, res)=>{
                     "Password":'MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5', 
                     "Timestamp":'20200430183949',
                     "TransactionType": "CustomerPayBillOnline",
-                    "Amount": amount,
+                    "Amount": 1,
                     "PartyA": number,
                     "PartyB": "174379",
                     "PhoneNumber": number,
-                    "CallBackURL": "https://898e-196-207-148-228.eu.ngrok.io/daraja/stk_callback",
-                    "AccountReference": "testapi",
-                    "TransactionDesc": "testapi"
+                    "CallBackURL": "https://1661-196-207-148-228.eu.ngrok.io/daraja/stk_callback?number="+id+"&amount="+amount,
+                    "AccountReference": "Twendejob",
+                    "TransactionDesc": "Twendejob Subscription"
                 }
         },
         function (error, response, body) {
             if (error) {
                 console.log(error);
             } else {
-                console.log('hiiii')
                 res.status(200).json(body);
             }
         }
         
     )
 }))
-router.post('/stk_callback',asyncHandler(async (req, res)=>{
-    let Check_success = req.body.Body.stkCallback;
-    console.log(Check_success);
-    if (Check_success == 0){
-        console.log('success')
+router.get('/subscriptions',Getsubscribers)
+
+router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
+    console.log("test2");
+    const id = req.query.number
+    const amount = req.query.amount
+    console.log(req.query);
+    console.log(typeof(amount))
+ 
+    const check_success = req.body.Body.stkCallback.ResultCode
+    if(check_success != 0){
+        const Subscription = await User.create({
+            phoneNumber: id,
+            Subscription:true,
+            lengthOfSubscription:7
+        
+        })
+        console.log(Subscription)
     }
     else{
-        console.log('fail')
+    console.log("something went wrong")
     }
+  
 
-}));
+ 
+
+}))
+
 export default router;
 
 

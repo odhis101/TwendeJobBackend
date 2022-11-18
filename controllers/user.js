@@ -45,15 +45,14 @@ const loginUser = asyncHandler(async(req , res) => {
         });
     } else {
         res.status(401);
-        
-        
         throw new Error('Invalid phone number or password');
     }
     // generateToken(JWT);
    
 })
 const Getme = asyncHandler( async (req , res) => {
-    const {_id,name,phoneNumber} =await User.findById(req.user._id);
+    const {_id,phoneNumber} =await User.find;
+    console.log(_id,phoneNumber);
     res.status(200).json({
         _id: _id,
         phoneNumber
