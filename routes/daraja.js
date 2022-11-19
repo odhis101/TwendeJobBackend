@@ -159,7 +159,7 @@ router.post('/stkpush',middleware,getaccess_token,asyncHandler(async (req, res)=
                     "PartyA": number,
                     "PartyB": "174379",
                     "PhoneNumber": number,
-                    "CallBackURL": "https://1661-196-207-148-228.eu.ngrok.io/daraja/stk_callback?number="+id+"&amount="+amount,
+                    "CallBackURL": "https://ed7a-196-207-148-228.eu.ngrok.io/daraja/stk_callback?number="+id+"&amount="+amount,
                     "AccountReference": "Twendejob",
                     "TransactionDesc": "Twendejob Subscription"
                 }
@@ -174,7 +174,7 @@ router.post('/stkpush',middleware,getaccess_token,asyncHandler(async (req, res)=
         
     )
 }))
-router.get('/subscriptions',Getsubscribers)
+router.post('/subscriptions',Getsubscribers)
 
 router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     console.log("test2");
@@ -182,13 +182,19 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     const amount = req.query.amount
     console.log(req.query);
     console.log(typeof(amount))
+    let today = new Date().toISOString().slice(0, 10)
+    let expiry = today  + 7
  
-    const check_success = req.body.Body.stkCallback.ResultCode
-    if(check_success != 0){
+    let check_success = req.body.Body.stkCallback.ResultCode
+    if(check_success > 0 ){
         const Subscription = await User.create({
             phoneNumber: id,
             Subscription:true,
-            lengthOfSubscription:7
+            lengthOfSubscription:7,
+            amount:amount,
+            SubscriptionDate: today,
+            expiry:expiry,
+
         
         })
         console.log(Subscription)

@@ -17,6 +17,19 @@ const userSchema = mongoose.Schema({
         default: 0
     
     },
+    amount: {
+        type: Number,
+        default: 0
+    },
+    expiry: {
+        type: String,
+        default: 0 
+    },
+    SubscriptionDate: {
+        type: String,
+        default: 0
+    },
+    
 },
     {
         timestamps : true

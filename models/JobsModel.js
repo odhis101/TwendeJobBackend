@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const postedJobs = mongoose.Schema({
-  /*  user: {
+    user: {
         type: String,
-        required: [true, 'Please Username'],
+  
     },
-    */
+    
     jobTitle: {
         type: String,
         required: [true, 'Please enter the job title'],
