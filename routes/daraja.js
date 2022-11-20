@@ -174,6 +174,11 @@ router.post('/stkpush',middleware,getaccess_token,asyncHandler(async (req, res)=
         
     )
 }))
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
 router.post('/subscriptions',Getsubscribers)
 
 router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
@@ -182,8 +187,21 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     const amount = req.query.amount
     console.log(req.query);
     console.log(typeof(amount))
+    switch(amount){
+    case "10":
+    daysToExpiry = 1;
+    break;
+  case "49":
+    daysToExpiry = 7;
+    break;
+  case "199":
+    daysToExpiry = 30;
+    break;
+}
+
+    
     let today = new Date().toISOString().slice(0, 10)
-    let expiry = today  + 7
+    let expiry = today.addDays(daysToExpiry)
  
     let check_success = req.body.Body.stkCallback.ResultCode
     if(check_success > 0 ){
