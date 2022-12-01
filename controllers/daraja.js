@@ -9,5 +9,12 @@ const Getsubscribers = asyncHandler( async (req , res) => {
         subscribers
 })
 })
+const GetAllsubscribers = asyncHandler( async (req , res) => {
+    console.log(req.body);
+    const subscribers =await Subscribers.find({});
+    res.status(200).json({
+        subscribers
+})
+})
 
-export {Getsubscribers};
+export {Getsubscribers,GetAllsubscribers};

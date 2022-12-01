@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import asyncHandler from 'express-async-handler';
 
 import User from "../models/darajaModels.js"
-import { Getsubscribers} from "../controllers/daraja.js";
+import { Getsubscribers,GetAllsubscribers} from "../controllers/daraja.js";
 
 const router = express.Router();
 router.get ('/access_token', getaccess_token, (req, res)=>{
@@ -180,7 +180,7 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 router.post('/subscriptions',Getsubscribers)
-
+router.get('/Allsubscriptions',GetAllsubscribers)
 router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     console.log("test2");
     const id = req.query.number
