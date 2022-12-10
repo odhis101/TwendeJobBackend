@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
 
 const postedJobs = mongoose.Schema({
-    user: {
-        type: String,
   
-    },
-    
     jobTitle: {
         type: String,
         required: [true, 'Please enter the job title'],
@@ -34,7 +30,11 @@ const postedJobs = mongoose.Schema({
     Employers_Name:{
         type: String,
         required: [true, 'Please enter the Employers Name'], 
-    }
+    },
+    createdAt: {
+        type: Date,
+        default: new Date().toISOString().slice(0, 10)
+    },
 })
 
 var Jobs = mongoose.model('PostedJobs', postedJobs)

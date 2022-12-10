@@ -14,11 +14,11 @@ const userSchema = mongoose.Schema({
         required: [true, 'Please enter your password'],
         
     },
+    Subscription:{
+        type: Boolean,
+        default: false
+    },
 
-    
-    
-    
-    
     },
     {
         timestamps : true

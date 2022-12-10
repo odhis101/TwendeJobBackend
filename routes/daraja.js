@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import asyncHandler from 'express-async-handler';
 
 import User from "../models/darajaModels.js"
+
 import { Getsubscribers,GetAllsubscribers} from "../controllers/daraja.js";
 
 const router = express.Router();
@@ -205,6 +206,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
  
     let check_success = req.body.Body.stkCallback.ResultCode
     if(check_success > 0 ){
+        // update collection 
         const Subscription = await User.create({
             phoneNumber: id,
             Subscription:true,
@@ -212,8 +214,6 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
             amount:amount,
             SubscriptionDate: today,
             expiry:expiry,
-
-        
         })
         console.log(Subscription)
     }

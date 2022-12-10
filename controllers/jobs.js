@@ -32,6 +32,13 @@ const getJobs = asyncHandler(async (req, res) => {
     res.status(200).json(job)
 })
 
-export {setJob, getJobs};
+const getOneJob = asyncHandler(async (req, res) => {
+  const {id: _id} = req.params;
+  const JobExists = await Jobs.findById(_id)
+
+
+  res.status(200).json(JobExists)
+})
+export {setJob, getJobs,getOneJob};
 
 
