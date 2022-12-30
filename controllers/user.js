@@ -10,8 +10,9 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({ phoneNumber });
     if (userExists) {
         res.status(400);
-console.log('User already exists');
+
     }
+    else{
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -31,6 +32,7 @@ console.log('User already exists');
         res.status(400);
         throw new Error('Invalid user data');
     }
+}
 })
   
 const loginUser = asyncHandler(async(req , res) => {
