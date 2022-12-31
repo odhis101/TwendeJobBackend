@@ -218,7 +218,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
         console.log(Subscription)
     }
     else{
-    console.log("something went wrong")
+    console.log("something went wrsong")
     }
   
 
