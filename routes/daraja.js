@@ -7,6 +7,7 @@ import asyncHandler from 'express-async-handler';
 import User from "../models/darajaModels.js"
 
 import { Getsubscribers,GetAllsubscribers} from "../controllers/daraja.js";
+import { get } from "mongoose";
 
 const router = express.Router();
 router.get ('/access_token', getaccess_token, (req, res)=>{
@@ -58,8 +59,8 @@ router.get ('/register', getaccess_token,(req, res)=>{
 
 
 function getaccess_token(req, res,next){
-    let consumer_key = "rAUu1dXQKMzvA6AG2TBAWJ5GPOZFMPTj";
-    let consumer_secret = "IkbzJoLUZcOeiQaF";
+    let consumer_key = "5ijH05e0wrWCkVKtsuA247YKAosfP3ED";
+    let consumer_secret = "BfopAok9WlYz3gjX";
     let url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     let auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
     request(
@@ -71,10 +72,12 @@ function getaccess_token(req, res,next){
         },
          function (error, response, body) {
             if (error) {
-                console.log(error);
+                console.log('here is the error ',error);
             } else {
+                //console.log('here is the body ',body);
                req.access_token = JSON.parse(body).access_token;
-                next()
+               //console.log(req.IncomingMessage) 
+               next()
                 
             }
   
@@ -82,6 +85,7 @@ function getaccess_token(req, res,next){
     )
 
 }
+//console.log(getaccess_token())
 router.post ('/confirmation', getaccess_token,(req, res)=>{
 
     //let mpesa_resp = ;
@@ -132,11 +136,12 @@ const middleware = (req, res, next) => {
     req.name = "lahiru";
     next();
   };
-router.post('/stkpush',middleware,getaccess_token,asyncHandler(async (req, res)=>{
+
+router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)=>{
     let url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     let auth = "Bearer "+ req.access_token;
     const {number,amount,id} = req.body;
-   req.name = "james"
+
  
     let datenow = new Date() 
     let passkey ='MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5'
