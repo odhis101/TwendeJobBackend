@@ -52,6 +52,23 @@ const loginUser = asyncHandler(async(req , res) => {
     // generateToken(JWT);
    
 })
+const loginAdmin = asyncHandler(async(req , res) => {
+    const { phoneNumber, password } = req.body;
+     const user = await User.findOne({ phoneNumber });
+     if (user && (await bcrypt.compare(password, user.password))) {
+         res.json({
+             _id: user._id,
+             phoneNumber: user.phoneNumber,
+             password: user.password,
+             token: generateToken(user._id),
+         });
+     } else {
+         res.status(401);
+         throw new Error('Invalid phone number or password');
+     }
+     // generateToken(JWT);
+    
+ })
 const Getme = asyncHandler( async (req , res) => {
     const {_id,phoneNumber} =await User.find;
     console.log(_id,phoneNumber);
@@ -75,4 +92,4 @@ res.status(200).json(userExists)
     });
 }
 
-export {registerUser,loginUser,Getme,getUsers};
+export {registerUser,loginUser,Getme,getUsers,loginAdmin};

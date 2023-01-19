@@ -39,6 +39,37 @@ const getOneJob = asyncHandler(async (req, res) => {
 
   res.status(200).json(JobExists)
 })
-export {setJob, getJobs,getOneJob};
+const updateJob = asyncHandler(async (req, res) => {
+  const {id: _id} = req.params;
+  console.log(_id)
+  const JobExists = await Jobs.findById(_id)
+  if (JobExists) {
+    JobExists.jobTitle = req.body.jobTitle || JobExists.jobTitle
+    JobExists.jobDescription = req.body.jobDescription || JobExists.jobDescription
+    JobExists.Employers_contact = req.body.Employers_contact || JobExists.Employers_contact
+    JobExists.DeadlineDate = req.body.DeadlineDate || JobExists.DeadlineDate
+    JobExists.Category = req.body.Category || JobExists.Category
+    JobExists.EMPLOYER_EMAIL = req.body.EMPLOYER_EMAIL || JobExists.EMPLOYER_EMAIL
+    JobExists.Employers_Name = req.body.Employers_Name || JobExists.Employers_Name
+    const updatedJob = await JobExists.save()
+    res.json(updatedJob)
+  } else {
+    res.status(404) 
+    throw new Error('Job not found')
+  }
+})
+const deleteJob = asyncHandler(async (req, res) => {
+  const {id: _id} = req.body;
+  
+  const JobExists = await Jobs.findById(_id)
+  if (JobExists) {
+    await JobExists.remove()
+    res.json({message: 'Job removed'})
+  } else {
+    res.status(404)
+    throw new Error('Job not found')
+  }
+})
+export {setJob, getJobs,getOneJob,updateJob,deleteJob};
 
 
