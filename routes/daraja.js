@@ -136,7 +136,11 @@ const middleware = (req, res, next) => {
     req.name = "lahiru";
     next();
   };
-
+  function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
 router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)=>{
     let url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     let auth = "Bearer "+ req.access_token;
@@ -179,12 +183,41 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
         }
         
     )
-}))
-Date.prototype.addDays = function(days) {
-    var date = new Date(this.valueOf());
-    date.setDate(date.getDate() + days);
-    return date;
-}
+let daysToExpiry = 0;
+console.log(amount)
+    switch(amount){
+        case "10":
+       daysToExpiry = 1;
+        break;
+      case "49":
+        daysToExpiry = 7;
+        break;
+      case "199":
+        daysToExpiry = 30;
+        break;
+        // create a default 
+        default:
+        daysToExpiry = 0;
+
+    }
+     
+    let today = new Date().toISOString().slice(0, 10)
+    let expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10)
+    console.log(expiry)
+ 
+        const Subscription = await User.create({
+                phoneNumber: id,
+                Subscription:true,
+                lengthOfSubscription:7,
+                amount:amount,
+                SubscriptionDate: today,
+                expiry:expiry,
+            })
+            console.log(Subscription)
+        }))
+
+    
+
 router.post('/subscriptions',Getsubscribers)
 router.get('/Allsubscriptions',GetAllsubscribers)
 router.delete('/Deletesubscribers/:id',Deletesubscribers)
