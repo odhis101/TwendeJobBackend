@@ -16,5 +16,17 @@ const GetAllsubscribers = asyncHandler( async (req , res) => {
         subscribers
 })
 })
+const Deletesubscribers = asyncHandler( async (req , res) => {
+    // delete subscriber by id 
+    const {id: _id} = req.params;
+    const subscriber = await Subscribers.findByIdAndDelete(_id);
+    if (subscriber) {
+        res.json({ message: 'Subscriber deleted' });
+    } else {
+        res.status(404);
+        throw new Error('Subscriber not found');
+    }
+})
 
-export {Getsubscribers,GetAllsubscribers};
+
+export {Getsubscribers,GetAllsubscribers,Deletesubscribers};

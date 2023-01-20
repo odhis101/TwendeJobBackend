@@ -7,7 +7,7 @@ router.post ('/setJob', setJob);
 router.get ('/getJobs', getJobs);
 router.get('/getJobs/:id', getOneJob);
 router.get('/updateJobs/:id', updateJob);
-router.post('/deleteJobs/:id', deleteJob);
+router.delete('/deleteJobs/:id', deleteJob);
 
 
 export default router;

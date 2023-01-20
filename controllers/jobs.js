@@ -59,7 +59,12 @@ const updateJob = asyncHandler(async (req, res) => {
   }
 })
 const deleteJob = asyncHandler(async (req, res) => {
-  const {id: _id} = req.body;
+
+  const {id: _id} = req.params;
+
+  console.log(_id)
+  console.log(req.body)
+
   
   const JobExists = await Jobs.findById(_id)
   if (JobExists) {

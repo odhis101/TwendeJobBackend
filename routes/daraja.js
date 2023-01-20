@@ -6,7 +6,7 @@ import asyncHandler from 'express-async-handler';
 
 import User from "../models/darajaModels.js"
 
-import { Getsubscribers,GetAllsubscribers} from "../controllers/daraja.js";
+import { Getsubscribers,GetAllsubscribers, Deletesubscribers} from "../controllers/daraja.js";
 import { get } from "mongoose";
 
 const router = express.Router();
@@ -187,6 +187,7 @@ Date.prototype.addDays = function(days) {
 }
 router.post('/subscriptions',Getsubscribers)
 router.get('/Allsubscriptions',GetAllsubscribers)
+router.delete('/Deletesubscribers/:id',Deletesubscribers)
 router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     console.log("test2");
     const id = req.query.number
