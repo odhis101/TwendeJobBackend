@@ -161,7 +161,7 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
                     "Password":'MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5', 
                     "Timestamp":'20200430183949',
                     "TransactionType": "CustomerPayBillOnline",
-                    "Amount": 1,
+                    "Amount": amount,
                     "PartyA": number,
                     "PartyB": "174379",
                     "PhoneNumber": number,
