@@ -183,6 +183,7 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
         }
         
     )
+    /*
 let daysToExpiry = 0;
 console.log(amount)
     switch(amount){
@@ -214,7 +215,10 @@ console.log(amount)
                 expiry:expiry,
             })
             console.log(Subscription)
+            */
         }))
+        
+       
 
     
 
@@ -227,6 +231,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     const amount = req.query.amount
     console.log(req.query);
     console.log(typeof(amount))
+    let daysToExpiry = 0;
     switch(amount){
     case "10":
     daysToExpiry = 1;
@@ -237,12 +242,16 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
   case "199":
     daysToExpiry = 30;
     break;
+    // create a default
+    default:
+    daysToExpiry = 0;
 }
 
     
     let today = new Date().toISOString().slice(0, 10)
+    console.log(daysToExpiry)
     let expiry = today.addDays(daysToExpiry)
- 
+    console.log(expiry)
     let check_success = req.body.Body.stkCallback.ResultCode
     if(check_success > 0 ){
         // update collection 
