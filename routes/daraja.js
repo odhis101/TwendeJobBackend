@@ -254,7 +254,21 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     console.log(expiry)
     let check_success = req.body.Body.stkCallback.ResultCode
     if(check_success > 0 ){
-        // update collection 
+        // update subscription
+        const Subscription = await User.update({
+            Subscription:true,
+            lengthOfSubscription:daysToExpiry,
+            amount:amount,
+            SubscriptionDate: today,
+            expiry:expiry,
+        },{
+            where:{
+                phoneNumber:id
+            }
+        })
+
+
+       /*
         const Subscription = await User.create({
             phoneNumber: id,
             Subscription:true,
@@ -263,6 +277,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
             SubscriptionDate: today,
             expiry:expiry,
         })
+        */
         console.log(Subscription)
     }
     else{

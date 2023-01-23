@@ -42,6 +42,7 @@ const getOneJob = asyncHandler(async (req, res) => {
 const updateJob = asyncHandler(async (req, res) => {
   const {id: _id} = req.params;
   console.log(_id)
+  console.log(req.body)
   const JobExists = await Jobs.findById(_id)
   if (JobExists) {
     JobExists.jobTitle = req.body.jobTitle || JobExists.jobTitle
@@ -52,7 +53,7 @@ const updateJob = asyncHandler(async (req, res) => {
     JobExists.EMPLOYER_EMAIL = req.body.EMPLOYER_EMAIL || JobExists.EMPLOYER_EMAIL
     JobExists.Employers_Name = req.body.Employers_Name || JobExists.Employers_Name
     const updatedJob = await JobExists.save()
-    res.json(updatedJob)
+    console.log(updatedJob)
   } else {
     res.status(404) 
     throw new Error('Job not found')
