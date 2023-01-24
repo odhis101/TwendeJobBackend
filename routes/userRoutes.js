@@ -8,4 +8,5 @@ router.post ('/login', loginUser);
 router.post ('/loginAdmin', loginAdmin);
 router.get ('/me', Getme);
 router.get ('/getUsers', getUsers);
+
 export default router;

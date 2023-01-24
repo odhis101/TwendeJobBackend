@@ -9,6 +9,7 @@ import usersRoutes from './routes/userRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import darajaRoutes from './routes/daraja.js';
 import dotenv from 'dotenv';
+import fileupload from 'express-fileupload';
 
 
 const app = express();
@@ -16,6 +17,7 @@ dotenv.config();
 app.use(bodyParser.json({limit:"30mb",extended:true}))
 app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 app.use(cors());
+app.use(fileupload());
 app.use('/posts', postRoutes);
 app.use('/users', usersRoutes);
 app.use('/jobs', jobRoutes);
