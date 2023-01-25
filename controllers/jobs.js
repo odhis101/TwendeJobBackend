@@ -76,6 +76,77 @@ const deleteJob = asyncHandler(async (req, res) => {
     throw new Error('Job not found')
   }
 })
-export {setJob, getJobs,getOneJob,updateJob,deleteJob};
+const ExcelToMongoDB = asyncHandler(async (req, res) => {
+  console.log("bub")
+console.log(req.body)
+  // looping through the json data to save in jobs collection
+  for (var i = 0; i < req.body.length; i++) {
+    var data= req.body[i];
+    //console.log(data);
+    console.log(data)
+  
+    let start_date = data.Start_Date
+    var numDate= new Date(start_date).toISOString().slice(0, 10);
+    console.log(numDate)
+    let APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE
+    var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
+    console.log(deadlineDate) 
+    const Employers_Name = data.Employers_Name
+    const EMPLOYER_EMAIL = data.EMPLOYERS_EMAIL
+    const Employers_contact = data.Employers_Contact
+    const jobTitle = data.Job_Post_Title
+    const jobDescription = data.Job_Description
+    const Category = data.Job_category
+    console.log(jobTitle)
+
+    if (!jobTitle, !jobDescription, !Employers_contact, !deadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
+      res.status(400)
+      throw new Error('Please add a text field')
+    }
+    else{
+    const job = await Jobs.create({
+      jobTitle,
+      jobDescription,
+      Employers_contact,
+      DeadlineDate:deadlineDate,
+      Category,
+      EMPLOYER_EMAIL,
+      Employers_Name,
+      Start_Date:numDate
+    })
+    res.status(200).json(job)
+  }
+  
+  }
+
+
+
+// get data from a file 
+  /*
+  const {user,jobTitle,jobDescription,Employers_contact,DeadlineDate,Category,EMPLOYER_EMAIL,Employers_Name} = req.body;
+  if (!jobTitle, !jobDescription, !Employers_contact, !DeadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
+    res.status(400)
+    throw new Error('Please add a text field')
+  }
+  else if (jobTitle, jobDescription, Employers_contact, DeadlineDate, Category, EMPLOYER_EMAIL, Employers_Name) {
+    const job = await Jobs.create({
+      user,
+      jobTitle,
+      jobDescription,
+      Employers_contact,
+      DeadlineDate,
+      Category,
+      EMPLOYER_EMAIL,
+      Employers_Name
+    })
+    res.status(200).json(job)
+  }
+  else{
+    res.status(400)
+    throw new Error('Please add a text field')
+  }
+}
+*/})
+export {setJob, getJobs,getOneJob,updateJob,deleteJob,ExcelToMongoDB};
 
 
