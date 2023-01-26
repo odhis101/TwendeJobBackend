@@ -6,7 +6,7 @@ const router = express.Router();
 router.post ('/setJob', setJob);
 router.get ('/getJobs', getJobs);
 router.get('/getJobs/:id', getOneJob);
-router.get('/updateJobs/:id', updateJob);
+router.post('/updateJobs/:id', updateJob);
 router.delete('/deleteJobs/:id', deleteJob);
 router.post('/excelToMongoDb', ExcelToMongoDB);
 

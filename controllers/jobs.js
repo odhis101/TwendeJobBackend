@@ -41,10 +41,14 @@ const getOneJob = asyncHandler(async (req, res) => {
 })
 const updateJob = asyncHandler(async (req, res) => {
   const {id: _id} = req.params;
+  //console.log(_id)
   console.log(_id)
-  console.log(req.body)
+
+  console.log('this is the data we got ',req.body)
+  
   const JobExists = await Jobs.findById(_id)
   if (JobExists) {
+    console.log('it exists ')
     JobExists.jobTitle = req.body.jobTitle || JobExists.jobTitle
     JobExists.jobDescription = req.body.jobDescription || JobExists.jobDescription
     JobExists.Employers_contact = req.body.Employers_contact || JobExists.Employers_contact
@@ -53,7 +57,7 @@ const updateJob = asyncHandler(async (req, res) => {
     JobExists.EMPLOYER_EMAIL = req.body.EMPLOYER_EMAIL || JobExists.EMPLOYER_EMAIL
     JobExists.Employers_Name = req.body.Employers_Name || JobExists.Employers_Name
     const updatedJob = await JobExists.save()
-    console.log(updatedJob)
+    //console.log(updatedJob)
   } else {
     res.status(404) 
     throw new Error('Job not found')

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import asyncHandler from 'express-async-handler';
 import User from "../models/userModels.js"
+import Admin from "../models/adminModels.js"
 //const jwt = require('jsonwebtoken');
 const registerUser = asyncHandler(async (req, res) => {
     const { name, phoneNumber, password } = req.body;
@@ -34,9 +35,46 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 }
 })
-  
+// create admin register
+const registerAdmin = asyncHandler(async (req, res) => {
+    const {  phoneNumber, password } = req.body;
+    console.log(req.body)
+    
+    const userExists = await Admin.findOne({ phoneNumber });
+    if (userExists) {
+        res.status(400);
+
+    }
+    else{
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    console.log(hashedPassword)
+    const user = await Admin.create({
+        phoneNumber,
+        password: hashedPassword,
+    });
+    console.log(user)
+    if (user) {
+        res.status(201).json({
+            _id: user._id,
+            phoneNumber: user.phoneNumber,
+            password: user.password,
+            token: generateToken(user._id),
+        });
+    } else {
+        res.status(400);
+        throw new Error('Invalid user data');
+    }
+}
+
+})
+
+
+
 const loginUser = asyncHandler(async(req , res) => {
    const { phoneNumber, password } = req.body;
+
+  
     const user = await User.findOne({ phoneNumber });
     if (user && (await bcrypt.compare(password, user.password))) {
         res.json({
@@ -54,9 +92,12 @@ const loginUser = asyncHandler(async(req , res) => {
 })
 const loginAdmin = asyncHandler(async(req , res) => {
     const { phoneNumber, password } = req.body;
-     const user = await User.findOne({ phoneNumber });
-     if (user && (await bcrypt.compare(password, user.password))) {
-         res.json({
+     const user = await Admin.findOne({ phoneNumber });
+      // here its not user but admin 
+      console.log(phoneNumber,password);
+      console.log(user);
+      if (user && (await bcrypt.compare(password, user.password))) {
+        res.json({
              _id: user._id,
              phoneNumber: user.phoneNumber,
              password: user.password,
@@ -69,6 +110,10 @@ const loginAdmin = asyncHandler(async(req , res) => {
      // generateToken(JWT);
     
  })
+ // crreate a signupAdmin function
+
+
+
 const Getme = asyncHandler( async (req , res) => {
     const {_id,phoneNumber} =await User.find;
     console.log(_id,phoneNumber);
@@ -92,5 +137,5 @@ res.status(200).json(userExists)
     });
 }
 
-export {registerUser,loginUser,Getme,getUsers,loginAdmin};
+export {registerUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin};
 
