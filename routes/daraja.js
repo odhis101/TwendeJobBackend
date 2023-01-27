@@ -226,6 +226,7 @@ router.post('/subscriptions',Getsubscribers)
 router.get('/Allsubscriptions',GetAllsubscribers)
 router.delete('/Deletesubscribers/:id',Deletesubscribers)
 router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
+    console.log('this is testing confirmation')
     console.log("test2");
     const id = req.query.number
     const amount = req.query.amount
