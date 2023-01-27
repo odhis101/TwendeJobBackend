@@ -35,8 +35,8 @@ router.get ('/register', getaccess_token,(req, res)=>{
             json:{
                 "ShortCode": "600730",
                 "ResponseType": "Completed",
-                "ConfirmationURL": "https://twendejob-backend.oa.r.appspot.com/daraja/confirmation",
-                "ValidationURL": "https://twendejob-backend.oa.r.appspot.com/daraja/validation"
+                "ConfirmationURL": "https://be71-196-207-148-228.ap.ngrok.io/daraja/confirmation",
+                "ValidationURL": "https://be71-196-207-148-228.ap.ngrok.io/daraja/validation"
                 
 
               }
