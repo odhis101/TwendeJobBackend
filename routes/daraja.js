@@ -10,6 +10,9 @@ import { Getsubscribers,GetAllsubscribers, Deletesubscribers} from "../controlle
 import { get } from "mongoose";
 
 const router = express.Router();
+const consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
+const consumer_secret  = 'h2gwMdxszxc2tJ35';
+const Backend_url = 'https://twendejob-backend.oa.r.appspot.com';
 router.get ('/access_token', getaccess_token, (req, res)=>{
     res.status (200).json({
         access_token: req.access_token
@@ -22,7 +25,7 @@ router.get ('/access_token', getaccess_token, (req, res)=>{
 
 
 router.get ('/register', getaccess_token,(req, res)=>{
-    let url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+    let url = " https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     let auth = "Bearer "+ req.access_token;
     request(
 
@@ -35,8 +38,8 @@ router.get ('/register', getaccess_token,(req, res)=>{
             json:{
                 "ShortCode": "600730",
                 "ResponseType": "Completed",
-                "ConfirmationURL": "https://be71-196-207-148-228.ap.ngrok.io/daraja/confirmation",
-                "ValidationURL": "https://be71-196-207-148-228.ap.ngrok.io/daraja/validation"
+                "ConfirmationURL": `${Backend_url}/daraja/confirmation`,// chang
+                "ValidationURL": `${Backend_url}/daraja/validation`
                 
 
               }
@@ -59,9 +62,8 @@ router.get ('/register', getaccess_token,(req, res)=>{
 
 
 function getaccess_token(req, res,next){
-    let consumer_key = "5ijH05e0wrWCkVKtsuA247YKAosfP3ED";
-    let consumer_secret = "BfopAok9WlYz3gjX";
-    let url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+ 
+    let url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
     let auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
     request(
         {
@@ -86,10 +88,13 @@ function getaccess_token(req, res,next){
 
 }
 //console.log(getaccess_token())
-router.post ('/confirmation', getaccess_token,(req, res)=>{
+router.get ('/confirmation', getaccess_token,(req, res)=>{
 
     //let mpesa_resp = ;
-    console.log(req.body);
+    res.status(200).json({
+        request:req.body
+    });
+    
 });
 
 
