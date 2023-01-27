@@ -253,8 +253,8 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     console.log(daysToExpiry)
     let expiry = addDays(today,daysToExpiry)
     console.log(expiry)
-    let check_success = req.body.Body.stkCallback
-    console.log(check_success)
+    let check_success = req.body.Body.stkCallback.ResultCode
+    console.log(req.body.Body.stkCallback)
     if(check_success > 0 ){
         // update subscription
         const Subscription = await User.updateOne({
