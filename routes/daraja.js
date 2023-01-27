@@ -256,7 +256,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     let check_success = req.body.Body.stkCallback.ResultCode
     if(check_success > 0 ){
         // update subscription
-        const Subscription = await User.update({
+        const Subscription = await User.updateOne({
             Subscription:true,
             lengthOfSubscription:daysToExpiry,
             amount:amount,
