@@ -255,7 +255,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     console.log(expiry)
     let check_success = req.body.Body.stkCallback.ResultCode
     console.log(req.body.Body.stkCallback)
-    if(check_success == 0 ){
+    if (req.body.Body.stkCallback.ResultDesc === "The service request is processed successfully."){
         // update subscription
         /*
         // this doesn't account for it existing or not 
