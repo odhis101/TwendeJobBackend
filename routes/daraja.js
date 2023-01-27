@@ -25,8 +25,9 @@ router.get ('/access_token', getaccess_token, (req, res)=>{
 
 
 router.get ('/register', getaccess_token,(req, res)=>{
-    let url = " https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+    let url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     let auth = "Bearer "+ req.access_token;
+    console.log(auth);
     request(
 
         {
@@ -36,7 +37,7 @@ router.get ('/register', getaccess_token,(req, res)=>{
                 "Authorization":auth
             },
             json:{
-                "ShortCode": "600730",
+                "ShortCode": "494977",
                 "ResponseType": "Completed",
                 "ConfirmationURL": `${Backend_url}/daraja/confirmation`,// chang
                 "ValidationURL": `${Backend_url}/daraja/validation`
@@ -109,7 +110,7 @@ router.post ('/getdata', getaccess_token,(req, res)=>{
 });
 
 router.get ('/simulate',  getaccess_token, (req, res)=>{
-    let url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate";
+    let url = "https://api.safaricom.co.ke/mpesa/c2b/v1/simulate";
     let auth = "Bearer "+ req.access_token;
     
     request(
@@ -146,16 +147,30 @@ const middleware = (req, res, next) => {
     result.setDate(result.getDate() + days);
     return result;
   }
+
+  const generateTimestamp = () => {
+    const date = new Date()
+    const timestamp =
+      date.getFullYear() +
+      ("0" + (date.getMonth() + 1)).slice(-2) +
+      ("0" + (date.getDate() + 1)).slice(-2) +
+      ("0" + (date.getHours() + 1)).slice(-2) +
+      ("0" + (date.getMinutes() + 1)).slice(-2) +
+      ("0" + (date.getSeconds() + 1)).slice(-2)
+    return timestamp
+  }
 router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)=>{
-    let url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+    let url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     let auth = "Bearer "+ req.access_token;
     const {number,amount,id} = req.body;
 
  
-    let datenow = new Date() 
-    let passkey ='MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5'
-    const timestamp = datenow.getFullYear()+ ""+""+datenow.getMonth()+""+""+datenow.getDate()+""+""+datenow.getHours()+""+""+datenow.getMinutes()+""+""+datenow.getSeconds();
-    const Passwords = new Buffer.from("174379" + passkey + timestamp).toString('base64');
+
+    let passkey ='3e05a5eb019d9bc8cb1eb2045e0bff9e6b46279ca5e57d87356ae07bc6308d70'
+    const timestamp =generateTimestamp()
+    const Passwords = new Buffer.from("494977" + passkey + timestamp).toString('base64');
+    console.log(timestamp)
+    console.log(typeof(timestamp));
 
     request(
         
@@ -166,13 +181,13 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
                 "Authorization":auth
                 },
                 json:{
-                    "BusinessShortCode": "174379",
-                    "Password":'MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjAwNDMwMTgzOTQ5', 
-                    "Timestamp":'20200430183949',
+                    "BusinessShortCode": "494977",
+                    "Password":Passwords, 
+                    "Timestamp":timestamp,
                     "TransactionType": "CustomerPayBillOnline",
                     "Amount": amount,
                     "PartyA": number,
-                    "PartyB": "174379",
+                    "PartyB": "494977",
                     "PhoneNumber": number,
                     "CallBackURL": "https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number="+id+"&amount="+amount,
                     "AccountReference": "Twendejob",
