@@ -239,8 +239,7 @@ console.log(amount)
         }))
         
        
-
-    
+ 
 
 router.post('/subscriptions',Getsubscribers)
 router.get('/Allsubscriptions',GetAllsubscribers)
@@ -271,7 +270,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     
     let today = new Date().toISOString().slice(0, 10)
     console.log(daysToExpiry)
-    let expiry = addDays(today,daysToExpiry)
+    let expiry = addDays(today,daysToExpiry).toISOString().slice(0, 10)
     console.log(expiry)
     let check_success = req.body.Body.stkCallback.ResultCode
     console.log(req.body.Body.stkCallback)
