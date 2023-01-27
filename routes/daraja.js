@@ -251,7 +251,7 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     
     let today = new Date().toISOString().slice(0, 10)
     console.log(daysToExpiry)
-    let expiry = today.addDays(daysToExpiry)
+    let expiry = addDays(today,daysToExpiry)
     console.log(expiry)
     let check_success = req.body.Body.stkCallback.ResultCode
     if(check_success > 0 ){
