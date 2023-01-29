@@ -203,39 +203,6 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
         }
         
     )
-    /*
-let daysToExpiry = 0;
-console.log(amount)
-    switch(amount){
-        case "10":
-       daysToExpiry = 1;
-        break;
-      case "49":
-        daysToExpiry = 7;
-        break;
-      case "199":
-        daysToExpiry = 30;
-        break;
-        // create a default 
-        default:
-        daysToExpiry = 0;
-
-    }
-     
-    let today = new Date().toISOString().slice(0, 10)
-    let expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10)
-    console.log(expiry)
- 
-        const Subscription = await User.create({
-                phoneNumber: id,
-                Subscription:true,
-                lengthOfSubscription:7,
-                amount:amount,
-                SubscriptionDate: today,
-                expiry:expiry,
-            })
-            console.log(Subscription)
-            */
         }))
         
        
@@ -275,27 +242,12 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     let check_success = req.body.Body.stkCallback.ResultCode
     console.log(req.body.Body.stkCallback)
     if (req.body.Body.stkCallback.ResultDesc === "The service request is processed successfully."){
-        // update subscription
-        /*
-        // this doesn't account for it existing or not 
-        const Subscription = await User.updateOne({
-            Subscription:true,
-            lengthOfSubscription:daysToExpiry,
-            amount:amount,
-            SubscriptionDate: today,
-            expiry:expiry,
-        },{
-            where:{
-                phoneNumber:id
-            }
-        })
-*/
 
        
         const Subscription = await User.create({
             phoneNumber: id,
             Subscription:true,
-            lengthOfSubscription:7,
+            lengthOfSubscription:daysToExpiry,
             amount:amount,
             SubscriptionDate: today,
             expiry:expiry,
