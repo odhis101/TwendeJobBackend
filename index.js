@@ -9,6 +9,7 @@ import usersRoutes from './routes/userRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import darajaRoutes from './routes/daraja.js';
 import dotenv from 'dotenv';
+import sms from './routes/sms.js';
 import fileupload from 'express-fileupload';
 
 
@@ -22,6 +23,7 @@ app.use('/posts', postRoutes);
 app.use('/users', usersRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/daraja', darajaRoutes);
+app.use('/messages', sms);
 
 const CONNECTION_URL = 'mongodb+srv://odhis101:natasha12@cluster0.r1d9hq1.mongodb.net/?retryWrites=true&w=majority';
 
