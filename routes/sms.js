@@ -1,5 +1,6 @@
 import  express  from "express";
-import {getSms} from "../controllers/sms.js";
+import {getsms} from "../controllers/sms.js";
+
 const router = express.Router();
-router.post ('/sms', getSms);
+router.post ('/sms', getsms);
 export default router;
