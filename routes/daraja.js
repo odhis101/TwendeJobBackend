@@ -176,7 +176,7 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
         
         {
             url :url,
-              method : "POST",
+            method : "POST",
             headers:{
                 "Authorization":auth
                 },
