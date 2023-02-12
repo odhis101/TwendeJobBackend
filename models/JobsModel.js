@@ -31,6 +31,10 @@ const postedJobs = mongoose.Schema({
         type: String,
         required: [true, 'Please enter the Employers Name'], 
     },
+    Location:{
+        type: String,
+        required: [true, 'Please enter the Location'], 
+    },
     createdAt: {
         type: Date,
         default: new Date().toISOString().slice(0, 10)

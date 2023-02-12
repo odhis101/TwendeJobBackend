@@ -21,22 +21,13 @@ const getsms = asyncHandler(async (req, res) => {
         url: url,
         headers: {
             "Authorization": auth,
-            "Content-Type": "application/json"
-            
-        },
-        json: {
-            "sender": "twende jobs",
-            "recipient": "0703757369",
-            "message": 'hello world',
-            "bulk": 0,
-            "link_Id": "89023478214892134789234",
-  
         }
           },
           function (error, response, body) {
             if (error) {
                 console.log(error);
             } else {
+              console.log(error);
                res.json(body);
             }
         }
