@@ -11,7 +11,7 @@ const getJobs = asyncHandler(async (req, res) => {
     res.status(200).json(JobExists)
   })
   const setJob = asyncHandler(async (req, res) => {
-    const {user,jobTitle,jobDescription,Employers_contact,DeadlineDate,Category,EMPLOYER_EMAIL,Employers_Name} = req.body;
+    const {user,jobTitle,jobDescription,Employers_contact,DeadlineDate,Category,EMPLOYER_EMAIL,Employers_Name,Location} = req.body;
     if (!jobTitle, !jobDescription, !Employers_contact, !DeadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
       res.status(400)
       throw new Error('Please add a text field')
@@ -25,9 +25,11 @@ const getJobs = asyncHandler(async (req, res) => {
       DeadlineDate,
       Category,
       EMPLOYER_EMAIL,
+      Location,
       Employers_Name
 
     })
+
   
     res.status(200).json(job)
 })
