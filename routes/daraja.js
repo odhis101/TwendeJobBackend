@@ -199,6 +199,7 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
                 console.log(error);
             } else {
                 res.status(200).json(body);
+                console.log(response);
             }
         }
         
@@ -242,9 +243,6 @@ router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
     //let check_success = req.body.Body.stkCallback.ResultCode
     console.log(req.body.Body.stkCallback)
     if (req.body.Body.stkCallback.ResultDesc === "The service request is processed successfully."){
-        // check if you have already updated the database 
-        // if not update the database
-        // create subscription 
         
 
         const Subscription = await User.create({

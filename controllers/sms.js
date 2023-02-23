@@ -2,42 +2,98 @@ import { json } from 'express';
 import request from 'request';
 import Subscribers from '../models/darajaModels.js';
 import asyncHandler from 'express-async-handler';
+import Jobs from '../models/JobsModel.js';
+import https from 'follow-redirects';
+import fs from 'fs';
+import cron from 'node-cron';
+
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
   res.status(200).json(req.body)
    console.log(req.body);
   })
 
-  const sendsms = asyncHandler(async (req, res) => {
+
+  // counter function to track the number of requests
+  let i = 0;
+  cron.schedule('0 8 * * *',  asyncHandler(async (req, res) => {
+
+   
+    // i want to update i after every cron schedule 
+
     let url = "https://api.patasms.com/send_one";
     let username = 'twende.jobs'
     let password = 'P@ssw0rd'
-    // create a base64 encoded username:password
-    let auth = new Buffer.from(username + ":" + password).toString("base64");
-    let sender = 'PataSMS' // sender name
-    request(
-      {    
-        method: "POST",
-        url: url,
-        headers: {
-            "Authorization": auth,
+    let auth =  "Basic " + new Buffer.from(username + ":" + password).toString("base64");
+    const subscribers =await Subscribers.find({});
+    const jobs = await Jobs.find({});
+    // create an array of jobs 
+    let jobsTitle = [];
+    console.log('testing');
+    jobs.forEach((job) => {
+      jobsTitle.push(job.jobTitle);
+    });
+    let jobDescription = [];
+    jobs.forEach((job) => {
+      jobDescription.push(job.jobDescription);
+    });
+    //console.log(subscribers);
+    let numbersArray = [];
+    const currentDate = new Date().toISOString().slice(0, 10)
+    subscribers.forEach((subscriber) => {
+      //numbersArray.push(subscriber.phoneNumber);
+ 
+      if (subscriber.expiry > currentDate) {
+        // numbersArray.push(subscriber.phoneNumber);
+      } else {
+        // this is the expired ones 
+        numbersArray.push(subscriber.phoneNumber);
+        
+      }
+    });
+    
+    const numbers = [...new Set(numbersArray)]
+    console.log(numbers);
+    numbers.forEach((number) => {
+    request(  {
+      method: "POST",
+      url: url,
+      path: '/send',
+      'maxRedirects': 20,
+      headers: {
+        "Authorization": auth,
+        "Content-Type": "application/json",
+        'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+      },
+      json:{
+        "sender": 23552,
+        "recipient": number,
+        "link_id": "812389123",
+        'bulk':0,
+        "message": `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
+      },
+
+    },
+     
+     function (error, response, body) {
+        if (error) {
+            console.log(error);
+        } else {
+          console.log(body);
         }
-          },
-          function (error, response, body) {
-            if (error) {
-                console.log(error);
-            } else {
-              console.log(error);
-               res.json(body);
-            }
-        }
-          
-          )
-  })
+     }
+    )
+    })
+
+    
+   i++ 
+   console.log(jobsTitle[i])
+
+  }));
 
   const call_back = asyncHandler(async (req, res) => {
     res.status(200).json(req.body)
     console.log(req.body);
   })
 
-  export {getsms,sendsms,call_back};
+  export {getsms,call_back};
