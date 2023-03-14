@@ -6,7 +6,7 @@ import Jobs from '../models/JobsModel.js';
 import https from 'follow-redirects';
 import fs from 'fs';
 import cron from 'node-cron';
-
+import twilio from 'twilio';
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
   res.status(200).json(req.body)
@@ -16,6 +16,7 @@ const getsms = asyncHandler(async (req, res) => {
 
   // counter function to track the number of requests
   let i = 0;
+  /*
   cron.schedule('0 8 * * *',  asyncHandler(async (req, res) => {
 
    
@@ -90,6 +91,63 @@ const getsms = asyncHandler(async (req, res) => {
    console.log(jobsTitle[i])
 
   }));
+*/
+
+
+/*twilio version */ 
+cron.schedule('0 8 * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
+    const jobs = await Jobs.find({});
+    // create an array of jobs 
+    let jobsTitle = [];
+    jobs.forEach((job) => {
+      jobsTitle.push(job.jobTitle);
+    });
+    let jobDescription = [];
+    jobs.forEach((job) => {
+      jobDescription.push(job.jobDescription);
+    });
+    //console.log(subscribers);
+    let numbersArray = [];
+    const currentDate = new Date().toISOString().slice(0, 10)
+    subscribers.forEach((subscriber) => {
+      //numbersArray.push(subscriber.phoneNumber);
+ 
+      if (subscriber.expiry > currentDate) {
+        // numbersArray.push(subscriber.phoneNumber);
+      } else {
+        // this is the expired ones 
+        if(subscriber.phoneNumber.startsWith('0')  ){
+          subscriber.phoneNumber = subscriber.phoneNumber.replace('0', '254');
+          
+      }
+        numbersArray.push(subscriber.phoneNumber);
+        
+      }
+    });
+    const countryCode = '+254'; // Replace with your country code
+    const numbers = [...new Set(numbersArray)]
+    
+
+    console.log(numbers);
+    const accountSid = 'AC8c9b65406300a5fb2456e225ed765b11';
+    const authToken = 'aa3c3f81b40ba319eb60bffe14f0c868';
+    const client = twilio(accountSid, authToken);
+
+    numbers.forEach((number) => {
+     
+client.messages
+  .create({
+    body: `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
+    from: '+15076154216',
+    to: `+${number}`
+  })
+  .then(message => console.log(`Message sent: ${message.sid}`))
+  .catch(error => console.error(error));
+
+    
+  })
+}))
+
 
   const call_back = asyncHandler(async (req, res) => {
     res.status(200).json(req.body)
