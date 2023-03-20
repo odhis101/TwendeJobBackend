@@ -92,10 +92,14 @@ const getsms = asyncHandler(async (req, res) => {
 
   }));
 */
+const now = new Date();
+const hours = now.getHours();
+const minutes = now.getMinutes();
 
+console.log(`The time is ${hours}:${minutes}`);
 
 /*twilio version */ 
-cron.schedule('0 8 * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
+cron.schedule('30 1 * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
     const jobs = await Jobs.find({});
     // create an array of jobs 
     let jobsTitle = [];
@@ -106,7 +110,7 @@ cron.schedule('0 8 * * *',  asyncHandler(async (req, res) => {  const subscriber
     jobs.forEach((job) => {
       jobDescription.push(job.jobDescription);
     });
-    //console.log(subscribers);
+    console.log(jobsTitle,jobDescription);
     let numbersArray = [];
     const currentDate = new Date().toISOString().slice(0, 10)
     subscribers.forEach((subscriber) => {
@@ -130,7 +134,7 @@ cron.schedule('0 8 * * *',  asyncHandler(async (req, res) => {  const subscriber
 
     console.log(numbers);
     const accountSid = 'AC8c9b65406300a5fb2456e225ed765b11';
-    const authToken = 'aa3c3f81b40ba319eb60bffe14f0c868';
+    const authToken = 'a2cfe2fecbaf552e5f304f52c713f02e';
     const client = twilio(accountSid, authToken);
 
     numbers.forEach((number) => {
