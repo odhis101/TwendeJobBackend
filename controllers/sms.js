@@ -96,7 +96,7 @@ const now = new Date();
 const hours = now.getHours();
 const minutes = now.getMinutes();
 
-console.log(`The time is ${hours}:${minutes}`);
+console.log(`The time i s ${hours}:${minutes}`);
 
 /*twilio version */ 
 cron.schedule('30 1 * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
