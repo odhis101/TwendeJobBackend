@@ -100,7 +100,8 @@ console.log(`The time i s ${hours}:${minutes}`);
 
 /*twilio version */ 
 cron.schedule('30 1 * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
-    const jobs = await Jobs.find({});
+ console.log('its 8 am')   
+const jobs = await Jobs.find({});
     // create an array of jobs 
     let jobsTitle = [];
     jobs.forEach((job) => {
