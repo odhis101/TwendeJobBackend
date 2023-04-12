@@ -32,7 +32,11 @@ app.use('/skills', skillRoutes);
 const CONNECTION_URL = 'mongodb+srv://odhis101:natasha12@cluster0.r1d9hq1.mongodb.net/?retryWrites=true&w=majority';
 
 const PORT = process.env.PORT || 8080;
+const now = new Date();
+const hours = now.getHours();
+const minutes = now.getMinutes();
 
+console.log(`The time i s ${hours}:${minutes}`);
 mongoose.connect(CONNECTION_URL,{useNewUrlParser:true,useUnifiedTopology:true})
 .then(()=>app.listen(PORT,()=>console.log(`Server running on port: ${PORT}`)))
 .catch((error)=>console.log(error.message));
