@@ -134,7 +134,7 @@ cron.schedule('30 1 * * *',  asyncHandler(async (req, res) => {  const subscribe
 
     console.log(numbers);
     const accountSid = 'AC8c9b65406300a5fb2456e225ed765b11';
-    const authToken = 'a2cfe2fecbaf552e5f304f52c713f02e';
+    const authToken = 'e2fa44ef8492ef37654da72734b512e9';
     const client = twilio(accountSid, authToken);
 
     numbers.forEach((number) => {
