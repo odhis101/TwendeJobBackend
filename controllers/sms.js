@@ -136,7 +136,7 @@ const jobs = await Jobs.find({});
 
     console.log(numbers);
     const accountSid = 'AC8c9b65406300a5fb2456e225ed765b11';
-    const authToken = 'e2fa44ef8492ef37654da72734b512e9';
+    const authToken = '396516a55b393caab2bd3f0827ac1998';
     const client = twilio(accountSid, authToken);
 
     numbers.forEach((number) => {
