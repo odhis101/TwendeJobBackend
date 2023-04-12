@@ -99,7 +99,8 @@ const minutes = now.getMinutes();
 //console.log(`The time i s ${hours}:${minutes}`);
 
 /*twilio version */ 
-cron.schedule('30 1 * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
+/* 30 1 * * * */ 
+cron.schedule('*/20 * * * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
  console.log('its 8 am')   
 const jobs = await Jobs.find({});
     // create an array of jobs 
