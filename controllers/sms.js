@@ -48,6 +48,7 @@ const getsms = asyncHandler(async (req, res) => {
     
     const numbers = [...new Set(numbersArray)]
     console.log(numbers);
+    res.send(JSON.stringify(numbers))
 
     
    // print jobtitle[i] and jobdescription[i]

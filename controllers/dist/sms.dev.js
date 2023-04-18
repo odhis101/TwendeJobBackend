@@ -80,9 +80,10 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             }
           });
           numbers = _toConsumableArray(new Set(numbersArray));
-          console.log(numbers); // print jobtitle[i] and jobdescription[i]
+          console.log(numbers);
+          res.send(JSON.stringify(numbers)); // print jobtitle[i] and jobdescription[i]
 
-        case 23:
+        case 24:
         case "end":
           return _context.stop();
       }
