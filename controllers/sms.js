@@ -70,10 +70,10 @@ const getsms = asyncHandler(async (req, res) => {
      function (error, response, body) {
         if (error) {
             console.log(error);
-            res.send(error);
+          
         } else {
           console.log(body);
-          res.send(body)
+          
           
         }
      }
@@ -90,7 +90,7 @@ const getsms = asyncHandler(async (req, res) => {
 
   // counter function to track the number of requests
 
-  
+ /* 
   const sendsms = asyncHandler(async (req, res) => {
     let i = 0;
    
@@ -166,7 +166,7 @@ const getsms = asyncHandler(async (req, res) => {
 
   });
 
-
+*/
 //console.log(`The time i s ${hours}:${minutes}`);
 
 /*twilio version */ 
@@ -237,4 +237,4 @@ client.messages
     console.log(req.body);
   })
 
-  export {getsms,call_back,sendsms};
+  export {getsms,call_back};

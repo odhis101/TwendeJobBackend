@@ -1,10 +1,10 @@
 import  express  from "express";
-import {getsms,call_back,sendsms} from "../controllers/sms.js";
+import {getsms,call_back} from "../controllers/sms.js";
 import cron from 'node-cron';
 
 const router = express.Router();
-router.get ('/sms', getsms);
-router.get ('sendsms', sendsms);
+router.post ('/sms', getsms);
+//router.get ('sendsms', sendsms);
 //router.post('/sendsms', sendsms)
 
 // run a cron job every minute
