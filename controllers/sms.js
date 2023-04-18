@@ -10,6 +10,8 @@ import twilio from 'twilio';
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
     let i = 0;
+    console.log('hit the route')
+    console.log(req.body);
    
     // i want to update i after every cron schedule 
 
@@ -46,7 +48,7 @@ const getsms = asyncHandler(async (req, res) => {
     
     const numbers = [...new Set(numbersArray)]
     console.log(numbers);
-    numbers.forEach((number) => {
+
     request(  {
       method: "POST",
       url: url,
@@ -59,7 +61,7 @@ const getsms = asyncHandler(async (req, res) => {
       },
       json:{
         "sender": 23552,
-        "recipient": number,
+        "recipient":number,
         "link_id": "812389123",
         'bulk':0,
         "message": `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
@@ -78,7 +80,7 @@ const getsms = asyncHandler(async (req, res) => {
         }
      }
     )
-    })
+    
 
     
    i++ 
@@ -86,6 +88,12 @@ const getsms = asyncHandler(async (req, res) => {
    // print jobtitle[i] and jobdescription[i]
 
   })
+  const call_back = asyncHandler(async (req, res) => {
+    res.status(200).json(req.body)
+    console.log(req.body);
+  })
+
+  export {getsms,call_back};
 
 
   // counter function to track the number of requests
@@ -232,9 +240,3 @@ client.messages
 }))
 
 */
-  const call_back = asyncHandler(async (req, res) => {
-    res.status(200).json(req.body)
-    console.log(req.body);
-  })
-
-  export {getsms,call_back};
