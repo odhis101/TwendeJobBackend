@@ -49,42 +49,7 @@ const getsms = asyncHandler(async (req, res) => {
     const numbers = [...new Set(numbersArray)]
     console.log(numbers);
 
-    request(  {
-      method: "POST",
-      url: url,
-      path: '/send',
-      'maxRedirects': 20,
-      headers: {
-        "Authorization": auth,
-        "Content-Type": "application/json",
-        'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
-      },
-      json:{
-        "sender": 23552,
-        "recipient":number,
-        "link_id": "812389123",
-        'bulk':0,
-        "message": `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
-      },
-
-    },
-     
-     function (error, response, body) {
-        if (error) {
-            console.log(error);
-          
-        } else {
-          console.log(body);
-          
-          
-        }
-     }
-    )
     
-
-    
-   i++ 
-   console.log(jobsTitle[i])
    // print jobtitle[i] and jobdescription[i]
 
   })

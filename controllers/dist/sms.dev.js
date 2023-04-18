@@ -80,35 +80,9 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             }
           });
           numbers = _toConsumableArray(new Set(numbersArray));
-          console.log(numbers);
-          (0, _request["default"])({
-            method: "POST",
-            url: url,
-            path: '/send',
-            'maxRedirects': 20,
-            headers: {
-              "Authorization": auth,
-              "Content-Type": "application/json",
-              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
-            },
-            json: {
-              "sender": 23552,
-              "recipient": number,
-              "link_id": "812389123",
-              'bulk': 0,
-              "message": "Hello, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i])
-            }
-          }, function (error, response, body) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log(body);
-            }
-          });
-          i++;
-          console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
+          console.log(numbers); // print jobtitle[i] and jobdescription[i]
 
-        case 26:
+        case 23:
         case "end":
           return _context.stop();
       }
