@@ -34,29 +34,31 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
-  var i, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers;
+  var sender, shortcode, linkId, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           //const JobExists = await Jobs.find({})
-          i = 0;
           console.log('hit the route');
-          console.log(req.body); // i want to update i after every cron schedule 
+          console.log(req.body);
+          sender = req.body.msisdn;
+          shortcode = req.body.shortcode;
+          linkId = req.body.linkId; // i want to update i after every cron schedule 
 
           url = "https://api.patasms.com/send_one";
           username = 'twende.jobs';
           password = 'P@ssw0rd';
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
-          _context.next = 9;
+          _context.next = 11;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
 
-        case 9:
+        case 11:
           subscribers = _context.sent;
-          _context.next = 12;
+          _context.next = 14;
           return regeneratorRuntime.awrap(_JobsModel["default"].find({}));
 
-        case 12:
+        case 14:
           jobs = _context.sent;
           // create an array of jobs 
           jobsTitle = [];
@@ -67,7 +69,8 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           jobDescription = [];
           jobs.forEach(function (job) {
             jobDescription.push(job.jobDescription);
-          }); //console.log(subscribers);
+          });
+          console.log(jobsTitle); //console.log(subscribers);
 
           numbersArray = [];
           currentDate = new Date().toISOString().slice(0, 10);
@@ -81,9 +84,35 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           });
           numbers = _toConsumableArray(new Set(numbersArray));
           console.log(numbers);
-          res.send(JSON.stringify(numbers)); // print jobtitle[i] and jobdescription[i]
+          res.send(JSON.stringify(numbers));
+          i = Math.floor(Math.random() * jobsTitle.length);
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 23551,
+              "recipient": sender,
+              "link_id": linkId,
+              'bulk': 0,
+              "message": "Hello, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i])
+            }
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(body);
+            }
+          });
+          console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 24:
+        case 30:
         case "end":
           return _context.stop();
       }

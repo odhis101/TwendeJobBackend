@@ -7,11 +7,17 @@ import https from 'follow-redirects';
 import fs from 'fs';
 import cron from 'node-cron';
 import twilio from 'twilio';
+
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
-    let i = 0;
+ 
     console.log('hit the route')
     console.log(req.body);
+    let sender = req.body.msisdn
+    let shortcode = req.body.shortcode
+    let linkId = req.body.linkId
+    
+
    
     // i want to update i after every cron schedule 
 
@@ -31,6 +37,7 @@ const getsms = asyncHandler(async (req, res) => {
     jobs.forEach((job) => {
       jobDescription.push(job.jobDescription);
     });
+    console.log(jobsTitle);
     //console.log(subscribers);
     let numbersArray = [];
     const currentDate = new Date().toISOString().slice(0, 10)
@@ -49,6 +56,44 @@ const getsms = asyncHandler(async (req, res) => {
     const numbers = [...new Set(numbersArray)]
     console.log(numbers);
     res.send(JSON.stringify(numbers))
+    const i = Math.floor(Math.random() * jobsTitle.length);
+
+    request(  {
+        method: "POST",
+        url: url,
+        path: '/send',
+        'maxRedirects': 20,
+        headers: {
+          "Authorization": auth,
+          "Content-Type": "application/json",
+          'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+        },
+        json:{
+          "sender": 23551,
+          "recipient": sender,
+          "link_id": linkId,
+          'bulk':0,
+          "message": `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
+        },
+  
+      },
+       
+       function (error, response, body) {
+          if (error) {
+              console.log(error);
+            
+          } else {
+            console.log(body);
+            
+            
+          }
+       }
+      )
+      
+  
+      
+  
+     console.log(jobsTitle[i])
 
     
    // print jobtitle[i] and jobdescription[i]
