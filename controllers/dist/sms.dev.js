@@ -27,6 +27,8 @@ var _smsModel = _interopRequireDefault(require("../models/smsModel.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -93,8 +95,9 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
 
           checker = sender;
           console.log('this is sender ', sender);
+          console.log('type of sender', _typeof(sender));
 
-          if (sender.startsWith('254')) {
+          if (sender.substring(0, 3) === '254') {
             checker = sender.replace('254', '0');
             console.log('this is checker ', checker);
           } // replacing all phone numbers in numbers to start with 254
@@ -150,7 +153,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           });
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 38:
+        case 39:
         case "end":
           return _context.stop();
       }

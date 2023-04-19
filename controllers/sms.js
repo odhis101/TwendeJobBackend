@@ -61,12 +61,14 @@ const getsms = asyncHandler(async (req, res) => {
     res.send(JSON.stringify(numbers))
     const i = Math.floor(Math.random() * jobsTitle.length);
     // checking for 254 in the sender number
+   
     let checker = sender;
     
     console.log('this is sender ',sender)
-    if (sender.startsWith('254')) {
-        checker = sender.replace('254', '0');
-        console.log('this is checker ',checker);
+    console.log('type of sender', typeof sender)
+    if (sender.substring(0, 3) === '254') {
+      checker = sender.replace('254', '0');
+      console.log('this is checker ', checker);
     }
     // replacing all phone numbers in numbers to start with 254
     let numbers0 = numbers.map((number) => {
