@@ -97,8 +97,8 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           console.log('this is sender ', sender);
           console.log('type of sender', _typeof(sender));
 
-          if (sender.substring(0, 3) === '254') {
-            checker = sender.replace('254', '0');
+          if (sender.toString().startsWith('254')) {
+            checker = sender.toString().replace('254', '0');
             console.log('this is checker ', checker);
           } // replacing all phone numbers in numbers to start with 254
 
