@@ -44,6 +44,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           //const JobExists = await Jobs.find({})
           console.log('hit the route');
           console.log(req.body);
+          console.log(req.body);
           sender = req.body.msisdn;
           shortcode = req.body.shortcode;
           linkId = req.body.linkId; // i want to update i after every cron schedule 
@@ -52,15 +53,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           username = 'twende.jobs';
           password = 'P@ssw0rd';
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
-          _context.next = 11;
+          _context.next = 12;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
 
-        case 11:
+        case 12:
           subscribers = _context.sent;
-          _context.next = 14;
+          _context.next = 15;
           return regeneratorRuntime.awrap(_JobsModel["default"].find({}));
 
-        case 14:
+        case 15:
           jobs = _context.sent;
           // create an array of jobs 
           jobsTitle = [];
@@ -148,7 +149,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           });
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 36:
+        case 37:
         case "end":
           return _context.stop();
       }

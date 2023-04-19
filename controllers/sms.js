@@ -14,6 +14,7 @@ const getsms = asyncHandler(async (req, res) => {
  
     console.log('hit the route')
     console.log(req.body);
+    console.log(req.body);
     let sender = req.body.msisdn
     let shortcode = req.body.shortcode
     let linkId = req.body.linkId
