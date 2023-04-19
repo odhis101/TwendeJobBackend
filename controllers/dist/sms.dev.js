@@ -92,6 +92,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           i = Math.floor(Math.random() * jobsTitle.length); // checking for 254 in the sender number
 
           checker = sender;
+          console.log('this is sender ', sender);
 
           if (sender.startsWith('254')) {
             checker = sender.replace('254', '0');
@@ -149,7 +150,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           });
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 37:
+        case 38:
         case "end":
           return _context.stop();
       }

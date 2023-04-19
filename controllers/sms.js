@@ -62,6 +62,8 @@ const getsms = asyncHandler(async (req, res) => {
     const i = Math.floor(Math.random() * jobsTitle.length);
     // checking for 254 in the sender number
     let checker = sender;
+    
+    console.log('this is sender ',sender)
     if (sender.startsWith('254')) {
         checker = sender.replace('254', '0');
         console.log('this is checker ',checker);
