@@ -7,6 +7,7 @@ import https from 'follow-redirects';
 import fs from 'fs';
 import cron from 'node-cron';
 import twilio from 'twilio';
+import SmsText from '../models/smsModel.js';
 
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
@@ -45,10 +46,11 @@ const getsms = asyncHandler(async (req, res) => {
       //numbersArray.push(subscriber.phoneNumber);
  
       if (subscriber.expiry > currentDate) {
-        // numbersArray.push(subscriber.phoneNumber);
+        //these are the ones that are not expired 
+        numbersArray.push(subscriber.phoneNumber);
       } else {
         // this is the expired ones 
-        numbersArray.push(subscriber.phoneNumber);
+        //numbersArray.push(subscriber.phoneNumber);
         
       }
     });
@@ -57,6 +59,33 @@ const getsms = asyncHandler(async (req, res) => {
     console.log(numbers);
     res.send(JSON.stringify(numbers))
     const i = Math.floor(Math.random() * jobsTitle.length);
+    // checking for 254 in the sender number
+    let checker = sender;
+    if (sender.startsWith('254')) {
+        checker = sender.replace('254', '0');
+        console.log('this is checker ',checker);
+    }
+    // replacing all phone numbers in numbers to start with 254
+    let numbers0 = numbers.map((number) => {
+        if (number.startsWith('254')) {
+            return number.replace('254', '0');
+        } else {
+            return number;
+        }
+    }
+    )
+    console.log('numbers that start with ',numbers0);
+
+    let message = ''
+    if (!numbers0.includes(checker)) {
+        // sender is not in the numbers array
+        console.log('sender is not in the numbers array');
+        message = `please subscribe to our service to get the latest jobs, go twendejobs.com to create your subscription`;
+      } else {
+          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`;
+        // sender is in the numbers array
+      }
+     
 
     request(  {
         method: "POST",
@@ -73,7 +102,7 @@ const getsms = asyncHandler(async (req, res) => {
           "recipient": sender,
           "link_id": linkId,
           'bulk':0,
-          "message": `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
+          "message": message,
         },
   
       },
@@ -83,6 +112,13 @@ const getsms = asyncHandler(async (req, res) => {
               console.log(error);
             
           } else {
+
+            const sms = new SmsText({
+                phoneNumber: sender,
+                messageText: message,
+                })
+            sms.save()
+            console.log(sms);
             console.log(body);
             
             
@@ -103,8 +139,13 @@ const getsms = asyncHandler(async (req, res) => {
     res.status(200).json(req.body)
     console.log(req.body);
   })
+  // get all sms from the database
+    const getallsms = asyncHandler(async (req, res) => {
+        const sms = await SmsText.find({});
+        res.status(200).json(sms);
+    })
 
-  export {getsms,call_back};
+  export {getsms,call_back,getallsms};
 
 
   // counter function to track the number of requests

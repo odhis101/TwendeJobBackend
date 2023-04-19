@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.call_back = exports.getsms = void 0;
+exports.getallsms = exports.call_back = exports.getsms = void 0;
 
 var _express = require("express");
 
@@ -23,6 +23,8 @@ var _nodeCron = _interopRequireDefault(require("node-cron"));
 
 var _twilio = _interopRequireDefault(require("twilio"));
 
+var _smsModel = _interopRequireDefault(require("../models/smsModel.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -34,7 +36,7 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
-  var sender, shortcode, linkId, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i;
+  var sender, shortcode, linkId, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i, checker, numbers0, message;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -76,16 +78,44 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           currentDate = new Date().toISOString().slice(0, 10);
           subscribers.forEach(function (subscriber) {
             //numbersArray.push(subscriber.phoneNumber);
-            if (subscriber.expiry > currentDate) {// numbersArray.push(subscriber.phoneNumber);
-            } else {
-              // this is the expired ones 
+            if (subscriber.expiry > currentDate) {
+              //these are the ones that are not expired 
               numbersArray.push(subscriber.phoneNumber);
+            } else {// this is the expired ones 
+              //numbersArray.push(subscriber.phoneNumber);
             }
           });
           numbers = _toConsumableArray(new Set(numbersArray));
           console.log(numbers);
           res.send(JSON.stringify(numbers));
-          i = Math.floor(Math.random() * jobsTitle.length);
+          i = Math.floor(Math.random() * jobsTitle.length); // checking for 254 in the sender number
+
+          checker = sender;
+
+          if (sender.startsWith('254')) {
+            checker = sender.replace('254', '0');
+            console.log('this is checker ', checker);
+          } // replacing all phone numbers in numbers to start with 254
+
+
+          numbers0 = numbers.map(function (number) {
+            if (number.startsWith('254')) {
+              return number.replace('254', '0');
+            } else {
+              return number;
+            }
+          });
+          console.log('numbers that start with ', numbers0);
+          message = '';
+
+          if (!numbers0.includes(checker)) {
+            // sender is not in the numbers array
+            console.log('sender is not in the numbers array');
+            message = "please subscribe to our service to get the latest jobs, go twendejobs.com to create your subscription";
+          } else {
+            message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i]); // sender is in the numbers array
+          }
+
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -101,18 +131,24 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
               "recipient": sender,
               "link_id": linkId,
               'bulk': 0,
-              "message": "Hello, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i])
+              "message": message
             }
           }, function (error, response, body) {
             if (error) {
               console.log(error);
             } else {
+              var sms = new _smsModel["default"]({
+                phoneNumber: sender,
+                messageText: message
+              });
+              sms.save();
+              console.log(sms);
               console.log(body);
             }
           });
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 30:
+        case 36:
         case "end":
           return _context.stop();
       }
@@ -131,6 +167,28 @@ var call_back = (0, _expressAsyncHandler["default"])(function _callee2(req, res)
         case 2:
         case "end":
           return _context2.stop();
+      }
+    }
+  });
+}); // get all sms from the database
+
+exports.call_back = call_back;
+var getallsms = (0, _expressAsyncHandler["default"])(function _callee3(req, res) {
+  var sms;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.next = 2;
+          return regeneratorRuntime.awrap(_smsModel["default"].find({}));
+
+        case 2:
+          sms = _context3.sent;
+          res.status(200).json(sms);
+
+        case 4:
+        case "end":
+          return _context3.stop();
       }
     }
   });
@@ -281,4 +339,4 @@ client.messages
 
 */
 
-exports.call_back = call_back;
+exports.getallsms = getallsms;
