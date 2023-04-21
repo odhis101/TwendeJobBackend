@@ -8,6 +8,8 @@ import fs from 'fs';
 import cron from 'node-cron';
 import twilio from 'twilio';
 import SmsText from '../models/smsModel.js';
+import User from "../models/userModels.js"
+
 
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
@@ -149,8 +151,60 @@ const getsms = asyncHandler(async (req, res) => {
         const sms = await SmsText.find({});
         res.status(200).json(sms);
     })
+    const sendOtp = asyncHandler(async (req, res) => {
+      console.log('hit the sendOtp route');
+      console.log(req.body);
+    
+      const { phoneNumber } = req.body;
+    
+      try {
+        const otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
+        const message = `Your verification code is ${otp}`; // create the message body
+    
+        await client.messages.create({
+          body: message,
+          from: 'your_twilio_number',
+          to: phoneNumber
+        });
+    
+        // Save the OTP in the database
+        const user = await User.findOneAndUpdate({ phoneNumber }, { otp }, { new: true, upsert: true });
+        console.log(user);
+        res.status(200).json({ message: 'OTP sent successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while sending OTP' });
+      }
+    });
+    
 
-  export {getsms,call_back,getallsms};
+    const verifyOTP = asyncHandler(async (req, res) => {
+      const { phoneNumber, otp } = req.body;
+    
+      try {
+        // Find the user by phone number
+        const user = await User.findOne({ phoneNumber });
+    
+        if (!user) {
+          return res.status(400).json({ message: 'User not found' });
+        }
+    
+        // Check if the OTP matches
+        if (otp === user.otp) {
+          // Clear the OTP from the user document
+          user.otp = undefined;
+          await user.save();
+    
+          return res.status(200).json({ message: 'OTP verification successful' });
+        } else {
+          return res.status(400).json({ message: 'Invalid OTP' });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while verifying OTP' });
+      }
+    });
+  export {getsms,call_back,getallsms,sendOtp,verifyOTP};
 
 
   // counter function to track the number of requests

@@ -16,16 +16,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var router = _express["default"].Router();
 
 router.post('/sms', _sms.getsms);
-router.get('/getall', _sms.getallsms); //router.get ('sendsms', sendsms);
-//router.post('/sendsms', sendsms)
-// run a cron job every minute
-
-/*
-cron.schedule('* * * * * *', () => {
-    console.log('Task running every 20 seconds');
-  });
-*/
-
-router.get('/callback', _sms.call_back);
+router.get('/getall', _sms.getallsms);
+router.post('/sendOtp', _sms.sendOtp);
+router.post('/verifyOtp', _sms.verifyOTP);
 var _default = router;
 exports["default"] = _default;

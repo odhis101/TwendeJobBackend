@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getallsms = exports.call_back = exports.getsms = void 0;
+exports.verifyOTP = exports.sendOtp = exports.getallsms = exports.call_back = exports.getsms = void 0;
 
 var _express = require("express");
 
@@ -24,6 +24,8 @@ var _nodeCron = _interopRequireDefault(require("node-cron"));
 var _twilio = _interopRequireDefault(require("twilio"));
 
 var _smsModel = _interopRequireDefault(require("../models/smsModel.js"));
+
+var _userModels = _interopRequireDefault(require("../models/userModels.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -197,6 +199,130 @@ var getallsms = (0, _expressAsyncHandler["default"])(function _callee3(req, res)
       }
     }
   });
+});
+exports.getallsms = getallsms;
+var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
+  var phoneNumber, otp, message, user;
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          console.log('hit the sendOtp route');
+          console.log(req.body);
+          phoneNumber = req.body.phoneNumber;
+          _context4.prev = 3;
+          otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
+
+          message = "Your verification code is ".concat(otp); // create the message body
+
+          _context4.next = 8;
+          return regeneratorRuntime.awrap(client.messages.create({
+            body: message,
+            from: 'your_twilio_number',
+            to: phoneNumber
+          }));
+
+        case 8:
+          _context4.next = 10;
+          return regeneratorRuntime.awrap(_userModels["default"].findOneAndUpdate({
+            phoneNumber: phoneNumber
+          }, {
+            otp: otp
+          }, {
+            "new": true,
+            upsert: true
+          }));
+
+        case 10:
+          user = _context4.sent;
+          console.log(user);
+          res.status(200).json({
+            message: 'OTP sent successfully'
+          });
+          _context4.next = 19;
+          break;
+
+        case 15:
+          _context4.prev = 15;
+          _context4.t0 = _context4["catch"](3);
+          console.error(_context4.t0);
+          res.status(500).json({
+            message: 'An error occurred while sending OTP'
+          });
+
+        case 19:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[3, 15]]);
+});
+exports.sendOtp = sendOtp;
+var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
+  var _req$body, phoneNumber, otp, user;
+
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _req$body = req.body, phoneNumber = _req$body.phoneNumber, otp = _req$body.otp;
+          _context5.prev = 1;
+          _context5.next = 4;
+          return regeneratorRuntime.awrap(_userModels["default"].findOne({
+            phoneNumber: phoneNumber
+          }));
+
+        case 4:
+          user = _context5.sent;
+
+          if (user) {
+            _context5.next = 7;
+            break;
+          }
+
+          return _context5.abrupt("return", res.status(400).json({
+            message: 'User not found'
+          }));
+
+        case 7:
+          if (!(otp === user.otp)) {
+            _context5.next = 14;
+            break;
+          }
+
+          // Clear the OTP from the user document
+          user.otp = undefined;
+          _context5.next = 11;
+          return regeneratorRuntime.awrap(user.save());
+
+        case 11:
+          return _context5.abrupt("return", res.status(200).json({
+            message: 'OTP verification successful'
+          }));
+
+        case 14:
+          return _context5.abrupt("return", res.status(400).json({
+            message: 'Invalid OTP'
+          }));
+
+        case 15:
+          _context5.next = 21;
+          break;
+
+        case 17:
+          _context5.prev = 17;
+          _context5.t0 = _context5["catch"](1);
+          console.error(_context5.t0);
+          res.status(500).json({
+            message: 'An error occurred while verifying OTP'
+          });
+
+        case 21:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  }, null, null, [[1, 17]]);
 }); // counter function to track the number of requests
 
 /* 
@@ -344,4 +470,4 @@ client.messages
 
 */
 
-exports.getallsms = getallsms;
+exports.verifyOTP = verifyOTP;
