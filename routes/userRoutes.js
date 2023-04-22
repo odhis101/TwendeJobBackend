@@ -1,5 +1,5 @@
 import  express  from "express";
-import {sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword,} from "../controllers/user.js";
+import  {updatePasswordAdmin,verifyOtpForNewAdmin,sendOtpForNewAdmin,sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword} from "../controllers/user.js";
 //import {protect} from "../middleware/authMiddleware"
 import protect from "../middleware/authMiddleware.js"
 const router = express.Router();
@@ -11,5 +11,9 @@ router.get ('/me', Getme);
 router.get ('/getUsers', getUsers);
 router.post ('/registerAdmin', registerAdmin);
 router.post('/updatePassword', updatePassword);
+router.post ('/sendOtpForNewAdmin', sendOtpForNewAdmin);
+router.post('/verifyOtpForNewAdmin', verifyOtpForNewAdmin)
+router.post('/updatePasswordAdmin', updatePasswordAdmin)
+
 
 export default router;

@@ -42,14 +42,19 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
       password: hashedPassword,
       otpCode:otp,
     });
+    console.log(user)
+
   
     // Send OTP to the user
+    
     try {
+      /*
       await client.messages.create({
         body: message,
         from: '+15076154216',
         to: '+' + phoneNumber
       });
+      */
       const response = {
         message: "OTP sent successfully",
         data: { phoneNumber, hashedPassword, otp },
@@ -57,17 +62,78 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
       res.status(200).json(response);
     } catch (error) {
       console.error(error);
+      console.log(error)
+      res.status(500).json({ message: "An error occurred while sending OTP" });
+    }
+  });
+
+  const sendOtpForNewAdmin= asyncHandler(async (req, res) => {
+    let {phoneNumber, password } = req.body;
+    console.log(req.body)
+    const accountSid = "AC8c9b65406300a5fb2456e225ed765b11"
+    const authToken = "82d221bc3faa13adc6ea02a02924123c";
+    const client = twilio(accountSid, authToken);
+    // if number start with 0 to 254
+    console.log(typeof phoneNumber)
+    if(phoneNumber.startsWith('0')  ){
+        phoneNumber = phoneNumber.replace('0', '254');    
+    }
+  
+    // Check if user already exists with the given phone number
+    const userExists = await Admin.findOne({ phoneNumber });
+   
+    if (userExists) {
+      res.status(400).json({ message: 'User already exists' });
+      return;
+    }
+  
+    // Generate OTP and message body
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const message = `Your verification code is ${otp}`;
+    console.log(otp)
+  
+    // Store user credentials and OTP in the database
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    const user = await Admin.create({
+      phoneNumber,
+      password: hashedPassword,
+      otpCode:otp,
+    });
+    console.log(user)
+
+  
+    // Send OTP to the user
+    
+    try {
+      /*
+      await client.messages.create({
+        body: message,
+        from: '+15076154216',
+        to: '+' + phoneNumber
+      });
+      */
+      const response = {
+        message: "OTP sent successfully",
+        data: { phoneNumber, hashedPassword, otp },
+      };
+      res.status(200).json(response);
+    } catch (error) {
+      console.error(error);
+      console.log(error)
       res.status(500).json({ message: "An error occurred while sending OTP" });
     }
   });
   
   const verifyOtpForNewUser = asyncHandler(async (req, res) => {
+    console.log('we are in verifyOtpForNewUser')
     
     let { phoneNumber, otp } = req.body;
     if(phoneNumber.startsWith('0')  ){
         phoneNumber = phoneNumber.replace('0', '254');    
     }
- 
+  
     // Find user by phone number and OTP
     const user = await User.findOne({ phoneNumber, otpCode: otp});
   
@@ -78,28 +144,79 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     }
   
     // Check if user has logged in yet
-    if (user.isOtpVerified) {
-      // If user hasn't logged in, delete user after 10 minutes
-      setTimeout(() => {
+    if (!user.isOtpVerified) {
+      // If user hasn't logged in, delete user after 15 seconds
+      const timeoutId = setTimeout(() => {
         User.deleteOne({ _id: user._id }).then(() => {
           console.log(`Deleted user ${user._id}`);
         });
-      },  15 * 1000); // 10 minutes in milliseconds
+      },  15 * 1000); // 15 seconds in milliseconds
   
       // Mark user as logged in
       user.isOtpVerified = true;
       await user.save();
-      console.log(user)
+      console.log(user);
+  
+      // Cancel the scheduled timeout
+      clearTimeout(timeoutId);
     }
   
     // Return success message
     res.status(200).json({ message: 'OTP verification successful' });
   });
+
+  const verifyOtpForNewAdmin = asyncHandler(async (req, res) => {
+    console.log('we are in verifyOtpForNewAdmin')
+    console.log(req.body)
+    
+    let { phoneNumber, otp } = req.body;
+    if(phoneNumber.startsWith('0')  ){
+        phoneNumber = phoneNumber.replace('0', '254');    
+    }
+    console.log(phoneNumber)
+  
+    // Find user by phone number and OTP
+    const user = await Admin.findOne({ phoneNumber});
+    console.log(user)
+  
+    if (!user) {
+      // User not found or OTP doesn't match, return error
+      res.status(400).json({ message: 'Invalid OTP' });
+      return;
+    }
+  
+    // Check if user has logged in yet
+    if (!user.isOtpVerified) {
+      // If user hasn't logged in, delete user after 15 seconds
+      const timeoutId = setTimeout(() => {
+        User.deleteOne({ _id: user._id }).then(() => {
+          console.log(`Deleted user ${user._id}`);
+        });
+      },  15 * 1000); // 15 seconds in milliseconds
+  
+      // Mark user as logged in
+      user.isOtpVerified = true;
+      await user.save();
+      console.log(user);
+  
+      // Cancel the scheduled timeout
+      clearTimeout(timeoutId);
+    }
+  
+    // Return success message
+    res.status(200).json({ message: 'OTP verification successful' });
+  });
+
+
+  
   
 // create admin register
 const registerAdmin = asyncHandler(async (req, res) => {
-    const {  phoneNumber, password } = req.body;
+    let {  phoneNumber, password } = req.body;
     console.log(req.body)
+    if(phoneNumber.startsWith('0')  ){
+      phoneNumber = phoneNumber.replace('0', '254');    
+  }
     
     const userExists = await Admin.findOne({ phoneNumber });
     if (userExists) {
@@ -178,21 +295,55 @@ const loginAdmin = asyncHandler(async(req , res) => {
  // crreate a signupAdmin function
 
  const updatePassword = asyncHandler(async (req, res) => {
-    const { phoneNumber, newPassword } = req.body;
+    let { phoneNumber, newPassword } = req.body;
+    if(phoneNumber.startsWith('0')  ){
+      phoneNumber = phoneNumber.replace('0', '254');    
+  }
+    console.log(req.body)
   
     const user = await User.findOne({ phoneNumber });
+    console.log(user)
     if (user) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
   
-      await Admin.updateOne({ phoneNumber }, { password: hashedPassword });
+      user.password = hashedPassword;
+      user.isOtpVerified = true;
+      await user.save();
+      console.log(user)
+      
   
       res.json({
         message: 'Password updated successfully',
       });
     } else {
-      res.status(401);
-      throw new Error('User not found');
+      res.status(400).json({ message: 'User not found' });
+    }
+  });
+  const updatePasswordAdmin = asyncHandler(async (req, res) => {
+    let { phoneNumber, newPassword } = req.body;
+    if(phoneNumber.startsWith('0')  ){
+      phoneNumber = phoneNumber.replace('0', '254');    
+  }
+    console.log(req.body)
+  
+    const user = await Admin.findOne({ phoneNumber });
+    console.log(user)
+    if (user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+  
+      user.password = hashedPassword;
+      user.isOtpVerified = true;
+      await user.save();
+      console.log(user)
+      
+  
+      res.json({
+        message: 'Password updated successfully',
+      });
+    } else {
+      res.status(400).json({ message: 'User not found' });
     }
   });
   
@@ -221,5 +372,5 @@ res.status(200).json(userExists)
     });
 }
 
-export {sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword};
+export {updatePasswordAdmin,verifyOtpForNewAdmin,sendOtpForNewAdmin,sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword};
 

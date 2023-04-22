@@ -154,21 +154,25 @@ const getsms = asyncHandler(async (req, res) => {
     const sendOtp = asyncHandler(async (req, res) => {
       console.log('hit the sendOtp route');
       console.log(req.body);
+      const accountSid = "AC8c9b65406300a5fb2456e225ed765b11"
+      const authToken = "82d221bc3faa13adc6ea02a02924123c";
+      const client = twilio(accountSid, authToken);
     
       const { phoneNumber } = req.body;
     
+      const otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
+      const message = `Your verification code is ${otp}`; // create the message body
+      console.log(message);
       try {
-        const otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
-        const message = `Your verification code is ${otp}`; // create the message body
-    
+        /*
         await client.messages.create({
           body: message,
-          from: 'your_twilio_number',
-          to: phoneNumber
+          from: '+15076154216',
+          to: '+' + phoneNumber
         });
-    
+    */
         // Save the OTP in the database
-        const user = await User.findOneAndUpdate({ phoneNumber }, { otp }, { new: true, upsert: true });
+        const user = await User.findOneAndUpdate({ phoneNumber }, { otpCode:otp}, { new: true, upsert: true });
         console.log(user);
         res.status(200).json({ message: 'OTP sent successfully' });
       } catch (error) {
@@ -184,17 +188,22 @@ const getsms = asyncHandler(async (req, res) => {
       try {
         // Find the user by phone number
         const user = await User.findOne({ phoneNumber });
+        //console.log(user);
     
         if (!user) {
           return res.status(400).json({ message: 'User not found' });
         }
-    
+    console.log('here is the stored otp',user.otpCode , 'here is the otp sent',otp) 
+    console.log(typeof user.otpCode, typeof otp)
+   
+
         // Check if the OTP matches
-        if (otp === user.otp) {
+        if (user.otpCode === otp) {
+          console.log('otp matches');
           // Clear the OTP from the user document
-          user.otp = undefined;
-          await user.save();
-    
+          //user.otp = undefined;
+          //await user.select('-phone -password').save();
+          console.log('success')
           return res.status(200).json({ message: 'OTP verification successful' });
         } else {
           return res.status(400).json({ message: 'Invalid OTP' });

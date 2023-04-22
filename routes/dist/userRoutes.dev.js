@@ -24,5 +24,8 @@ router.get('/me', _user.Getme);
 router.get('/getUsers', _user.getUsers);
 router.post('/registerAdmin', _user.registerAdmin);
 router.post('/updatePassword', _user.updatePassword);
+router.post('/sendOtpForNewAdmin', _user.sendOtpForNewAdmin);
+router.post('/verifyOtpForNewAdmin', _user.verifyOtpForNewAdmin);
+router.post('/updatePasswordAdmin', _user.updatePasswordAdmin);
 var _default = router;
 exports["default"] = _default;

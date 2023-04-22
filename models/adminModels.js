@@ -13,7 +13,14 @@ const userSchema = mongoose.Schema({
         type: String,
         required: [true, 'Please enter your password'],
         
-    }
+    },
+      otpCode: {
+        type: String,
+      },
+      isOtpVerified: {
+        type: Boolean,
+        default: false
+      }
 
 })
  
