@@ -6,18 +6,28 @@ import asyncHandler from 'express-async-handler';
 import User from "../models/userModels.js"
 import Admin from "../models/adminModels.js"
 import twilio from 'twilio';
+import request from 'request';
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+const PATA_SMS_URL ="https://api.patasms.com/send_one"
+const PATA_SMS_USERNAME = 'twende.jobs'
+const PATA_SMS_PASSWORD = 'P@ssw0rd'
 //const jwt = require('jsonwebtoken');
 const sendOtpForNewUser = asyncHandler(async (req, res) => {
     let {phoneNumber, password } = req.body;
     console.log(req.body)
-    const accountSid = "AC8c9b65406300a5fb2456e225ed765b11"
-    const authToken = "82d221bc3faa13adc6ea02a02924123c";
-    const client = twilio(accountSid, authToken);
+    let url = PATA_SMS_URL;
+    let username = PATA_SMS_USERNAME
+    let Password = PATA_SMS_PASSWORD
+    let auth =  "Basic " + new Buffer.from(username + ":" + Password).toString("base64");
+  console.log('testing here ')
+      console.log(PATA_SMS_URL)
     // if number start with 0 to 254
     console.log(typeof phoneNumber)
-    if(phoneNumber.startsWith('0')  ){
-        phoneNumber = phoneNumber.replace('0', '254');    
+    if(phoneNumber.startsWith('254')  ){
+        phoneNumber = phoneNumber.replace('254', '0');    
     }
   
     // Check if user already exists with the given phone number
@@ -36,25 +46,51 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     // Store user credentials and OTP in the database
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    
+  /*  
     const user = await User.create({
       phoneNumber,
       password: hashedPassword,
       otpCode:otp,
     });
-    console.log(user)
+    */
+   //console.log(user)
 
   
     // Send OTP to the user
     
     try {
-      /*
-      await client.messages.create({
-        body: message,
-        from: '+15076154216',
-        to: '+' + phoneNumber
-      });
-      */
+      request(  {
+        method: "POST",
+        url: url,
+        path: '/send',
+        'maxRedirects': 20,
+        headers: {
+          "Authorization": auth,
+          "Content-Type": "application/json",
+          'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+        },
+        json:{
+          "sender": 'Titan',
+          "recipient": "0703757369",
+          "link_id": '',
+          'bulk':1,
+          "message": message,
+        },
+  
+      },
+       
+       function (error, response, body) {
+          if (error) {
+              console.log(error);
+            
+          } else {
+            console.log(body);
+            
+            
+          }
+       }
+      )
+      
       const response = {
         message: "OTP sent successfully",
         data: { phoneNumber, hashedPassword, otp },
@@ -273,7 +309,10 @@ const loginUser = asyncHandler(async(req , res) => {
    
 })
 const loginAdmin = asyncHandler(async(req , res) => {
-    const { phoneNumber, password } = req.body;
+    let { phoneNumber, password } = req.body;
+    if(phoneNumber.startsWith('0')  ){
+      phoneNumber = phoneNumber.replace('0', '254');    
+  }
      const user = await Admin.findOne({ phoneNumber });
       // here its not user but admin 
       console.log(phoneNumber,password);

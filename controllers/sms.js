@@ -9,7 +9,9 @@ import cron from 'node-cron';
 import twilio from 'twilio';
 import SmsText from '../models/smsModel.js';
 import User from "../models/userModels.js"
-
+const PATA_SMS_URL = process.env.PATA_SMS_URL
+const PATA_SMS_USERNAME = process.env.PATA_SMS_USER
+const PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD
 
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
@@ -25,9 +27,9 @@ const getsms = asyncHandler(async (req, res) => {
    
     // i want to update i after every cron schedule 
 
-    let url = "https://api.patasms.com/send_one";
-    let username = 'twende.jobs'
-    let password = 'P@ssw0rd'
+    let url = PATA_SMS_URL;
+    let username = PATA_SMS_USERNAME
+    let password = PATA_SMS_PASSWORD
     let auth =  "Basic " + new Buffer.from(username + ":" + password).toString("base64");
     const subscribers =await Subscribers.find({});
     const jobs = await Jobs.find({});

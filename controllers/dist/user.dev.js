@@ -21,13 +21,22 @@ var _adminModels = _interopRequireDefault(require("../models/adminModels.js"));
 
 var _twilio = _interopRequireDefault(require("twilio"));
 
+var _request = _interopRequireDefault(require("request"));
+
+var _dotenv = _interopRequireDefault(require("dotenv"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-//const jwt = require('jsonwebtoken');
+_dotenv["default"].config();
+
+var PATA_SMS_URL = "https://api.patasms.com/send_one";
+var PATA_SMS_USERNAME = 'twende.jobs';
+var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
+
 var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
-  var _req$body, phoneNumber, password, accountSid, authToken, client, userExists, otp, message, salt, hashedPassword, user, response;
+  var _req$body, phoneNumber, password, url, username, Password, auth, userExists, otp, message, salt, hashedPassword, response;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -35,27 +44,30 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
         case 0:
           _req$body = req.body, phoneNumber = _req$body.phoneNumber, password = _req$body.password;
           console.log(req.body);
-          accountSid = "AC8c9b65406300a5fb2456e225ed765b11";
-          authToken = "82d221bc3faa13adc6ea02a02924123c";
-          client = (0, _twilio["default"])(accountSid, authToken); // if number start with 0 to 254
+          url = PATA_SMS_URL;
+          username = PATA_SMS_USERNAME;
+          Password = PATA_SMS_PASSWORD;
+          auth = "Basic " + new Buffer.from(username + ":" + Password).toString("base64");
+          console.log('testing here ');
+          console.log(PATA_SMS_URL); // if number start with 0 to 254
 
           console.log(_typeof(phoneNumber));
 
-          if (phoneNumber.startsWith('0')) {
-            phoneNumber = phoneNumber.replace('0', '254');
+          if (phoneNumber.startsWith('254')) {
+            phoneNumber = phoneNumber.replace('254', '0');
           } // Check if user already exists with the given phone number
 
 
-          _context.next = 9;
+          _context.next = 12;
           return regeneratorRuntime.awrap(_userModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
-        case 9:
+        case 12:
           userExists = _context.sent;
 
           if (!userExists) {
-            _context.next = 13;
+            _context.next = 16;
             break;
           }
 
@@ -64,41 +76,57 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
           });
           return _context.abrupt("return");
 
-        case 13:
+        case 16:
           // Generate OTP and message body
           otp = Math.floor(100000 + Math.random() * 900000);
           message = "Your verification code is ".concat(otp);
           console.log(otp); // Store user credentials and OTP in the database
 
-          _context.next = 18;
+          _context.next = 21;
           return regeneratorRuntime.awrap(_bcryptjs["default"].genSalt(10));
 
-        case 18:
+        case 21:
           salt = _context.sent;
-          _context.next = 21;
+          _context.next = 24;
           return regeneratorRuntime.awrap(_bcryptjs["default"].hash(password, salt));
 
-        case 21:
-          hashedPassword = _context.sent;
-          _context.next = 24;
-          return regeneratorRuntime.awrap(_userModels["default"].create({
-            phoneNumber: phoneNumber,
-            password: hashedPassword,
-            otpCode: otp
-          }));
-
         case 24:
-          user = _context.sent;
-          console.log(user); // Send OTP to the user
+          hashedPassword = _context.sent;
 
-          try {
-            /*
-            await client.messages.create({
-              body: message,
-              from: '+15076154216',
-              to: '+' + phoneNumber
+          /*  
+            const user = await User.create({
+              phoneNumber,
+              password: hashedPassword,
+              otpCode:otp,
             });
             */
+          //console.log(user)
+          // Send OTP to the user
+          try {
+            (0, _request["default"])({
+              method: "POST",
+              url: url,
+              path: '/send',
+              'maxRedirects': 20,
+              headers: {
+                "Authorization": auth,
+                "Content-Type": "application/json",
+                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+              },
+              json: {
+                "sender": 'Titan',
+                "recipient": "0703757369",
+                "link_id": '',
+                'bulk': 1,
+                "message": message
+              }
+            }, function (error, response, body) {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log(body);
+              }
+            });
             response = {
               message: "OTP sent successfully",
               data: {
@@ -116,7 +144,7 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
             });
           }
 
-        case 27:
+        case 26:
         case "end":
           return _context.stop();
       }
@@ -530,12 +558,17 @@ var loginAdmin = (0, _expressAsyncHandler["default"])(function _callee7(req, res
       switch (_context7.prev = _context7.next) {
         case 0:
           _req$body7 = req.body, phoneNumber = _req$body7.phoneNumber, password = _req$body7.password;
-          _context7.next = 3;
+
+          if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.replace('0', '254');
+          }
+
+          _context7.next = 4;
           return regeneratorRuntime.awrap(_adminModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
-        case 3:
+        case 4:
           user = _context7.sent;
           // here its not user but admin 
           console.log(phoneNumber, password);
@@ -543,19 +576,19 @@ var loginAdmin = (0, _expressAsyncHandler["default"])(function _callee7(req, res
           _context7.t0 = user;
 
           if (!_context7.t0) {
-            _context7.next = 11;
+            _context7.next = 12;
             break;
           }
 
-          _context7.next = 10;
+          _context7.next = 11;
           return regeneratorRuntime.awrap(_bcryptjs["default"].compare(password, user.password));
 
-        case 10:
+        case 11:
           _context7.t0 = _context7.sent;
 
-        case 11:
+        case 12:
           if (!_context7.t0) {
-            _context7.next = 15;
+            _context7.next = 16;
             break;
           }
 
@@ -565,14 +598,14 @@ var loginAdmin = (0, _expressAsyncHandler["default"])(function _callee7(req, res
             password: user.password,
             token: generateToken(user._id)
           });
-          _context7.next = 17;
+          _context7.next = 18;
           break;
 
-        case 15:
+        case 16:
           res.status(401);
           throw new Error('Invalid phone number or password');
 
-        case 17:
+        case 18:
         case "end":
           return _context7.stop();
       }

@@ -39,6 +39,9 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+var PATA_SMS_URL = process.env.PATA_SMS_URL;
+var PATA_SMS_USERNAME = process.env.PATA_SMS_USER;
+var PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD;
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
   var sender, shortcode, linkId, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i, checker, numbers0, message;
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -53,9 +56,9 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           shortcode = req.body.shortcode;
           linkId = req.body.linkId; // i want to update i after every cron schedule 
 
-          url = "https://api.patasms.com/send_one";
-          username = 'twende.jobs';
-          password = 'P@ssw0rd';
+          url = PATA_SMS_URL;
+          username = PATA_SMS_USERNAME;
+          password = PATA_SMS_PASSWORD;
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
           _context.next = 12;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
