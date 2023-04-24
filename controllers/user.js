@@ -70,7 +70,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
         },
         json:{
           "sender": 'Titan',
-          "recipient": "0703757369",
+          "recipient": phoneNumber,
           "link_id": '',
           'bulk':1,
           "message": message,

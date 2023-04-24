@@ -117,7 +117,7 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
               },
               json: {
                 "sender": 'Titan',
-                "recipient": "0703757369",
+                "recipient": phoneNumber,
                 "link_id": '',
                 'bulk': 1,
                 "message": message

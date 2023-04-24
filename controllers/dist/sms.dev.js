@@ -228,7 +228,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
           }
 
           _context4.next = 10;
-          return regeneratorRuntime.awrap(_adminModels["default"].findOne({
+          return regeneratorRuntime.awrap(_userModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
@@ -236,20 +236,22 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
           userExists = _context4.sent;
 
           if (userExists) {
-            _context4.next = 14;
+            _context4.next = 16;
             break;
           }
 
+          console.log(userExists);
+          console.log(phoneNumber);
           res.status(400);
           throw new Error('User does not exist');
 
-        case 14:
+        case 16:
           otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
 
           message = "Your verification code is ".concat(otp); // create the message body
 
           console.log(message);
-          _context4.prev = 17;
+          _context4.prev = 19;
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -275,7 +277,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             }
           }); // Save the OTP in the database
 
-          _context4.next = 21;
+          _context4.next = 23;
           return regeneratorRuntime.awrap(_userModels["default"].findOneAndUpdate({
             phoneNumber: phoneNumber
           }, {
@@ -285,7 +287,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             upsert: true
           }));
 
-        case 21:
+        case 23:
           user = _context4.sent;
           console.log(user);
 
@@ -299,23 +301,23 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             });
           }
 
-          _context4.next = 30;
+          _context4.next = 32;
           break;
 
-        case 26:
-          _context4.prev = 26;
-          _context4.t0 = _context4["catch"](17);
+        case 28:
+          _context4.prev = 28;
+          _context4.t0 = _context4["catch"](19);
           console.error(_context4.t0);
           res.status(500).json({
             message: 'An error occurred while sending OTP'
           });
 
-        case 30:
+        case 32:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[17, 26]]);
+  }, null, null, [[19, 28]]);
 });
 exports.sendOtp = sendOtp;
 var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {

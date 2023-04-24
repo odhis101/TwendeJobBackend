@@ -170,12 +170,13 @@ const getsms = asyncHandler(async (req, res) => {
         phoneNumber = phoneNumber.replace('0', '254');    
     }
     
-    const userExists = await Admin.findOne({ phoneNumber})
+    const userExists = await User.findOne({ phoneNumber})
     if(!userExists){
+      console.log(userExists)
+      console.log(phoneNumber)
       res.status(400)
       throw new Error('User does not exist')
     }
-    
       const otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
       const message = `Your verification code is ${otp}`; // create the message body
       console.log(message);
