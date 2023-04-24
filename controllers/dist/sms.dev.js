@@ -27,6 +27,8 @@ var _smsModel = _interopRequireDefault(require("../models/smsModel.js"));
 
 var _userModels = _interopRequireDefault(require("../models/userModels.js"));
 
+var _dotenv = _interopRequireDefault(require("dotenv"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -39,9 +41,10 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-var PATA_SMS_URL = process.env.PATA_SMS_URL;
-var PATA_SMS_USERNAME = process.env.PATA_SMS_USER;
-var PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD;
+var PATA_SMS_URL = "https://api.patasms.com/send_one";
+var PATA_SMS_USERNAME = 'twende.jobs';
+var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
+
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
   var sender, shortcode, linkId, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i, checker, numbers0, message;
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -205,24 +208,55 @@ var getallsms = (0, _expressAsyncHandler["default"])(function _callee3(req, res)
 });
 exports.getallsms = getallsms;
 var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
-  var accountSid, authToken, client, phoneNumber, otp, message, user;
+  var url, username, Password, auth, phoneNumber, otp, message, user;
   return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
           console.log('hit the sendOtp route');
           console.log(req.body);
-          accountSid = "AC8c9b65406300a5fb2456e225ed765b11";
-          authToken = "82d221bc3faa13adc6ea02a02924123c";
-          client = (0, _twilio["default"])(accountSid, authToken);
+          url = PATA_SMS_URL;
+          username = PATA_SMS_USERNAME;
+          Password = PATA_SMS_PASSWORD;
+          auth = "Basic " + new Buffer.from(username + ":" + Password).toString("base64");
           phoneNumber = req.body.phoneNumber;
+
+          if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.replace('0', '254');
+          }
+
           otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
 
           message = "Your verification code is ".concat(otp); // create the message body
 
           console.log(message);
-          _context4.prev = 9;
-          _context4.next = 12;
+          _context4.prev = 11;
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 'Titan',
+              "recipient": "0703757369",
+              "link_id": '',
+              'bulk': 1,
+              "message": message
+            }
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(body);
+            }
+          }); // Save the OTP in the database
+
+          _context4.next = 15;
           return regeneratorRuntime.awrap(_userModels["default"].findOneAndUpdate({
             phoneNumber: phoneNumber
           }, {
@@ -232,29 +266,37 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             upsert: true
           }));
 
-        case 12:
+        case 15:
           user = _context4.sent;
           console.log(user);
-          res.status(200).json({
-            message: 'OTP sent successfully'
-          });
-          _context4.next = 21;
+
+          if (user) {
+            res.status(200).json({
+              message: 'OTP sent successfully'
+            });
+          } else {
+            res.status(400).json({
+              message: 'User not found'
+            });
+          }
+
+          _context4.next = 24;
           break;
 
-        case 17:
-          _context4.prev = 17;
-          _context4.t0 = _context4["catch"](9);
+        case 20:
+          _context4.prev = 20;
+          _context4.t0 = _context4["catch"](11);
           console.error(_context4.t0);
           res.status(500).json({
             message: 'An error occurred while sending OTP'
           });
 
-        case 21:
+        case 24:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[9, 17]]);
+  }, null, null, [[11, 20]]);
 });
 exports.sendOtp = sendOtp;
 var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
@@ -265,17 +307,22 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res)
       switch (_context5.prev = _context5.next) {
         case 0:
           _req$body = req.body, phoneNumber = _req$body.phoneNumber, otp = _req$body.otp;
-          _context5.prev = 1;
-          _context5.next = 4;
+
+          if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.replace('0', '254');
+          }
+
+          _context5.prev = 2;
+          _context5.next = 5;
           return regeneratorRuntime.awrap(_userModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
-        case 4:
+        case 5:
           user = _context5.sent;
 
           if (user) {
-            _context5.next = 7;
+            _context5.next = 8;
             break;
           }
 
@@ -283,12 +330,12 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res)
             message: 'User not found'
           }));
 
-        case 7:
+        case 8:
           console.log('here is the stored otp', user.otpCode, 'here is the otp sent', otp);
           console.log(_typeof(user.otpCode), _typeof(otp)); // Check if the OTP matches
 
           if (!(user.otpCode === otp)) {
-            _context5.next = 15;
+            _context5.next = 16;
             break;
           }
 
@@ -301,29 +348,29 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res)
             message: 'OTP verification successful'
           }));
 
-        case 15:
+        case 16:
           return _context5.abrupt("return", res.status(400).json({
             message: 'Invalid OTP'
           }));
 
-        case 16:
-          _context5.next = 22;
+        case 17:
+          _context5.next = 23;
           break;
 
-        case 18:
-          _context5.prev = 18;
-          _context5.t0 = _context5["catch"](1);
+        case 19:
+          _context5.prev = 19;
+          _context5.t0 = _context5["catch"](2);
           console.error(_context5.t0);
           res.status(500).json({
             message: 'An error occurred while verifying OTP'
           });
 
-        case 22:
+        case 23:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[1, 18]]);
+  }, null, null, [[2, 19]]);
 }); // counter function to track the number of requests
 
 /* 
