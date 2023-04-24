@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.verifyOTP = exports.sendOtp = exports.getallsms = exports.call_back = exports.getsms = void 0;
+exports.verifyOTP = exports.sendOtp = exports.getallsms = exports.call_back = exports.getsms = exports.sendOtpAdmin = void 0;
 
 var _express = require("express");
 
@@ -26,6 +26,8 @@ var _twilio = _interopRequireDefault(require("twilio"));
 var _smsModel = _interopRequireDefault(require("../models/smsModel.js"));
 
 var _userModels = _interopRequireDefault(require("../models/userModels.js"));
+
+var _adminModels = _interopRequireDefault(require("../models/adminModels.js"));
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
@@ -208,7 +210,7 @@ var getallsms = (0, _expressAsyncHandler["default"])(function _callee3(req, res)
 });
 exports.getallsms = getallsms;
 var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
-  var url, username, Password, auth, phoneNumber, otp, message, user;
+  var url, username, Password, auth, phoneNumber, userExists, otp, message, user;
   return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
@@ -225,12 +227,29 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             phoneNumber = phoneNumber.replace('0', '254');
           }
 
+          _context4.next = 10;
+          return regeneratorRuntime.awrap(_adminModels["default"].findOne({
+            phoneNumber: phoneNumber
+          }));
+
+        case 10:
+          userExists = _context4.sent;
+
+          if (userExists) {
+            _context4.next = 14;
+            break;
+          }
+
+          res.status(400);
+          throw new Error('User does not exist');
+
+        case 14:
           otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
 
           message = "Your verification code is ".concat(otp); // create the message body
 
           console.log(message);
-          _context4.prev = 11;
+          _context4.prev = 17;
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -256,7 +275,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             }
           }); // Save the OTP in the database
 
-          _context4.next = 15;
+          _context4.next = 21;
           return regeneratorRuntime.awrap(_userModels["default"].findOneAndUpdate({
             phoneNumber: phoneNumber
           }, {
@@ -266,7 +285,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             upsert: true
           }));
 
-        case 15:
+        case 21:
           user = _context4.sent;
           console.log(user);
 
@@ -280,31 +299,141 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             });
           }
 
-          _context4.next = 24;
+          _context4.next = 30;
           break;
 
-        case 20:
-          _context4.prev = 20;
-          _context4.t0 = _context4["catch"](11);
+        case 26:
+          _context4.prev = 26;
+          _context4.t0 = _context4["catch"](17);
           console.error(_context4.t0);
           res.status(500).json({
             message: 'An error occurred while sending OTP'
           });
 
-        case 24:
+        case 30:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[11, 20]]);
+  }, null, null, [[17, 26]]);
 });
 exports.sendOtp = sendOtp;
-var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
-  var _req$body, phoneNumber, otp, user;
-
+var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
+  var url, username, Password, auth, phoneNumber, userExists, otp, message, user;
   return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
+        case 0:
+          console.log('hit the admin route');
+          console.log(req.body);
+          url = PATA_SMS_URL;
+          username = PATA_SMS_USERNAME;
+          Password = PATA_SMS_PASSWORD;
+          auth = "Basic " + new Buffer.from(username + ":" + Password).toString("base64");
+          phoneNumber = req.body.phoneNumber;
+
+          if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.replace('0', '254');
+          }
+
+          console.log(phoneNumber);
+          _context5.next = 11;
+          return regeneratorRuntime.awrap(_adminModels["default"].findOne({
+            phoneNumber: phoneNumber
+          }));
+
+        case 11:
+          userExists = _context5.sent;
+
+          if (userExists) {
+            _context5.next = 15;
+            break;
+          }
+
+          res.status(400);
+          throw new Error('User does not exist');
+
+        case 15:
+          otp = Math.floor(100000 + Math.random() * 900000); // generate a random 6-digit code
+
+          message = "Your verification code is ".concat(otp); // create the message body
+
+          console.log(message);
+          _context5.prev = 18;
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 'Titan',
+              "recipient": "0703757369",
+              "link_id": '',
+              'bulk': 1,
+              "message": message
+            }
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(body);
+            }
+          }); // Save the OTP in the database
+
+          _context5.next = 22;
+          return regeneratorRuntime.awrap(_adminModels["default"].findOneAndUpdate({
+            phoneNumber: phoneNumber
+          }, {
+            otpCode: otp
+          }, {
+            "new": true,
+            upsert: true
+          }));
+
+        case 22:
+          user = _context5.sent;
+          console.log(user);
+
+          if (user) {
+            res.status(200).json({
+              message: 'OTP sent successfully'
+            });
+          } else {
+            res.status(400).json({
+              message: 'User not found'
+            });
+          }
+
+          _context5.next = 31;
+          break;
+
+        case 27:
+          _context5.prev = 27;
+          _context5.t0 = _context5["catch"](18);
+          console.error(_context5.t0);
+          res.status(500).json({
+            message: 'An error occurred while sending OTP'
+          });
+
+        case 31:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  }, null, null, [[18, 27]]);
+});
+exports.sendOtpAdmin = sendOtpAdmin;
+var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee6(req, res) {
+  var _req$body, phoneNumber, otp, user;
+
+  return regeneratorRuntime.async(function _callee6$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
         case 0:
           _req$body = req.body, phoneNumber = _req$body.phoneNumber, otp = _req$body.otp;
 
@@ -312,30 +441,31 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res)
             phoneNumber = phoneNumber.replace('0', '254');
           }
 
-          _context5.prev = 2;
-          _context5.next = 5;
+          console.log(phoneNumber, otp);
+          _context6.prev = 3;
+          _context6.next = 6;
           return regeneratorRuntime.awrap(_userModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
-        case 5:
-          user = _context5.sent;
+        case 6:
+          user = _context6.sent;
 
           if (user) {
-            _context5.next = 8;
+            _context6.next = 9;
             break;
           }
 
-          return _context5.abrupt("return", res.status(400).json({
+          return _context6.abrupt("return", res.status(400).json({
             message: 'User not found'
           }));
 
-        case 8:
+        case 9:
           console.log('here is the stored otp', user.otpCode, 'here is the otp sent', otp);
           console.log(_typeof(user.otpCode), _typeof(otp)); // Check if the OTP matches
 
           if (!(user.otpCode === otp)) {
-            _context5.next = 16;
+            _context6.next = 17;
             break;
           }
 
@@ -344,178 +474,32 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee5(req, res)
           //await user.select('-phone -password').save();
 
           console.log('success');
-          return _context5.abrupt("return", res.status(200).json({
+          return _context6.abrupt("return", res.status(200).json({
             message: 'OTP verification successful'
           }));
 
-        case 16:
-          return _context5.abrupt("return", res.status(400).json({
+        case 17:
+          return _context6.abrupt("return", res.status(400).json({
             message: 'Invalid OTP'
           }));
 
-        case 17:
-          _context5.next = 23;
+        case 18:
+          _context6.next = 24;
           break;
 
-        case 19:
-          _context5.prev = 19;
-          _context5.t0 = _context5["catch"](2);
-          console.error(_context5.t0);
+        case 20:
+          _context6.prev = 20;
+          _context6.t0 = _context6["catch"](3);
+          console.error(_context6.t0);
           res.status(500).json({
             message: 'An error occurred while verifying OTP'
           });
 
-        case 23:
+        case 24:
         case "end":
-          return _context5.stop();
+          return _context6.stop();
       }
     }
-  }, null, null, [[2, 19]]);
-}); // counter function to track the number of requests
-
-/* 
- const sendsms = asyncHandler(async (req, res) => {
-   let i = 0;
-  
-   // i want to update i after every cron schedule 
-
-   let url = "https://api.patasms.com/send_one";
-   let username = 'twende.jobs'
-   let password = 'P@ssw0rd'
-   let auth =  "Basic " + new Buffer.from(username + ":" + password).toString("base64");
-   const subscribers =await Subscribers.find({});
-   const jobs = await Jobs.find({});
-   // create an array of jobs 
-   let jobsTitle = [];
-   console.log('testing');
-   jobs.forEach((job) => {
-     jobsTitle.push(job.jobTitle);
-   });
-   let jobDescription = [];
-   jobs.forEach((job) => {
-     jobDescription.push(job.jobDescription);
-   });
-   //console.log(subscribers);
-   let numbersArray = [];
-   const currentDate = new Date().toISOString().slice(0, 10)
-   subscribers.forEach((subscriber) => {
-     //numbersArray.push(subscriber.phoneNumber);
-
-     if (subscriber.expiry > currentDate) {
-       // numbersArray.push(subscriber.phoneNumber);
-     } else {
-       // this is the expired ones 
-       numbersArray.push(subscriber.phoneNumber);
-       
-     }
-   });
-   
-   const numbers = [...new Set(numbersArray)]
-   console.log(numbers);
-   numbers.forEach((number) => {
-   request(  {
-     method: "POST",
-     url: url,
-     path: '/send',
-     'maxRedirects': 20,
-     headers: {
-       "Authorization": auth,
-       "Content-Type": "application/json",
-       'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
-     },
-     json:{
-       "sender": 23552,
-       "recipient": number,
-       "link_id": "812389123",
-       'bulk':0,
-       "message": `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
-     },
-
-   },
-    
-    function (error, response, body) {
-       if (error) {
-           console.log(error);
-       } else {
-         console.log(body);
-       }
-    }
-   )
-   })
-
-   
-  i++ 
-  console.log(jobsTitle[i])
-
- });
-
-*/
-//console.log(`The time i s ${hours}:${minutes}`);
-
-/*twilio version */
-
-/* 30 1 * * * */
-
-/*
-const now = new Date();
-const hours = now.getHours();
-const minutes = now.getMinutes();
-cron.schedule('* 30 1 * * * *',  asyncHandler(async (req, res) => {  const subscribers =await Subscribers.find({});
- console.log('its 8 am')   
-const jobs = await Jobs.find({});
-    // create an array of jobs 
-    let jobsTitle = [];
-    jobs.forEach((job) => {
-      jobsTitle.push(job.jobTitle);
-    });
-    let jobDescription = [];
-    jobs.forEach((job) => {
-      jobDescription.push(job.jobDescription);
-    });
-    console.log(jobsTitle,jobDescription);
-    let numbersArray = [];
-    const currentDate = new Date().toISOString().slice(0, 10)
-    subscribers.forEach((subscriber) => {
-      //numbersArray.push(subscriber.phoneNumber);
- 
-      if (subscriber.expiry > currentDate) {
-        // numbersArray.push(subscriber.phoneNumber);
-      } else {
-        // this is the expired ones 
-        if(subscriber.phoneNumber.startsWith('0')  ){
-          subscriber.phoneNumber = subscriber.phoneNumber.replace('0', '254');
-          
-      }
-        numbersArray.push(subscriber.phoneNumber);
-        
-      }
-    });
-    const countryCode = '+254'; // Replace with your country code
-    const numbers = [...new Set(numbersArray)]
-    
-
-    console.log(numbers);
-    const accountSid = 'AC8c9b65406300a5fb2456e225ed765b11';
-    const authToken = '396516a55b393caab2bd3f0827ac1998';
-    const client = twilio(accountSid, authToken);
-
-    numbers.forEach((number) => {
-     
-client.messages
-  .create({
-    body: `Hello, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`,
-    from: '+15076154216',
-    to: `+${number}`
-  })
-  .then(message => console.log(`Message sent: ${message.sid}`))
-  .catch(error => console.error(error));
-
-    
-  })
-  i++
-
-}))
-
-*/
-
+  }, null, null, [[3, 20]]);
+});
 exports.verifyOTP = verifyOTP;

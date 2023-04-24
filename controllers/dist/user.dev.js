@@ -155,13 +155,12 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
 });
 exports.sendOtpForNewUser = sendOtpForNewUser;
 var sendOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
-  var _req$body2, phoneNumber, password, url, username, Password, auth, userExists, otp, message, salt, hashedPassword, user, response;
-
+  var phoneNumber, url, username, Password, auth, userExists, otp, message, user, response;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _req$body2 = req.body, phoneNumber = _req$body2.phoneNumber, password = _req$body2.password;
+          phoneNumber = req.body.phoneNumber;
           console.log(req.body);
           url = PATA_SMS_URL;
           username = PATA_SMS_USERNAME;
@@ -170,58 +169,50 @@ var sendOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee2(
 
           console.log(_typeof(phoneNumber));
 
-          if (phoneNumber.startsWith('254')) {
-            phoneNumber = phoneNumber.replace('254', '0');
-          } // Check if user already exists with the given phone number
+          if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.replace('0', '254');
+          }
 
+          console.log(phoneNumber); // Check if user already exists with the given phone number
 
-          _context2.next = 10;
+          _context2.next = 11;
           return regeneratorRuntime.awrap(_adminModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
-        case 10:
+        case 11:
           userExists = _context2.sent;
 
           if (!userExists) {
-            _context2.next = 14;
+            _context2.next = 15;
             break;
           }
 
           res.status(400).json({
-            message: 'User already exists'
+            message: ' user registered'
           });
           return _context2.abrupt("return");
 
-        case 14:
+        case 15:
           // Generate OTP and message body
           otp = Math.floor(100000 + Math.random() * 900000);
           message = "Your verification code is ".concat(otp);
           console.log(otp); // Store user credentials and OTP in the database
 
-          _context2.next = 19;
-          return regeneratorRuntime.awrap(_bcryptjs["default"].genSalt(10));
-
-        case 19:
-          salt = _context2.sent;
-          _context2.next = 22;
-          return regeneratorRuntime.awrap(_bcryptjs["default"].hash(password, salt));
-
-        case 22:
-          hashedPassword = _context2.sent;
-          _context2.next = 25;
+          _context2.next = 20;
           return regeneratorRuntime.awrap(_adminModels["default"].create({
             phoneNumber: phoneNumber,
-            password: hashedPassword,
+            password: password,
             otpCode: otp
           }));
 
-        case 25:
+        case 20:
           user = _context2.sent;
           console.log(user); // Send OTP to the user
 
           try {
-            (0, _request["default"])({
+            /*
+            request(  {
               method: "POST",
               url: url,
               path: '/send',
@@ -229,22 +220,30 @@ var sendOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee2(
               headers: {
                 "Authorization": auth,
                 "Content-Type": "application/json",
-                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
               },
-              json: {
+              json:{
                 "sender": 'Titan',
-                "recipient": "0703757369",
+                "recipient": phoneNumber,
                 "link_id": '',
-                'bulk': 1,
-                "message": message
-              }
-            }, function (error, response, body) {
-              if (error) {
-                console.log(error);
-              } else {
-                console.log(body);
-              }
-            });
+                'bulk':1,
+                "message": message,
+              },
+                },
+             
+             function (error, response, body) {
+                if (error) {
+                    console.log(error);
+                  
+                } else {
+                  console.log(body);
+                  
+                  
+                }
+             }
+            )
+            */
+            console.log('sending otp');
             response = {
               message: "OTP sent successfully",
               data: {
@@ -262,7 +261,7 @@ var sendOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee2(
             });
           }
 
-        case 28:
+        case 23:
         case "end":
           return _context2.stop();
       }
@@ -271,14 +270,14 @@ var sendOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee2(
 });
 exports.sendOtpForNewAdmin = sendOtpForNewAdmin;
 var verifyOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee3(req, res) {
-  var _req$body3, phoneNumber, otp, user, timeoutId;
+  var _req$body2, phoneNumber, otp, user, timeoutId;
 
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
           console.log('we are in verifyOtpForNewUser');
-          _req$body3 = req.body, phoneNumber = _req$body3.phoneNumber, otp = _req$body3.otp;
+          _req$body2 = req.body, phoneNumber = _req$body2.phoneNumber, otp = _req$body2.otp;
 
           if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.replace('0', '254');
@@ -345,7 +344,7 @@ var verifyOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee3
 });
 exports.verifyOtpForNewUser = verifyOtpForNewUser;
 var verifyOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
-  var _req$body4, phoneNumber, otp, user, timeoutId;
+  var _req$body3, phoneNumber, otp, user, timeoutId;
 
   return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
@@ -353,7 +352,7 @@ var verifyOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee
         case 0:
           console.log('we are in verifyOtpForNewAdmin');
           console.log(req.body);
-          _req$body4 = req.body, phoneNumber = _req$body4.phoneNumber, otp = _req$body4.otp;
+          _req$body3 = req.body, phoneNumber = _req$body3.phoneNumber, otp = _req$body3.otp;
 
           if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.replace('0', '254');
@@ -363,7 +362,8 @@ var verifyOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee
 
           _context4.next = 7;
           return regeneratorRuntime.awrap(_adminModels["default"].findOne({
-            phoneNumber: phoneNumber
+            phoneNumber: phoneNumber,
+            otpCode: otp
           }));
 
         case 7:
@@ -422,13 +422,13 @@ var verifyOtpForNewAdmin = (0, _expressAsyncHandler["default"])(function _callee
 
 exports.verifyOtpForNewAdmin = verifyOtpForNewAdmin;
 var registerAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
-  var _req$body5, phoneNumber, password, userExists, salt, hashedPassword, user;
+  var _req$body4, phoneNumber, password, userExists, salt, _hashedPassword, user;
 
   return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
-          _req$body5 = req.body, phoneNumber = _req$body5.phoneNumber, password = _req$body5.password;
+          _req$body4 = req.body, phoneNumber = _req$body4.phoneNumber, password = _req$body4.password;
           console.log(req.body);
 
           if (phoneNumber.startsWith('0')) {
@@ -462,12 +462,12 @@ var registerAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, 
           return regeneratorRuntime.awrap(_bcryptjs["default"].hash(password, salt));
 
         case 15:
-          hashedPassword = _context5.sent;
-          console.log(hashedPassword);
+          _hashedPassword = _context5.sent;
+          console.log(_hashedPassword);
           _context5.next = 19;
           return regeneratorRuntime.awrap(_adminModels["default"].create({
             phoneNumber: phoneNumber,
-            password: hashedPassword
+            password: _hashedPassword
           }));
 
         case 19:
@@ -501,13 +501,13 @@ var registerAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, 
 });
 exports.registerAdmin = registerAdmin;
 var loginUser = (0, _expressAsyncHandler["default"])(function _callee6(req, res) {
-  var _req$body6, phoneNumber, password, user;
+  var _req$body5, phoneNumber, password, user;
 
   return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
         case 0:
-          _req$body6 = req.body, phoneNumber = _req$body6.phoneNumber, password = _req$body6.password;
+          _req$body5 = req.body, phoneNumber = _req$body5.phoneNumber, password = _req$body5.password;
 
           if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.replace('0', '254');
@@ -571,13 +571,13 @@ var loginUser = (0, _expressAsyncHandler["default"])(function _callee6(req, res)
 });
 exports.loginUser = loginUser;
 var loginAdmin = (0, _expressAsyncHandler["default"])(function _callee7(req, res) {
-  var _req$body7, phoneNumber, password, user;
+  var _req$body6, phoneNumber, password, user;
 
   return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
-          _req$body7 = req.body, phoneNumber = _req$body7.phoneNumber, password = _req$body7.password;
+          _req$body6 = req.body, phoneNumber = _req$body6.phoneNumber, password = _req$body6.password;
 
           if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.replace('0', '254');
@@ -635,13 +635,13 @@ var loginAdmin = (0, _expressAsyncHandler["default"])(function _callee7(req, res
 
 exports.loginAdmin = loginAdmin;
 var updatePassword = (0, _expressAsyncHandler["default"])(function _callee8(req, res) {
-  var _req$body8, phoneNumber, newPassword, user, salt, hashedPassword;
+  var _req$body7, phoneNumber, newPassword, user, salt, _hashedPassword2;
 
   return regeneratorRuntime.async(function _callee8$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
-          _req$body8 = req.body, phoneNumber = _req$body8.phoneNumber, newPassword = _req$body8.newPassword;
+          _req$body7 = req.body, phoneNumber = _req$body7.phoneNumber, newPassword = _req$body7.newPassword;
 
           if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.replace('0', '254');
@@ -671,8 +671,8 @@ var updatePassword = (0, _expressAsyncHandler["default"])(function _callee8(req,
           return regeneratorRuntime.awrap(_bcryptjs["default"].hash(newPassword, salt));
 
         case 13:
-          hashedPassword = _context8.sent;
-          user.password = hashedPassword;
+          _hashedPassword2 = _context8.sent;
+          user.password = _hashedPassword2;
           user.isOtpVerified = true;
           _context8.next = 18;
           return regeneratorRuntime.awrap(user.save());
@@ -699,13 +699,13 @@ var updatePassword = (0, _expressAsyncHandler["default"])(function _callee8(req,
 });
 exports.updatePassword = updatePassword;
 var updatePasswordAdmin = (0, _expressAsyncHandler["default"])(function _callee9(req, res) {
-  var _req$body9, phoneNumber, newPassword, user, salt, hashedPassword;
+  var _req$body8, phoneNumber, newPassword, user, salt, _hashedPassword3;
 
   return regeneratorRuntime.async(function _callee9$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
-          _req$body9 = req.body, phoneNumber = _req$body9.phoneNumber, newPassword = _req$body9.newPassword;
+          _req$body8 = req.body, phoneNumber = _req$body8.phoneNumber, newPassword = _req$body8.newPassword;
 
           if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.replace('0', '254');
@@ -735,8 +735,8 @@ var updatePasswordAdmin = (0, _expressAsyncHandler["default"])(function _callee9
           return regeneratorRuntime.awrap(_bcryptjs["default"].hash(newPassword, salt));
 
         case 13:
-          hashedPassword = _context9.sent;
-          user.password = hashedPassword;
+          _hashedPassword3 = _context9.sent;
+          user.password = _hashedPassword3;
           user.isOtpVerified = true;
           _context9.next = 18;
           return regeneratorRuntime.awrap(user.save());

@@ -103,7 +103,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
   });
 
   const sendOtpForNewAdmin= asyncHandler(async (req, res) => {
-    let {phoneNumber, password } = req.body;
+    let {phoneNumber} = req.body;
     console.log(req.body)
     let url = PATA_SMS_URL;
     let username = PATA_SMS_USERNAME
@@ -111,14 +111,15 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     let auth =  "Basic " + new Buffer.from(username + ":" + Password).toString("base64");
     // if number start with 0 to 254
     console.log(typeof phoneNumber)
-    if(phoneNumber.startsWith('254')  ){
-        phoneNumber = phoneNumber.replace('254', '0');    
+    if(phoneNumber.startsWith('0')  ){
+        phoneNumber = phoneNumber.replace('0', '254');    
     }
+    console.log(phoneNumber)
     // Check if user already exists with the given phone number
     const userExists = await Admin.findOne({ phoneNumber });
    
     if (userExists) {
-      res.status(400).json({ message: 'User already exists' });
+      res.status(400).json({ message: ' user registered' });
       return;
     }
   
@@ -128,12 +129,10 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     console.log(otp)
   
     // Store user credentials and OTP in the database
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
     
     const user = await Admin.create({
       phoneNumber,
-      password: hashedPassword,
+      password,
       otpCode:otp,
     });
     console.log(user)
@@ -142,6 +141,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     // Send OTP to the user
     
     try {
+      /*
       request(  {
         method: "POST",
         url: url,
@@ -154,7 +154,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
         },
         json:{
           "sender": 'Titan',
-          "recipient": "0703757369",
+          "recipient": phoneNumber,
           "link_id": '',
           'bulk':1,
           "message": message,
@@ -173,7 +173,8 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
           }
        }
       )
-      
+      */
+     console.log('sending otp')
     
       const response = {
         message: "OTP sent successfully",
@@ -238,7 +239,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     console.log(phoneNumber)
   
     // Find user by phone number and OTP
-    const user = await Admin.findOne({ phoneNumber});
+    const user = await Admin.findOne({ phoneNumber, otpCode: otp});
     console.log(user)
   
     if (!user) {

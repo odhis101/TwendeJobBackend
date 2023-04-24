@@ -19,5 +19,6 @@ router.post('/sms', _sms.getsms);
 router.get('/getall', _sms.getallsms);
 router.post('/sendOtp', _sms.sendOtp);
 router.post('/verifyOtp', _sms.verifyOTP);
+router.post('/sendOtpAdmin', _sms.sendOtpAdmin);
 var _default = router;
 exports["default"] = _default;
