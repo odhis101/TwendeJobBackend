@@ -262,7 +262,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             },
             json: {
               "sender": 'Titan',
-              "recipient": "0703757369",
+              "recipient": phoneNumber,
               "link_id": '',
               'bulk': 1,
               "message": message
@@ -372,7 +372,7 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
             },
             json: {
               "sender": 'Titan',
-              "recipient": "0703757369",
+              "recipient": phoneNumber,
               "link_id": '',
               'bulk': 1,
               "message": message
