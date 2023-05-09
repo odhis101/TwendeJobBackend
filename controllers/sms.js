@@ -15,6 +15,11 @@ import dotenv from 'dotenv';
 const PATA_SMS_URL ="https://api.patasms.com/send_one"
 const PATA_SMS_USERNAME = 'twende.jobs'
 const PATA_SMS_PASSWORD = 'P@ssw0rd'
+
+
+
+      
+     
 //const jwt = require('jsonwebtoken');
 
 const getsms = asyncHandler(async (req, res) => {
@@ -93,8 +98,11 @@ const getsms = asyncHandler(async (req, res) => {
     if (!numbers0.includes(checker)) {
         // sender is not in the numbers array
         console.log('sender is not in the numbers array');
-        message = `please subscribe to our service to get the latest jobs, go twendejobs.com to create your subscription`;
-      } else {
+        message = `please subscribe to our service to get the latest jobs, go twendejob.co.ke/JobAlerts to create your subscription`;
+        
+
+      } 
+      else {
           message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`;
         // sender is in the numbers array
       }
