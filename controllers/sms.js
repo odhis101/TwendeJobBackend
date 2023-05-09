@@ -98,7 +98,7 @@ const getsms = asyncHandler(async (req, res) => {
     if (!numbers0.includes(checker)) {
         // sender is not in the numbers array
         console.log('sender is not in the numbers array');
-        message = `please subscribe to our service to get the latest jobs, go twendejob.co.ke/JobAlerts to create your subscription`;
+        message = `please subscribe to our service to get the latest jobs, go https://twendejob.co.ke/JobAlerts to create your subscription`;
         
 
       } 
