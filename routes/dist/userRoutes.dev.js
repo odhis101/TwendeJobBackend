@@ -27,5 +27,7 @@ router.post('/updatePassword', _user.updatePassword);
 router.post('/sendOtpForNewAdmin', _user.sendOtpForNewAdmin);
 router.post('/verifyOtpForNewAdmin', _user.verifyOtpForNewAdmin);
 router.post('/updatePasswordAdmin', _user.updatePasswordAdmin);
+router.post('/updateNumber/:id', _user.updateNumber);
+router["delete"]('/deleteNumber/:id', _user.deleteNumber);
 var _default = router;
 exports["default"] = _default;

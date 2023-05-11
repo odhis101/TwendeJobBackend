@@ -425,6 +425,35 @@ const Getme = asyncHandler( async (req , res) => {
 })
 
 })
+const updateNumber = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  let { phoneNumber } = req.body;
+  if(phoneNumber.startsWith('0')  ){
+    phoneNumber = phoneNumber.replace('0', '254');    
+}
+
+  const number = await User.findById(id);
+  console.log(number)
+  if (number) {
+    number.phoneNumber = phoneNumber;
+    const updatedNumber = await number.save();
+    res.json(updatedNumber);
+  } else {
+    res.status(404);
+    throw new Error('Phone number not found');
+  }
+});
+const deleteNumber = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const deletedNumber = await User.findByIdAndDelete(id);
+  if (!deletedNumber) {
+    res.status(404);
+    throw new Error(`Phone number with id ${id} not found`);
+  }
+  res.json({ message: `Phone number ${deletedNumber.number} deleted successfully` });
+});
+  
+
 const getUsers = asyncHandler( async (req , res) => {
 const userExists = await User.find({})
   
@@ -438,5 +467,5 @@ res.status(200).json(userExists)
     });
 }
 
-export {updatePasswordAdmin,verifyOtpForNewAdmin,sendOtpForNewAdmin,sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword};
+export {deleteNumber,updateNumber,updatePasswordAdmin,verifyOtpForNewAdmin,sendOtpForNewAdmin,sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword};
 

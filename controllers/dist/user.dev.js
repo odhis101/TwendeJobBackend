@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatePassword = exports.registerAdmin = exports.loginAdmin = exports.getUsers = exports.Getme = exports.loginUser = exports.verifyOtpForNewUser = exports.sendOtpForNewUser = exports.sendOtpForNewAdmin = exports.verifyOtpForNewAdmin = exports.updatePasswordAdmin = void 0;
+exports.updatePassword = exports.registerAdmin = exports.loginAdmin = exports.getUsers = exports.Getme = exports.loginUser = exports.verifyOtpForNewUser = exports.sendOtpForNewUser = exports.sendOtpForNewAdmin = exports.verifyOtpForNewAdmin = exports.updatePasswordAdmin = exports.updateNumber = exports.deleteNumber = void 0;
 
 var _express = _interopRequireDefault(require("express"));
 
@@ -790,22 +790,103 @@ var Getme = (0, _expressAsyncHandler["default"])(function _callee10(req, res) {
   });
 });
 exports.Getme = Getme;
-var getUsers = (0, _expressAsyncHandler["default"])(function _callee11(req, res) {
-  var userExists;
+var updateNumber = (0, _expressAsyncHandler["default"])(function _callee11(req, res) {
+  var id, phoneNumber, number, updatedNumber;
   return regeneratorRuntime.async(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
         case 0:
-          _context11.next = 2;
+          id = req.params.id;
+          phoneNumber = req.body.phoneNumber;
+
+          if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.replace('0', '254');
+          }
+
+          _context11.next = 5;
+          return regeneratorRuntime.awrap(_userModels["default"].findById(id));
+
+        case 5:
+          number = _context11.sent;
+          console.log(number);
+
+          if (!number) {
+            _context11.next = 15;
+            break;
+          }
+
+          number.phoneNumber = phoneNumber;
+          _context11.next = 11;
+          return regeneratorRuntime.awrap(number.save());
+
+        case 11:
+          updatedNumber = _context11.sent;
+          res.json(updatedNumber);
+          _context11.next = 17;
+          break;
+
+        case 15:
+          res.status(404);
+          throw new Error('Phone number not found');
+
+        case 17:
+        case "end":
+          return _context11.stop();
+      }
+    }
+  });
+});
+exports.updateNumber = updateNumber;
+var deleteNumber = (0, _expressAsyncHandler["default"])(function _callee12(req, res) {
+  var id, deletedNumber;
+  return regeneratorRuntime.async(function _callee12$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          id = req.params.id;
+          _context12.next = 3;
+          return regeneratorRuntime.awrap(_userModels["default"].findByIdAndDelete(id));
+
+        case 3:
+          deletedNumber = _context12.sent;
+
+          if (deletedNumber) {
+            _context12.next = 7;
+            break;
+          }
+
+          res.status(404);
+          throw new Error("Phone number with id ".concat(id, " not found"));
+
+        case 7:
+          res.json({
+            message: "Phone number ".concat(deletedNumber.number, " deleted successfully")
+          });
+
+        case 8:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  });
+});
+exports.deleteNumber = deleteNumber;
+var getUsers = (0, _expressAsyncHandler["default"])(function _callee13(req, res) {
+  var userExists;
+  return regeneratorRuntime.async(function _callee13$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
+        case 0:
+          _context13.next = 2;
           return regeneratorRuntime.awrap(_userModels["default"].find({}));
 
         case 2:
-          userExists = _context11.sent;
+          userExists = _context13.sent;
           res.status(200).json(userExists);
 
         case 4:
         case "end":
-          return _context11.stop();
+          return _context13.stop();
       }
     }
   });
