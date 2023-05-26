@@ -31,6 +31,7 @@ const getsms = asyncHandler(async (req, res) => {
     let sender = req.body.msisdn
     let shortcode = req.body.shortcode
     let linkId = req.body.linkId
+    let recMessage = req.body.message
     
 
    
@@ -96,19 +97,22 @@ const getsms = asyncHandler(async (req, res) => {
 
     let message = ''
     if (!numbers0.includes(checker)) {
-        // sender is not in the numbers array
-        console.log('sender is not in the numbers array');
-        message = `please subscribe to our service to get the latest jobs, go https://twendejob.co.ke/JobAlerts to create your subscription`;
-        
-
-      } 
+      // sender is not in the numbers array
+      console.log('sender is not in the numbers array');
+      message = `Please subscribe to our service to get the latest jobs:\n\n`;
+      message += `1. Send 1 for daily SMS @ 10 Ksh\n`;
+      message += `2. Send 2 for weekly SMS @ 49 Ksh\n`;
+      message += `3. Send 3 for monthly SMS @ 199 Ksh`;
+    
+      // Rest of your code to send the message
+    }  
       else {
           message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`;
         // sender is in the numbers array
       }
-     
-
-    request(  {
+     console.log(message);
+      if (recMessage.toLowerCase().replace(/\s/g, '') === 'jobs') {
+        request(  {
         method: "POST",
         url: url,
         path: '/send',
@@ -125,7 +129,6 @@ const getsms = asyncHandler(async (req, res) => {
           'bulk':0,
           "message": message,
         },
-  
       },
        
        function (error, response, body) {
@@ -146,6 +149,85 @@ const getsms = asyncHandler(async (req, res) => {
           }
        }
       )
+      }
+      else if (recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3') {
+        let subscriptionMessage;
+        if (recMessage === '1') {
+          subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
+        } else if (recMessage === '2') {
+          subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
+        } else if (recMessage === '3') {
+          subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
+        }
+      
+        request({
+          method: "POST",
+          url: url,
+          path: '/send',
+          'maxRedirects': 20,
+          headers: {
+            "Authorization": auth,
+            "Content-Type": "application/json",
+            'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+          },
+          json: {
+            "sender": 23551,
+            "recipient": sender,
+            "link_id": linkId,
+            'bulk': 0,
+            "message": subscriptionMessage,
+          },
+        },
+        function (error, response, body) {
+          if (error) {
+            console.log(error);
+          } else {
+            const sms = new SmsText({
+              phoneNumber: sender,
+              messageText: subscriptionMessage,
+            })
+            sms.save()
+            console.log(sms);
+            console.log(body);
+          }
+        });
+      }
+      
+      else{
+        request(  {
+          method: "POST",
+          url: url,
+          path: '/send',
+          'maxRedirects': 20,
+          headers: {
+            "Authorization": auth,
+            "Content-Type": "application/json",
+            'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+          },
+          json:{
+            "sender": 23551,
+            "recipient": sender,
+            "link_id": linkId,
+            'bulk':0,
+            "message": '  Please write "jobs" if you want to get the latest jobs',
+          },
+    
+        },
+         
+         function (error, response, body) {
+            if (error) {
+                console.log(error);
+              
+            } else {       
+              console.log(sms);
+              console.log(body);
+              
+              
+            }
+         }
+        )
+
+      }
       
   
       

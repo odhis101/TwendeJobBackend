@@ -48,7 +48,7 @@ var PATA_SMS_USERNAME = 'twende.jobs';
 var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
 
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
-  var sender, shortcode, linkId, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i, checker, numbers0, message;
+  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i, checker, numbers0, message, subscriptionMessage;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -59,21 +59,22 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           console.log(req.body);
           sender = req.body.msisdn;
           shortcode = req.body.shortcode;
-          linkId = req.body.linkId; // i want to update i after every cron schedule 
+          linkId = req.body.linkId;
+          recMessage = req.body.message; // i want to update i after every cron schedule 
 
           url = PATA_SMS_URL;
           username = PATA_SMS_USERNAME;
           password = PATA_SMS_PASSWORD;
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
-          _context.next = 12;
+          _context.next = 13;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
 
-        case 12:
+        case 13:
           subscribers = _context.sent;
-          _context.next = 15;
+          _context.next = 16;
           return regeneratorRuntime.awrap(_JobsModel["default"].find({}));
 
-        case 15:
+        case 16:
           jobs = _context.sent;
           // create an array of jobs 
           jobsTitle = [];
@@ -126,44 +127,121 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           if (!numbers0.includes(checker)) {
             // sender is not in the numbers array
             console.log('sender is not in the numbers array');
-            message = "please subscribe to our service to get the latest jobs, go https://twendejob.co.ke/JobAlerts to create your subscription";
+            message = "Please subscribe to our service to get the latest jobs:\n\n";
+            message += "1. Send 1 for daily SMS @ 10 Ksh\n";
+            message += "2. Send 2 for weekly SMS @ 49 Ksh\n";
+            message += "3. Send 3 for monthly SMS @ 199 Ksh"; // Rest of your code to send the message
           } else {
             message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i]); // sender is in the numbers array
           }
 
-          (0, _request["default"])({
-            method: "POST",
-            url: url,
-            path: '/send',
-            'maxRedirects': 20,
-            headers: {
-              "Authorization": auth,
-              "Content-Type": "application/json",
-              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
-            },
-            json: {
-              "sender": 23551,
-              "recipient": sender,
-              "link_id": linkId,
-              'bulk': 0,
-              "message": message
+          console.log(message);
+
+          if (recMessage.toLowerCase().replace(/\s/g, '') === 'jobs') {
+            (0, _request["default"])({
+              method: "POST",
+              url: url,
+              path: '/send',
+              'maxRedirects': 20,
+              headers: {
+                "Authorization": auth,
+                "Content-Type": "application/json",
+                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+              },
+              json: {
+                "sender": 23551,
+                "recipient": sender,
+                "link_id": linkId,
+                'bulk': 0,
+                "message": message
+              }
+            }, function (error, response, body) {
+              if (error) {
+                console.log(error);
+              } else {
+                var _sms = new _smsModel["default"]({
+                  phoneNumber: sender,
+                  messageText: message
+                });
+
+                _sms.save();
+
+                console.log(_sms);
+                console.log(body);
+              }
+            });
+          } else if (recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3') {
+            if (recMessage === '1') {
+              subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
+            } else if (recMessage === '2') {
+              subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
+            } else if (recMessage === '3') {
+              subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
             }
-          }, function (error, response, body) {
-            if (error) {
-              console.log(error);
-            } else {
-              var sms = new _smsModel["default"]({
-                phoneNumber: sender,
-                messageText: message
-              });
-              sms.save();
-              console.log(sms);
-              console.log(body);
-            }
-          });
+
+            (0, _request["default"])({
+              method: "POST",
+              url: url,
+              path: '/send',
+              'maxRedirects': 20,
+              headers: {
+                "Authorization": auth,
+                "Content-Type": "application/json",
+                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+              },
+              json: {
+                "sender": 23551,
+                "recipient": sender,
+                "link_id": linkId,
+                'bulk': 0,
+                "message": subscriptionMessage
+              }
+            }, function (error, response, body) {
+              if (error) {
+                console.log(error);
+              } else {
+                var _sms2 = new _smsModel["default"]({
+                  phoneNumber: sender,
+                  messageText: subscriptionMessage
+                });
+
+                _sms2.save();
+
+                console.log(_sms2);
+                console.log(body);
+              }
+            });
+          } else {
+            (0, _request["default"])({
+              method: "POST",
+              url: url,
+              path: '/send',
+              'maxRedirects': 20,
+              headers: {
+                "Authorization": auth,
+                "Content-Type": "application/json",
+                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+              },
+              json: {
+                "sender": 23551,
+                "recipient": sender,
+                "link_id": linkId,
+                'bulk': 0,
+                "message": '  Please write "jobs" if you want to get the latest jobs'
+              }
+            }, function (error, response, body) {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log(sms);
+                console.log(body);
+              }
+            });
+          }
+
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 39:
+        case 41:
         case "end":
           return _context.stop();
       }
