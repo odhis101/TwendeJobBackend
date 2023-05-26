@@ -31,6 +31,8 @@ var _adminModels = _interopRequireDefault(require("../models/adminModels.js"));
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -48,11 +50,86 @@ var PATA_SMS_USERNAME = 'twende.jobs';
 var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
 
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
-  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, numbers, i, checker, numbers0, message, subscriptionMessage;
-  return regeneratorRuntime.async(function _callee$(_context) {
+  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, makeDarajaAPIRequest, numbers, i, checker, numbers0, message, subscriptionMessage, darajaResponse, _darajaResponse, _darajaResponse2;
+
+  return regeneratorRuntime.async(function _callee$(_context2) {
     while (1) {
-      switch (_context.prev = _context.next) {
+      switch (_context2.prev = _context2.next) {
         case 0:
+          makeDarajaAPIRequest = function _ref2(number, amount, access_token) {
+            var _url, _auth, passkey, timestamp, Passwords, options, response;
+
+            return regeneratorRuntime.async(function makeDarajaAPIRequest$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.prev = 0;
+                    _url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+                    _auth = "Bearer " + access_token;
+                    passkey = '3e05a5eb019d9bc8cb1eb2045e0bff9e6b46279ca5e57d87356ae07bc6308d70';
+                    timestamp = generateTimestamp();
+                    Passwords = Buffer.from('494977' + passkey + timestamp).toString('base64');
+                    options = {
+                      url: _url,
+                      method: "POST",
+                      headers: {
+                        "Authorization": _auth
+                      },
+                      json: {
+                        "BusinessShortCode": "494977",
+                        "Password": Passwords,
+                        "Timestamp": timestamp,
+                        "TransactionType": "CustomerPayBillOnline",
+                        "Amount": amount,
+                        "PartyA": number,
+                        "PartyB": "494977",
+                        "PhoneNumber": number,
+                        "CallBackURL": "https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=".concat(number, "&amount=").concat(amount),
+                        "AccountReference": "Twendejob",
+                        "TransactionDesc": "Twendejob Subscription"
+                      }
+                    };
+                    _context.next = 9;
+                    return regeneratorRuntime.awrap((0, _axios["default"])(options));
+
+                  case 9:
+                    response = _context.sent;
+                    return _context.abrupt("return", response.data);
+
+                  case 13:
+                    _context.prev = 13;
+                    _context.t0 = _context["catch"](0);
+                    console.log(_context.t0);
+                    throw new Error("An error occurred while processing STK push request");
+
+                  case 17:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, null, null, [[0, 13]]);
+          };
+
+          getaccess_token = function _ref(req, res, next) {
+            var url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+            var auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
+            (0, _request["default"])({
+              url: url,
+              headers: {
+                "Authorization": auth
+              }
+            }, function (error, response, body) {
+              if (error) {
+                console.log('here is the error ', error);
+              } else {
+                //console.log('here is the body ',body);
+                req.access_token = JSON.parse(body).access_token; //console.log(req.IncomingMessage) 
+
+                next();
+              }
+            });
+          };
+
           //const JobExists = await Jobs.find({})
           console.log('hit the route');
           console.log(req.body);
@@ -66,16 +143,16 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           username = PATA_SMS_USERNAME;
           password = PATA_SMS_PASSWORD;
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
-          _context.next = 13;
+          _context2.next = 15;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
 
-        case 13:
-          subscribers = _context.sent;
-          _context.next = 16;
+        case 15:
+          subscribers = _context2.sent;
+          _context2.next = 18;
           return regeneratorRuntime.awrap(_JobsModel["default"].find({}));
 
-        case 16:
-          jobs = _context.sent;
+        case 18:
+          jobs = _context2.sent;
           // create an array of jobs 
           jobsTitle = [];
           console.log('testing');
@@ -99,6 +176,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
               //numbersArray.push(subscriber.phoneNumber);
             }
           });
+          ;
           numbers = _toConsumableArray(new Set(numbersArray));
           console.log(numbers);
           res.send(JSON.stringify(numbers));
@@ -137,129 +215,181 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
 
           console.log(message);
 
-          if (recMessage.toLowerCase().replace(/\s/g, '') === 'jobs') {
-            (0, _request["default"])({
-              method: "POST",
-              url: url,
-              path: '/send',
-              'maxRedirects': 20,
-              headers: {
-                "Authorization": auth,
-                "Content-Type": "application/json",
-                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
-              },
-              json: {
-                "sender": 23551,
-                "recipient": sender,
-                "link_id": linkId,
-                'bulk': 0,
-                "message": message
-              }
-            }, function (error, response, body) {
-              if (error) {
-                console.log(error);
-              } else {
-                var _sms = new _smsModel["default"]({
-                  phoneNumber: sender,
-                  messageText: message
-                });
-
-                _sms.save();
-
-                console.log(_sms);
-                console.log(body);
-              }
-            });
-          } else if (recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3') {
-            if (recMessage === '1') {
-              subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
-            } else if (recMessage === '2') {
-              subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
-            } else if (recMessage === '3') {
-              subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
-            }
-
-            (0, _request["default"])({
-              method: "POST",
-              url: url,
-              path: '/send',
-              'maxRedirects': 20,
-              headers: {
-                "Authorization": auth,
-                "Content-Type": "application/json",
-                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
-              },
-              json: {
-                "sender": 23551,
-                "recipient": sender,
-                "link_id": linkId,
-                'bulk': 0,
-                "message": subscriptionMessage
-              }
-            }, function (error, response, body) {
-              if (error) {
-                console.log(error);
-              } else {
-                var _sms2 = new _smsModel["default"]({
-                  phoneNumber: sender,
-                  messageText: subscriptionMessage
-                });
-
-                _sms2.save();
-
-                console.log(_sms2);
-                console.log(body);
-              }
-            });
-          } else {
-            (0, _request["default"])({
-              method: "POST",
-              url: url,
-              path: '/send',
-              'maxRedirects': 20,
-              headers: {
-                "Authorization": auth,
-                "Content-Type": "application/json",
-                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
-              },
-              json: {
-                "sender": 23551,
-                "recipient": sender,
-                "link_id": linkId,
-                'bulk': 0,
-                "message": '  Please write "jobs" if you want to get the latest jobs'
-              }
-            }, function (error, response, body) {
-              if (error) {
-                console.log(error);
-              } else {
-                console.log(sms);
-                console.log(body);
-              }
-            });
+          if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs')) {
+            _context2.next = 46;
+            break;
           }
 
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 23551,
+              "recipient": sender,
+              "link_id": linkId,
+              'bulk': 0,
+              "message": message
+            }
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error);
+            } else {
+              var _sms = new _smsModel["default"]({
+                phoneNumber: sender,
+                messageText: message
+              });
+
+              _sms.save();
+
+              console.log(_sms);
+              console.log(body);
+            }
+          });
+          _context2.next = 90;
+          break;
+
+        case 46:
+          if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
+            _context2.next = 89;
+            break;
+          }
+
+          if (!(recMessage === '1')) {
+            _context2.next = 61;
+            break;
+          }
+
+          subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
+          _context2.prev = 49;
+          _context2.next = 52;
+          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 10, getaccess_token));
+
+        case 52:
+          darajaResponse = _context2.sent;
+          console.log(darajaResponse); // Handle the response from the Daraja API as needed
+
+          _context2.next = 59;
+          break;
+
+        case 56:
+          _context2.prev = 56;
+          _context2.t0 = _context2["catch"](49);
+          console.error(_context2.t0);
+
+        case 59:
+          _context2.next = 87;
+          break;
+
+        case 61:
+          if (!(recMessage === '2')) {
+            _context2.next = 75;
+            break;
+          }
+
+          subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
+          _context2.prev = 63;
+          _context2.next = 66;
+          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 49, getaccess_token));
+
+        case 66:
+          _darajaResponse = _context2.sent;
+          console.log(_darajaResponse); // Handle the response from the Daraja API as needed
+
+          _context2.next = 73;
+          break;
+
+        case 70:
+          _context2.prev = 70;
+          _context2.t1 = _context2["catch"](63);
+          console.error(_context2.t1);
+
+        case 73:
+          _context2.next = 87;
+          break;
+
+        case 75:
+          if (!(recMessage === '3')) {
+            _context2.next = 87;
+            break;
+          }
+
+          subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
+          _context2.prev = 77;
+          _context2.next = 80;
+          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 199, getaccess_token));
+
+        case 80:
+          _darajaResponse2 = _context2.sent;
+          console.log(_darajaResponse2); // Handle the response from the Daraja API as needed
+
+          _context2.next = 87;
+          break;
+
+        case 84:
+          _context2.prev = 84;
+          _context2.t2 = _context2["catch"](77);
+          console.error(_context2.t2);
+
+        case 87:
+          _context2.next = 90;
+          break;
+
+        case 89:
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 23551,
+              "recipient": sender,
+              "link_id": linkId,
+              'bulk': 0,
+              "message": '  Please write "jobs" if you want to get the latest jobs'
+            }
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(sms);
+              console.log(body);
+            }
+          });
+
+        case 90:
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 41:
+        case 91:
         case "end":
-          return _context.stop();
+          return _context2.stop();
       }
     }
-  });
+  }, null, null, [[49, 56], [63, 70], [77, 84]]);
 });
 exports.getsms = getsms;
 var call_back = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
-  return regeneratorRuntime.async(function _callee2$(_context2) {
+  return regeneratorRuntime.async(function _callee2$(_context3) {
     while (1) {
-      switch (_context2.prev = _context2.next) {
+      switch (_context3.prev = _context3.next) {
         case 0:
           res.status(200).json(req.body);
           console.log(req.body);
 
         case 2:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
     }
   });
@@ -268,20 +398,20 @@ var call_back = (0, _expressAsyncHandler["default"])(function _callee2(req, res)
 exports.call_back = call_back;
 var getallsms = (0, _expressAsyncHandler["default"])(function _callee3(req, res) {
   var sms;
-  return regeneratorRuntime.async(function _callee3$(_context3) {
+  return regeneratorRuntime.async(function _callee3$(_context4) {
     while (1) {
-      switch (_context3.prev = _context3.next) {
+      switch (_context4.prev = _context4.next) {
         case 0:
-          _context3.next = 2;
+          _context4.next = 2;
           return regeneratorRuntime.awrap(_smsModel["default"].find({}));
 
         case 2:
-          sms = _context3.sent;
+          sms = _context4.sent;
           res.status(200).json(sms);
 
         case 4:
         case "end":
-          return _context3.stop();
+          return _context4.stop();
       }
     }
   });
@@ -289,9 +419,9 @@ var getallsms = (0, _expressAsyncHandler["default"])(function _callee3(req, res)
 exports.getallsms = getallsms;
 var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
   var url, username, Password, auth, phoneNumber, userExists, otp, message, user;
-  return regeneratorRuntime.async(function _callee4$(_context4) {
+  return regeneratorRuntime.async(function _callee4$(_context5) {
     while (1) {
-      switch (_context4.prev = _context4.next) {
+      switch (_context5.prev = _context5.next) {
         case 0:
           console.log('hit the sendOtp route');
           console.log(req.body);
@@ -305,16 +435,16 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             phoneNumber = phoneNumber.replace('0', '254');
           }
 
-          _context4.next = 10;
+          _context5.next = 10;
           return regeneratorRuntime.awrap(_userModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
         case 10:
-          userExists = _context4.sent;
+          userExists = _context5.sent;
 
           if (userExists) {
-            _context4.next = 16;
+            _context5.next = 16;
             break;
           }
 
@@ -329,7 +459,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
           message = "Your verification code is ".concat(otp); // create the message body
 
           console.log(message);
-          _context4.prev = 19;
+          _context5.prev = 19;
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -355,7 +485,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             }
           }); // Save the OTP in the database
 
-          _context4.next = 23;
+          _context5.next = 23;
           return regeneratorRuntime.awrap(_userModels["default"].findOneAndUpdate({
             phoneNumber: phoneNumber
           }, {
@@ -366,7 +496,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
           }));
 
         case 23:
-          user = _context4.sent;
+          user = _context5.sent;
           console.log(user);
 
           if (user) {
@@ -379,20 +509,20 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
             });
           }
 
-          _context4.next = 32;
+          _context5.next = 32;
           break;
 
         case 28:
-          _context4.prev = 28;
-          _context4.t0 = _context4["catch"](19);
-          console.error(_context4.t0);
+          _context5.prev = 28;
+          _context5.t0 = _context5["catch"](19);
+          console.error(_context5.t0);
           res.status(500).json({
             message: 'An error occurred while sending OTP'
           });
 
         case 32:
         case "end":
-          return _context4.stop();
+          return _context5.stop();
       }
     }
   }, null, null, [[19, 28]]);
@@ -400,9 +530,9 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
 exports.sendOtp = sendOtp;
 var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
   var url, username, Password, auth, phoneNumber, userExists, otp, message, user;
-  return regeneratorRuntime.async(function _callee5$(_context5) {
+  return regeneratorRuntime.async(function _callee5$(_context6) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
           console.log('hit the admin route');
           console.log(req.body);
@@ -417,16 +547,16 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
           }
 
           console.log(phoneNumber);
-          _context5.next = 11;
+          _context6.next = 11;
           return regeneratorRuntime.awrap(_adminModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
         case 11:
-          userExists = _context5.sent;
+          userExists = _context6.sent;
 
           if (userExists) {
-            _context5.next = 15;
+            _context6.next = 15;
             break;
           }
 
@@ -439,7 +569,7 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
           message = "Your verification code is ".concat(otp); // create the message body
 
           console.log(message);
-          _context5.prev = 18;
+          _context6.prev = 18;
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -465,7 +595,7 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
             }
           }); // Save the OTP in the database
 
-          _context5.next = 22;
+          _context6.next = 22;
           return regeneratorRuntime.awrap(_adminModels["default"].findOneAndUpdate({
             phoneNumber: phoneNumber
           }, {
@@ -476,7 +606,7 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
           }));
 
         case 22:
-          user = _context5.sent;
+          user = _context6.sent;
           console.log(user);
 
           if (user) {
@@ -489,20 +619,20 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
             });
           }
 
-          _context5.next = 31;
+          _context6.next = 31;
           break;
 
         case 27:
-          _context5.prev = 27;
-          _context5.t0 = _context5["catch"](18);
-          console.error(_context5.t0);
+          _context6.prev = 27;
+          _context6.t0 = _context6["catch"](18);
+          console.error(_context6.t0);
           res.status(500).json({
             message: 'An error occurred while sending OTP'
           });
 
         case 31:
         case "end":
-          return _context5.stop();
+          return _context6.stop();
       }
     }
   }, null, null, [[18, 27]]);
@@ -511,9 +641,9 @@ exports.sendOtpAdmin = sendOtpAdmin;
 var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee6(req, res) {
   var _req$body, phoneNumber, otp, user;
 
-  return regeneratorRuntime.async(function _callee6$(_context6) {
+  return regeneratorRuntime.async(function _callee6$(_context7) {
     while (1) {
-      switch (_context6.prev = _context6.next) {
+      switch (_context7.prev = _context7.next) {
         case 0:
           _req$body = req.body, phoneNumber = _req$body.phoneNumber, otp = _req$body.otp;
 
@@ -522,21 +652,21 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee6(req, res)
           }
 
           console.log(phoneNumber, otp);
-          _context6.prev = 3;
-          _context6.next = 6;
+          _context7.prev = 3;
+          _context7.next = 6;
           return regeneratorRuntime.awrap(_userModels["default"].findOne({
             phoneNumber: phoneNumber
           }));
 
         case 6:
-          user = _context6.sent;
+          user = _context7.sent;
 
           if (user) {
-            _context6.next = 9;
+            _context7.next = 9;
             break;
           }
 
-          return _context6.abrupt("return", res.status(400).json({
+          return _context7.abrupt("return", res.status(400).json({
             message: 'User not found'
           }));
 
@@ -545,7 +675,7 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee6(req, res)
           console.log(_typeof(user.otpCode), _typeof(otp)); // Check if the OTP matches
 
           if (!(user.otpCode === otp)) {
-            _context6.next = 17;
+            _context7.next = 17;
             break;
           }
 
@@ -554,30 +684,30 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee6(req, res)
           //await user.select('-phone -password').save();
 
           console.log('success');
-          return _context6.abrupt("return", res.status(200).json({
+          return _context7.abrupt("return", res.status(200).json({
             message: 'OTP verification successful'
           }));
 
         case 17:
-          return _context6.abrupt("return", res.status(400).json({
+          return _context7.abrupt("return", res.status(400).json({
             message: 'Invalid OTP'
           }));
 
         case 18:
-          _context6.next = 24;
+          _context7.next = 24;
           break;
 
         case 20:
-          _context6.prev = 20;
-          _context6.t0 = _context6["catch"](3);
-          console.error(_context6.t0);
+          _context7.prev = 20;
+          _context7.t0 = _context7["catch"](3);
+          console.error(_context7.t0);
           res.status(500).json({
             message: 'An error occurred while verifying OTP'
           });
 
         case 24:
         case "end":
-          return _context6.stop();
+          return _context7.stop();
       }
     }
   }, null, null, [[3, 20]]);

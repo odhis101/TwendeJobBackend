@@ -11,7 +11,7 @@ import SmsText from '../models/smsModel.js';
 import User from "../models/userModels.js"
 import Admin from "../models/adminModels.js"
 import dotenv from 'dotenv';
-
+import axios from 'axios';
 const PATA_SMS_URL ="https://api.patasms.com/send_one"
 const PATA_SMS_USERNAME = 'twende.jobs'
 const PATA_SMS_PASSWORD = 'P@ssw0rd'
@@ -70,6 +70,71 @@ const getsms = asyncHandler(async (req, res) => {
       }
     });
     
+function getaccess_token(req, res,next){
+ 
+  let url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+  let auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
+  request(
+      {
+          url: url,
+          headers: {
+              "Authorization": auth
+          }
+      },
+       function (error, response, body) {
+          if (error) {
+              console.log('here is the error ',error);
+          } else {
+              //console.log('here is the body ',body);
+             req.access_token = JSON.parse(body).access_token;
+             //console.log(req.IncomingMessage) 
+             next()
+              
+          }
+
+}
+  )
+
+}
+async function makeDarajaAPIRequest(number, amount, access_token) {
+  try {
+    let url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+    let auth = "Bearer " + access_token;
+
+    let passkey = '3e05a5eb019d9bc8cb1eb2045e0bff9e6b46279ca5e57d87356ae07bc6308d70';
+    const timestamp = generateTimestamp();
+    const Passwords = Buffer.from('494977' + passkey + timestamp).toString('base64');
+
+    const options = {
+      url: url,
+      method: "POST",
+      headers: {
+        "Authorization": auth
+      },
+      json: {
+        "BusinessShortCode": "494977",
+        "Password": Passwords,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": amount,
+        "PartyA": number,
+        "PartyB": "494977",
+        "PhoneNumber": number,
+        "CallBackURL": `https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=${number}&amount=${amount}`,
+        "AccountReference": "Twendejob",
+        "TransactionDesc": "Twendejob Subscription"
+      }
+    };
+
+    const response = await axios(options);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("An error occurred while processing STK push request");
+  }
+};
+
+
     const numbers = [...new Set(numbersArray)]
     console.log(numbers);
     res.send(JSON.stringify(numbers))
@@ -111,7 +176,7 @@ const getsms = asyncHandler(async (req, res) => {
         // sender is in the numbers array
       }
      console.log(message);
-      if (recMessage.toLowerCase().replace(/\s/g, '') === 'jobs') {
+      if (recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' ) {
         request(  {
         method: "POST",
         url: url,
@@ -154,44 +219,35 @@ const getsms = asyncHandler(async (req, res) => {
         let subscriptionMessage;
         if (recMessage === '1') {
           subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
+          try {
+            const darajaResponse = await makeDarajaAPIRequest(sender, 10, getaccess_token);
+            console.log(darajaResponse);
+            // Handle the response from the Daraja API as needed
+          } catch (error) {
+            console.error(error);
+          }
         } else if (recMessage === '2') {
           subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
+          try {
+            const darajaResponse = await makeDarajaAPIRequest(sender, 49, getaccess_token);
+            console.log(darajaResponse);
+            // Handle the response from the Daraja API as needed
+          } catch (error) {
+            console.error(error);
+          }
         } else if (recMessage === '3') {
           subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
-        }
-      
-        request({
-          method: "POST",
-          url: url,
-          path: '/send',
-          'maxRedirects': 20,
-          headers: {
-            "Authorization": auth,
-            "Content-Type": "application/json",
-            'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
-          },
-          json: {
-            "sender": 23551,
-            "recipient": sender,
-            "link_id": linkId,
-            'bulk': 0,
-            "message": subscriptionMessage,
-          },
-        },
-        function (error, response, body) {
-          if (error) {
-            console.log(error);
-          } else {
-            const sms = new SmsText({
-              phoneNumber: sender,
-              messageText: subscriptionMessage,
-            })
-            sms.save()
-            console.log(sms);
-            console.log(body);
+          try {
+            const darajaResponse = await makeDarajaAPIRequest(sender, 199, getaccess_token);
+            console.log(darajaResponse);
+            // Handle the response from the Daraja API as needed
+          } catch (error) {
+            console.error(error);
           }
-        });
+        }
+        // Add any additional logic or handling for other subscription options
       }
+      
       
       else{
         request(  {
