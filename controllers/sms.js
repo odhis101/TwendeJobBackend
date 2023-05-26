@@ -96,6 +96,17 @@ function getaccess_token(req, res,next){
   )
 
 }
+const generateTimestamp = () => {
+  const date = new Date()
+  const timestamp =
+    date.getFullYear() +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    ("0" + (date.getDate() + 1)).slice(-2) +
+    ("0" + (date.getHours() + 1)).slice(-2) +
+    ("0" + (date.getMinutes() + 1)).slice(-2) +
+    ("0" + (date.getSeconds() + 1)).slice(-2)
+  return timestamp
+}
 async function makeDarajaAPIRequest(number, amount, access_token) {
   try {
     let url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
