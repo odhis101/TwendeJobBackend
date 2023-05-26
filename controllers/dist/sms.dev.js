@@ -49,6 +49,8 @@ var PATA_SMS_URL = "https://api.patasms.com/send_one";
 var PATA_SMS_USERNAME = 'twende.jobs';
 var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
 
+var consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
+var consumer_secret = 'h2gwMdxszxc2tJ35';
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
   var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeDarajaAPIRequest, numbers, i, checker, numbers0, message, subscriptionMessage, access_token, darajaResponse, _darajaResponse, _darajaResponse2;
 

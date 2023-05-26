@@ -21,7 +21,8 @@ const PATA_SMS_PASSWORD = 'P@ssw0rd'
       
      
 //const jwt = require('jsonwebtoken');
-
+const consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
+const consumer_secret  = 'h2gwMdxszxc2tJ35'; 
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
  
