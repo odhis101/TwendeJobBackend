@@ -50,13 +50,13 @@ var PATA_SMS_USERNAME = 'twende.jobs';
 var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
 
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
-  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeDarajaAPIRequest, numbers, i, checker, numbers0, message, subscriptionMessage, darajaResponse, _darajaResponse, _darajaResponse2;
+  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeDarajaAPIRequest, numbers, i, checker, numbers0, message, subscriptionMessage, access_token, darajaResponse, _darajaResponse, _darajaResponse2;
 
   return regeneratorRuntime.async(function _callee$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          makeDarajaAPIRequest = function _ref2(number, amount, access_token) {
+          makeDarajaAPIRequest = function _ref(number, amount, access_token) {
             var _url, _auth, passkey, timestamp, Passwords, options, response;
 
             return regeneratorRuntime.async(function makeDarajaAPIRequest$(_context) {
@@ -110,26 +110,6 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             }, null, null, [[0, 13]]);
           };
 
-          getaccess_token = function _ref(req, res, next) {
-            var url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-            var auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
-            (0, _request["default"])({
-              url: url,
-              headers: {
-                "Authorization": auth
-              }
-            }, function (error, response, body) {
-              if (error) {
-                console.log('here is the error ', error);
-              } else {
-                //console.log('here is the body ',body);
-                req.access_token = JSON.parse(body).access_token; //console.log(req.IncomingMessage) 
-
-                next();
-              }
-            });
-          };
-
           //const JobExists = await Jobs.find({})
           console.log('hit the route');
           console.log(req.body);
@@ -143,15 +123,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           username = PATA_SMS_USERNAME;
           password = PATA_SMS_PASSWORD;
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
-          _context2.next = 15;
+          _context2.next = 14;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
 
-        case 15:
+        case 14:
           subscribers = _context2.sent;
-          _context2.next = 18;
+          _context2.next = 17;
           return regeneratorRuntime.awrap(_JobsModel["default"].find({}));
 
-        case 18:
+        case 17:
           jobs = _context2.sent;
           // create an array of jobs 
           jobsTitle = [];
@@ -176,6 +156,27 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
               //numbersArray.push(subscriber.phoneNumber);
             }
           });
+
+          getaccess_token = function getaccess_token() {
+            return new Promise(function (resolve, reject) {
+              var url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+              var auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
+              (0, _request["default"])({
+                url: url,
+                headers: {
+                  "Authorization": auth
+                }
+              }, function (error, response, body) {
+                if (error) {
+                  console.log('here is the error ', error);
+                  reject(error);
+                } else {
+                  var access_token = JSON.parse(body).access_token;
+                  resolve(access_token);
+                }
+              });
+            });
+          };
 
           generateTimestamp = function generateTimestamp() {
             var date = new Date();
@@ -259,96 +260,101 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
               console.log(body);
             }
           });
-          _context2.next = 91;
+          _context2.next = 94;
           break;
 
         case 47:
           if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
-            _context2.next = 90;
+            _context2.next = 93;
             break;
           }
 
           if (!(recMessage === '1')) {
-            _context2.next = 62;
+            _context2.next = 65;
             break;
           }
 
           subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
           _context2.prev = 50;
           _context2.next = 53;
-          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 10, getaccess_token));
+          return regeneratorRuntime.awrap(getaccess_token());
 
         case 53:
+          access_token = _context2.sent;
+          _context2.next = 56;
+          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 10, access_token));
+
+        case 56:
           darajaResponse = _context2.sent;
           console.log(darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 60;
+          _context2.next = 63;
           break;
 
-        case 57:
-          _context2.prev = 57;
+        case 60:
+          _context2.prev = 60;
           _context2.t0 = _context2["catch"](50);
           console.error(_context2.t0);
 
-        case 60:
-          _context2.next = 88;
+        case 63:
+          _context2.next = 91;
           break;
 
-        case 62:
+        case 65:
           if (!(recMessage === '2')) {
-            _context2.next = 76;
+            _context2.next = 79;
             break;
           }
 
           subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
-          _context2.prev = 64;
-          _context2.next = 67;
+          _context2.prev = 67;
+          _context2.next = 70;
           return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 49, getaccess_token));
 
-        case 67:
+        case 70:
           _darajaResponse = _context2.sent;
           console.log(_darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 74;
+          _context2.next = 77;
           break;
-
-        case 71:
-          _context2.prev = 71;
-          _context2.t1 = _context2["catch"](64);
-          console.error(_context2.t1);
 
         case 74:
-          _context2.next = 88;
+          _context2.prev = 74;
+          _context2.t1 = _context2["catch"](67);
+          console.error(_context2.t1);
+
+        case 77:
+          _context2.next = 91;
           break;
 
-        case 76:
+        case 79:
           if (!(recMessage === '3')) {
-            _context2.next = 88;
+            _context2.next = 91;
             break;
           }
 
           subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
-          _context2.prev = 78;
-          _context2.next = 81;
+          _context2.prev = 81;
+          _context2.next = 84;
           return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 199, getaccess_token));
 
-        case 81:
+        case 84:
           _darajaResponse2 = _context2.sent;
           console.log(_darajaResponse2); // Handle the response from the Daraja API as needed
 
-          _context2.next = 88;
-          break;
-
-        case 85:
-          _context2.prev = 85;
-          _context2.t2 = _context2["catch"](78);
-          console.error(_context2.t2);
-
-        case 88:
           _context2.next = 91;
           break;
 
-        case 90:
+        case 88:
+          _context2.prev = 88;
+          _context2.t2 = _context2["catch"](81);
+          console.error(_context2.t2);
+
+        case 91:
+          _context2.next = 94;
+          break;
+
+        case 93:
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -375,15 +381,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             }
           });
 
-        case 91:
+        case 94:
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 92:
+        case 95:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[50, 57], [64, 71], [78, 85]]);
+  }, null, null, [[50, 60], [67, 74], [81, 88]]);
 });
 exports.getsms = getsms;
 var call_back = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {

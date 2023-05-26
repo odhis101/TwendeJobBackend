@@ -70,32 +70,30 @@ const getsms = asyncHandler(async (req, res) => {
       }
     });
     
-function getaccess_token(req, res,next){
- 
-  let url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-  let auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
-  request(
-      {
-          url: url,
-          headers: {
+    const getaccess_token = () => {
+      return new Promise((resolve, reject) => {
+        let url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+        let auth = "Basic " + new Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
+        request(
+          {
+            url: url,
+            headers: {
               "Authorization": auth
+            }
+          },
+          function (error, response, body) {
+            if (error) {
+              console.log('here is the error ', error);
+              reject(error);
+            } else {
+              const access_token = JSON.parse(body).access_token;
+              resolve(access_token);
+            }
           }
-      },
-       function (error, response, body) {
-          if (error) {
-              console.log('here is the error ',error);
-          } else {
-              //console.log('here is the body ',body);
-             req.access_token = JSON.parse(body).access_token;
-             //console.log(req.IncomingMessage) 
-             next()
-              
-          }
-
-}
-  )
-
-}
+        );
+      });
+    };
+    
 const generateTimestamp = () => {
   const date = new Date()
   const timestamp =
@@ -231,7 +229,8 @@ async function makeDarajaAPIRequest(number, amount, access_token) {
         if (recMessage === '1') {
           subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
           try {
-            const darajaResponse = await makeDarajaAPIRequest(sender, 10, getaccess_token);
+            const access_token = await getaccess_token();
+            const darajaResponse = await makeDarajaAPIRequest(sender, 10, access_token);
             console.log(darajaResponse);
             // Handle the response from the Daraja API as needed
           } catch (error) {
