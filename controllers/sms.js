@@ -227,9 +227,11 @@ async function makeDarajaAPIRequest(number, amount, access_token) {
       else if (recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3') {
         let subscriptionMessage;
         if (recMessage === '1') {
+          console.log('user pressed 1 ');
           subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
           try {
             const access_token = await getaccess_token();
+            console.log('this is access_token',access_token)
             const darajaResponse = await makeDarajaAPIRequest(sender, 10, access_token);
             console.log(darajaResponse);
             // Handle the response from the Daraja API as needed

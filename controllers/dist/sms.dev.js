@@ -260,101 +260,103 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
               console.log(body);
             }
           });
-          _context2.next = 94;
+          _context2.next = 96;
           break;
 
         case 47:
           if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
-            _context2.next = 93;
+            _context2.next = 95;
             break;
           }
 
           if (!(recMessage === '1')) {
-            _context2.next = 65;
+            _context2.next = 67;
             break;
           }
 
+          console.log('user pressed 1 ');
           subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
-          _context2.prev = 50;
-          _context2.next = 53;
+          _context2.prev = 51;
+          _context2.next = 54;
           return regeneratorRuntime.awrap(getaccess_token());
 
-        case 53:
+        case 54:
           access_token = _context2.sent;
-          _context2.next = 56;
+          console.log('this is access_token', access_token);
+          _context2.next = 58;
           return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 10, access_token));
 
-        case 56:
+        case 58:
           darajaResponse = _context2.sent;
           console.log(darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 63;
+          _context2.next = 65;
           break;
 
-        case 60:
-          _context2.prev = 60;
-          _context2.t0 = _context2["catch"](50);
+        case 62:
+          _context2.prev = 62;
+          _context2.t0 = _context2["catch"](51);
           console.error(_context2.t0);
 
-        case 63:
-          _context2.next = 91;
+        case 65:
+          _context2.next = 93;
           break;
 
-        case 65:
+        case 67:
           if (!(recMessage === '2')) {
-            _context2.next = 79;
+            _context2.next = 81;
             break;
           }
 
           subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
-          _context2.prev = 67;
-          _context2.next = 70;
+          _context2.prev = 69;
+          _context2.next = 72;
           return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 49, getaccess_token));
 
-        case 70:
+        case 72:
           _darajaResponse = _context2.sent;
           console.log(_darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 77;
+          _context2.next = 79;
           break;
 
-        case 74:
-          _context2.prev = 74;
-          _context2.t1 = _context2["catch"](67);
+        case 76:
+          _context2.prev = 76;
+          _context2.t1 = _context2["catch"](69);
           console.error(_context2.t1);
 
-        case 77:
-          _context2.next = 91;
+        case 79:
+          _context2.next = 93;
           break;
 
-        case 79:
+        case 81:
           if (!(recMessage === '3')) {
-            _context2.next = 91;
+            _context2.next = 93;
             break;
           }
 
           subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
-          _context2.prev = 81;
-          _context2.next = 84;
+          _context2.prev = 83;
+          _context2.next = 86;
           return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 199, getaccess_token));
 
-        case 84:
+        case 86:
           _darajaResponse2 = _context2.sent;
           console.log(_darajaResponse2); // Handle the response from the Daraja API as needed
 
-          _context2.next = 91;
+          _context2.next = 93;
           break;
 
-        case 88:
-          _context2.prev = 88;
-          _context2.t2 = _context2["catch"](81);
+        case 90:
+          _context2.prev = 90;
+          _context2.t2 = _context2["catch"](83);
           console.error(_context2.t2);
 
-        case 91:
-          _context2.next = 94;
+        case 93:
+          _context2.next = 96;
           break;
 
-        case 93:
+        case 95:
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -381,15 +383,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             }
           });
 
-        case 94:
+        case 96:
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 95:
+        case 97:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[50, 60], [67, 74], [81, 88]]);
+  }, null, null, [[51, 62], [69, 76], [83, 90]]);
 });
 exports.getsms = getsms;
 var call_back = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
