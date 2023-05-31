@@ -38,6 +38,8 @@ var generateTimestamp = function generateTimestamp() {
   return timestamp;
 };
 
+var storedMessage;
+
 var makeSTKPushRequest = function makeSTKPushRequest(number, amount) {
   var url, access_token, auth, passkey, timestamp, Passwords;
   return regeneratorRuntime.async(function makeSTKPushRequest$(_context) {
@@ -85,7 +87,9 @@ var makeSTKPushRequest = function makeSTKPushRequest(number, amount) {
             if (error) {
               console.log(error);
             } else {
-              console.log(body);
+              var message = body.message;
+              storedMessage = message;
+              console.log('this is from the callback', body);
             }
           });
           _context.next = 21;
@@ -113,3 +117,5 @@ makeDarajaAPIRequest('0703757369', 1, access_token);
 
 
 makeSTKPushRequest('254703757369', 1);
+console.log(storedMessage);
+console.log('stored message should have comeback ');

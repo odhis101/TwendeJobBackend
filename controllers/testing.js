@@ -39,6 +39,8 @@ const getaccess_token = () => {
       ("0" + (date.getSeconds() + 1)).slice(-2)
     return timestamp
   }
+  let storedMessage;
+
   const makeSTKPushRequest = async (number, amount) => {
     try {
       let url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
@@ -82,7 +84,9 @@ const getaccess_token = () => {
           if (error) {
             console.log(error);
           } else {
-            console.log(body);
+            const message = body.message;
+            storedMessage = message;
+            console.log('this is from the callback',body)
           }
         }
       );
@@ -103,4 +107,6 @@ const getaccess_token = () => {
 */
 
 makeSTKPushRequest('254703757369', 1);
+console.log(storedMessage);
+console.log('stored message should have comeback ')
 

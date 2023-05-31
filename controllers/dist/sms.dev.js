@@ -275,17 +275,17 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
               console.log(body);
             }
           });
-          _context2.next = 95;
+          _context2.next = 98;
           break;
 
         case 46:
           if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
-            _context2.next = 94;
+            _context2.next = 97;
             break;
           }
 
           if (!(recMessage === '1')) {
-            _context2.next = 66;
+            _context2.next = 67;
             break;
           }
 
@@ -303,75 +303,130 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
 
         case 57:
           darajaResponse = _context2.sent;
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 23551,
+              "recipient": sender,
+              "link_id": linkId,
+              'bulk': 0,
+              "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
+            }
+          }); // get the callback message 
+
           console.log(darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 64;
+          _context2.next = 65;
           break;
 
-        case 61:
-          _context2.prev = 61;
+        case 62:
+          _context2.prev = 62;
           _context2.t0 = _context2["catch"](50);
           console.error(_context2.t0);
 
-        case 64:
-          _context2.next = 92;
+        case 65:
+          _context2.next = 95;
           break;
 
-        case 66:
+        case 67:
           if (!(recMessage === '2')) {
-            _context2.next = 80;
+            _context2.next = 82;
             break;
           }
 
           subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
-          _context2.prev = 68;
-          _context2.next = 71;
+          _context2.prev = 69;
+          _context2.next = 72;
           return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 49, getaccess_token));
 
-        case 71:
+        case 72:
           _darajaResponse = _context2.sent;
           console.log(_darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 78;
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 23551,
+              "recipient": sender,
+              "link_id": linkId,
+              'bulk': 0,
+              "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
+            }
+          });
+          _context2.next = 80;
           break;
 
-        case 75:
-          _context2.prev = 75;
-          _context2.t1 = _context2["catch"](68);
+        case 77:
+          _context2.prev = 77;
+          _context2.t1 = _context2["catch"](69);
           console.error(_context2.t1);
 
-        case 78:
-          _context2.next = 92;
+        case 80:
+          _context2.next = 95;
           break;
 
-        case 80:
+        case 82:
           if (!(recMessage === '3')) {
-            _context2.next = 92;
+            _context2.next = 95;
             break;
           }
 
           subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
-          _context2.prev = 82;
-          _context2.next = 85;
+          _context2.prev = 84;
+          _context2.next = 87;
           return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 199, getaccess_token));
 
-        case 85:
+        case 87:
           _darajaResponse2 = _context2.sent;
           console.log(_darajaResponse2); // Handle the response from the Daraja API as needed
 
-          _context2.next = 92;
-          break;
-
-        case 89:
-          _context2.prev = 89;
-          _context2.t2 = _context2["catch"](82);
-          console.error(_context2.t2);
-
-        case 92:
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 23551,
+              "recipient": sender,
+              "link_id": linkId,
+              'bulk': 0,
+              "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
+            }
+          });
           _context2.next = 95;
           break;
 
-        case 94:
+        case 92:
+          _context2.prev = 92;
+          _context2.t2 = _context2["catch"](84);
+          console.error(_context2.t2);
+
+        case 95:
+          _context2.next = 98;
+          break;
+
+        case 97:
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -398,15 +453,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             }
           });
 
-        case 95:
+        case 98:
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 96:
+        case 99:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[50, 61], [68, 75], [82, 89]]);
+  }, null, null, [[50, 62], [69, 77], [84, 92]]);
 });
 exports.getsms = getsms;
 var call_back = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {

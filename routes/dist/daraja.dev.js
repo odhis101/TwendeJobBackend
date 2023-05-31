@@ -196,14 +196,14 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
       switch (_context2.prev = _context2.next) {
         case 0:
           console.log('this is testing confirmation');
-          console.log("test2");
+          console.log('test2');
           id = req.query.number;
           amount = req.query.amount;
           console.log(req.query);
           console.log(_typeof(amount));
           daysToExpiry = 0;
           _context2.t0 = amount;
-          _context2.next = _context2.t0 === "10" ? 10 : _context2.t0 === "49" ? 12 : _context2.t0 === "199" ? 14 : 16;
+          _context2.next = _context2.t0 === '10' ? 10 : _context2.t0 === '49' ? 12 : _context2.t0 === '199' ? 14 : 16;
           break;
 
         case 10:
@@ -225,16 +225,14 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           today = new Date().toISOString().slice(0, 10);
           console.log(daysToExpiry);
           expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
-          console.log(expiry); //let check_success = req.body.Body.stkCallback.ResultCode
+          console.log(expiry);
 
-          console.log(req.body.Body.stkCallback);
-
-          if (!(req.body.Body.stkCallback.ResultDesc === "The service request is processed successfully.")) {
+          if (!(req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.')) {
             _context2.next = 29;
             break;
           }
 
-          _context2.next = 25;
+          _context2.next = 24;
           return regeneratorRuntime.awrap(_darajaModels["default"].create({
             phoneNumber: id,
             Subscription: true,
@@ -244,16 +242,24 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             expiry: expiry
           }));
 
-        case 25:
+        case 24:
           Subscription = _context2.sent;
-          console.log(Subscription);
-          _context2.next = 30;
+          console.log(Subscription); // Send a success response
+
+          res.status(200).json({
+            message: 'Subscription created successfully'
+          });
+          _context2.next = 31;
           break;
 
         case 29:
-          console.log("something went rsssong");
+          console.log('something went wrong'); // Send an error response
 
-        case 30:
+          res.status(500).json({
+            error: 'Something went wrong'
+          });
+
+        case 31:
         case "end":
           return _context2.stop();
       }

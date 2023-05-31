@@ -213,58 +213,55 @@ router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)
 router.post('/subscriptions',Getsubscribers)
 router.get('/Allsubscriptions',GetAllsubscribers)
 router.delete('/Deletesubscribers/:id',Deletesubscribers)
-router.post('/stk_callback',middleware,asyncHandler(async (req, res)=>{
-    console.log('this is testing confirmation')
-    console.log("test2");
-    const id = req.query.number
-    const amount = req.query.amount
+
+
+
+router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
+    console.log('this is testing confirmation');
+    console.log('test2');
+    const id = req.query.number;
+    const amount = req.query.amount;
     console.log(req.query);
-    console.log(typeof(amount))
+    console.log(typeof(amount));
     let daysToExpiry = 0;
-    switch(amount){
-    case "10":
-    daysToExpiry = 1;
-    break;
-  case "49":
-    daysToExpiry = 7;
-    break;
-  case "199":
-    daysToExpiry = 30;
-    break;
-    // create a default
-    default:
-    daysToExpiry = 0;
-}
-
+    switch (amount) {
+      case '10':
+        daysToExpiry = 1;
+        break;
+      case '49':
+        daysToExpiry = 7;
+        break;
+      case '199':
+        daysToExpiry = 30;
+        break;
+      default:
+        daysToExpiry = 0;
+    }
     
-    let today = new Date().toISOString().slice(0, 10)
-    console.log(daysToExpiry)
-    let expiry = addDays(today,daysToExpiry).toISOString().slice(0, 10)
-    console.log(expiry)
-    //let check_success = req.body.Body.stkCallback.ResultCode
-    console.log(req.body.Body.stkCallback)
-    if (req.body.Body.stkCallback.ResultDesc === "The service request is processed successfully."){
-        
-
-        const Subscription = await User.create({
-            phoneNumber: id,
-            Subscription:true,
-            lengthOfSubscription:daysToExpiry,
-            amount:amount,
-            SubscriptionDate: today,
-            expiry:expiry,
-        })
-        
-        console.log(Subscription)
+    let today = new Date().toISOString().slice(0, 10);
+    console.log(daysToExpiry);
+    let expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
+    console.log(expiry);
+    
+    if (req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.') {
+      const Subscription = await User.create({
+        phoneNumber: id,
+        Subscription: true,
+        lengthOfSubscription: daysToExpiry,
+        amount: amount,
+        SubscriptionDate: today,
+        expiry: expiry,
+      });
+      console.log(Subscription);
+      // Send a success response
+      res.status(200).json({ message: 'Subscription created successfully' });
+    } else {
+      console.log('something went wrong');
+      // Send an error response
+      res.status(500).json({ error: 'Something went wrong' });
     }
-    else{
-    console.log("something went rsssong")
-    }
+  }));
   
-
- 
-
-}))
 
 export default router;
 
