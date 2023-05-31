@@ -35,8 +35,6 @@ var _axios = _interopRequireDefault(require("axios"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -45,6 +43,8 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 var PATA_SMS_URL = "https://api.patasms.com/send_one";
 var PATA_SMS_USERNAME = 'twende.jobs';
 var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
@@ -52,66 +52,12 @@ var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
 var consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 var consumer_secret = 'h2gwMdxszxc2tJ35';
 var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
-  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeDarajaAPIRequest, numbers, i, checker, numbers0, message, subscriptionMessage, access_token, darajaResponse, _darajaResponse, _darajaResponse2;
+  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeSTKPushRequest, numbers, i, checker, numbers0, message, subscriptionMessage, access_token, darajaResponse, _darajaResponse, _darajaResponse2;
 
   return regeneratorRuntime.async(function _callee$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          makeDarajaAPIRequest = function _ref(number, amount, access_token) {
-            var _url, _auth, passkey, timestamp, Passwords, options, response;
-
-            return regeneratorRuntime.async(function makeDarajaAPIRequest$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    _context.prev = 0;
-                    _url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
-                    _auth = "Bearer " + access_token;
-                    passkey = '3e05a5eb019d9bc8cb1eb2045e0bff9e6b46279ca5e57d87356ae07bc6308d70';
-                    timestamp = generateTimestamp();
-                    Passwords = Buffer.from('494977' + passkey + timestamp).toString('base64');
-                    options = {
-                      url: _url,
-                      method: "POST",
-                      headers: {
-                        "Authorization": _auth
-                      },
-                      json: {
-                        "BusinessShortCode": "494977",
-                        "Password": Passwords,
-                        "Timestamp": timestamp,
-                        "TransactionType": "CustomerPayBillOnline",
-                        "Amount": amount,
-                        "PartyA": number,
-                        "PartyB": "494977",
-                        "PhoneNumber": number,
-                        "CallBackURL": "https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=".concat(number, "&amount=").concat(amount),
-                        "AccountReference": "Twendejob",
-                        "TransactionDesc": "Twendejob Subscription"
-                      }
-                    };
-                    _context.next = 9;
-                    return regeneratorRuntime.awrap((0, _axios["default"])(options));
-
-                  case 9:
-                    response = _context.sent;
-                    return _context.abrupt("return", response.data);
-
-                  case 13:
-                    _context.prev = 13;
-                    _context.t0 = _context["catch"](0);
-                    console.log(_context.t0);
-                    throw new Error("An error occurred while processing STK push request");
-
-                  case 17:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, null, null, [[0, 13]]);
-          };
-
           //const JobExists = await Jobs.find({})
           console.log('hit the route');
           console.log(req.body);
@@ -125,15 +71,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           username = PATA_SMS_USERNAME;
           password = PATA_SMS_PASSWORD;
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
-          _context2.next = 14;
+          _context2.next = 13;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
 
-        case 14:
+        case 13:
           subscribers = _context2.sent;
-          _context2.next = 17;
+          _context2.next = 16;
           return regeneratorRuntime.awrap(_JobsModel["default"].find({}));
 
-        case 17:
+        case 16:
           jobs = _context2.sent;
           // create an array of jobs 
           jobsTitle = [];
@@ -186,7 +132,74 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             return timestamp;
           };
 
-          ;
+          makeSTKPushRequest = function makeSTKPushRequest(number, amount) {
+            var _url, access_token, _auth, passkey, timestamp, Passwords;
+
+            return regeneratorRuntime.async(function makeSTKPushRequest$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.prev = 0;
+                    _url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest"; // Get the access token using your preferred method
+
+                    _context.next = 4;
+                    return regeneratorRuntime.awrap(getaccess_token());
+
+                  case 4:
+                    access_token = _context.sent;
+                    // Replace with your access token retrieval code
+                    console.log(access_token);
+                    _auth = "Bearer " + access_token;
+                    console.log(_auth);
+                    passkey = '3e05a5eb019d9bc8cb1eb2045e0bff9e6b46279ca5e57d87356ae07bc6308d70';
+                    timestamp = generateTimestamp();
+                    Passwords = Buffer.from("494977" + passkey + timestamp).toString('base64');
+                    console.log(Passwords);
+                    console.log(timestamp);
+                    console.log(_typeof(timestamp));
+                    (0, _request["default"])({
+                      url: _url,
+                      method: "POST",
+                      headers: {
+                        "Authorization": _auth
+                      },
+                      json: {
+                        "BusinessShortCode": "494977",
+                        "Password": Passwords,
+                        "Timestamp": timestamp,
+                        "TransactionType": "CustomerPayBillOnline",
+                        "Amount": amount,
+                        "PartyA": number,
+                        "PartyB": "494977",
+                        "PhoneNumber": number,
+                        "CallBackURL": "https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=".concat(number, "&amount=").concat(amount),
+                        "AccountReference": "Twendejob",
+                        "TransactionDesc": "Twendejob Subscription"
+                      }
+                    }, function (error, response, body) {
+                      if (error) {
+                        console.log(error);
+                      } else {
+                        console.log(body);
+                      }
+                    });
+                    _context.next = 21;
+                    break;
+
+                  case 17:
+                    _context.prev = 17;
+                    _context.t0 = _context["catch"](0);
+                    console.log(_context.t0);
+                    throw new Error("An error occurred while processing the STK push request");
+
+                  case 21:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, null, null, [[0, 17]]);
+          };
+
           numbers = _toConsumableArray(new Set(numbersArray));
           console.log(numbers);
           res.send(JSON.stringify(numbers));
@@ -226,7 +239,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           console.log(message);
 
           if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs')) {
-            _context2.next = 47;
+            _context2.next = 46;
             break;
           }
 
@@ -262,103 +275,103 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
               console.log(body);
             }
           });
-          _context2.next = 96;
+          _context2.next = 95;
           break;
 
-        case 47:
+        case 46:
           if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
-            _context2.next = 95;
+            _context2.next = 94;
             break;
           }
 
           if (!(recMessage === '1')) {
-            _context2.next = 67;
+            _context2.next = 66;
             break;
           }
 
           console.log('user pressed 1 ');
           subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
-          _context2.prev = 51;
-          _context2.next = 54;
+          _context2.prev = 50;
+          _context2.next = 53;
           return regeneratorRuntime.awrap(getaccess_token());
 
-        case 54:
+        case 53:
           access_token = _context2.sent;
           console.log('this is access_token', access_token);
-          _context2.next = 58;
-          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 10, access_token));
+          _context2.next = 57;
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 10, access_token));
 
-        case 58:
+        case 57:
           darajaResponse = _context2.sent;
           console.log(darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 65;
+          _context2.next = 64;
           break;
 
-        case 62:
-          _context2.prev = 62;
-          _context2.t0 = _context2["catch"](51);
+        case 61:
+          _context2.prev = 61;
+          _context2.t0 = _context2["catch"](50);
           console.error(_context2.t0);
 
-        case 65:
-          _context2.next = 93;
+        case 64:
+          _context2.next = 92;
           break;
 
-        case 67:
+        case 66:
           if (!(recMessage === '2')) {
-            _context2.next = 81;
+            _context2.next = 80;
             break;
           }
 
           subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
-          _context2.prev = 69;
-          _context2.next = 72;
-          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 49, getaccess_token));
+          _context2.prev = 68;
+          _context2.next = 71;
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 49, getaccess_token));
 
-        case 72:
+        case 71:
           _darajaResponse = _context2.sent;
           console.log(_darajaResponse); // Handle the response from the Daraja API as needed
 
-          _context2.next = 79;
+          _context2.next = 78;
           break;
 
-        case 76:
-          _context2.prev = 76;
-          _context2.t1 = _context2["catch"](69);
+        case 75:
+          _context2.prev = 75;
+          _context2.t1 = _context2["catch"](68);
           console.error(_context2.t1);
 
-        case 79:
-          _context2.next = 93;
+        case 78:
+          _context2.next = 92;
           break;
 
-        case 81:
+        case 80:
           if (!(recMessage === '3')) {
-            _context2.next = 93;
+            _context2.next = 92;
             break;
           }
 
           subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
-          _context2.prev = 83;
-          _context2.next = 86;
-          return regeneratorRuntime.awrap(makeDarajaAPIRequest(sender, 199, getaccess_token));
+          _context2.prev = 82;
+          _context2.next = 85;
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 199, getaccess_token));
 
-        case 86:
+        case 85:
           _darajaResponse2 = _context2.sent;
           console.log(_darajaResponse2); // Handle the response from the Daraja API as needed
 
-          _context2.next = 93;
+          _context2.next = 92;
           break;
 
-        case 90:
-          _context2.prev = 90;
-          _context2.t2 = _context2["catch"](83);
+        case 89:
+          _context2.prev = 89;
+          _context2.t2 = _context2["catch"](82);
           console.error(_context2.t2);
 
-        case 93:
-          _context2.next = 96;
+        case 92:
+          _context2.next = 95;
           break;
 
-        case 95:
+        case 94:
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -385,15 +398,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             }
           });
 
-        case 96:
+        case 95:
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 97:
+        case 96:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[51, 62], [69, 76], [83, 90]]);
+  }, null, null, [[50, 61], [68, 75], [82, 89]]);
 });
 exports.getsms = getsms;
 var call_back = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {

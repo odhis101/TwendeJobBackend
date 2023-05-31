@@ -162,6 +162,7 @@ const middleware = (req, res, next) => {
 router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)=>{
     let url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     let auth = "Bearer "+ req.access_token;
+   
     const {number,amount,id} = req.body;
 
  
