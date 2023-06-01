@@ -202,7 +202,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
       // Rest of your code to send the message
     }  
       else {
-          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]} contact this number{${Employers_contact[i]}} for more information or send your resume to this Email ${}`;
+          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]} for more information contact this number{${Employers_contact[i]}} for more information or send your resume to this Email ${}`;
         // sender is in the numbers array
       }
      console.log(message);
