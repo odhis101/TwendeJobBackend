@@ -553,10 +553,10 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
               'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
             },
             json: {
-              "sender": "Titan",
+              "sender": 23551,
               "recipient": phoneNumber,
               "link_id": '',
-              'bulk': 1,
+              'bulk': 0,
               "message": message
             }
           }, function (error, response, body) {
@@ -663,10 +663,10 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
               'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
             },
             json: {
-              "sender": 'Titan',
+              "sender": 23551,
               "recipient": phoneNumber,
               "link_id": '',
-              'bulk': 1,
+              'bulk': 0,
               "message": message
             }
           }, function (error, response, body) {
