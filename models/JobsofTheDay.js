@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const postedJobs = mongoose.Schema({
+const postedJobsOfTheDay = mongoose.Schema({
   
     jobTitle: {
         type: String,
@@ -35,6 +35,9 @@ const postedJobs = mongoose.Schema({
         type: String,
         required: [true, 'Please enter the Location'], 
     },
+    Requirment:{
+        type: String,
+    },
     Salary:{
         type:String,
     },
@@ -44,7 +47,7 @@ const postedJobs = mongoose.Schema({
     },
 })
 
-var Jobs = mongoose.model('PostedJobs', postedJobs)
-export default Jobs;
+var JobsOfTheDay = mongoose.model('postedJobsOfTheDay', postedJobsOfTheDay)
+export default JobsOfTheDay;
 
 

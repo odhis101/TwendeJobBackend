@@ -5,20 +5,25 @@ import bcrypt from 'bcryptjs';
 import asyncHandler from 'express-async-handler';
 import User from "../models/userModels.js" 
 import Jobs from '../models/JobsModel.js';
-const getJobs = asyncHandler(async (req, res) => {
-    const JobExists = await Jobs.find({})
+import JobsOfTheDay from '../models/JobsofTheDay.js';
+
+const getJobsOfTheDay = asyncHandler(async (req, res) => {
+  const JobExists = await JobsOfTheDay.find({})
+  res.status(200).json(JobExists)
+})
+const setJobsOfTheDay = asyncHandler(async (req, res) => {
+  const { jobTitle, jobDescription, Employers_contact, DeadlineDate, Category, EMPLOYER_EMAIL, Employers_Name, Location,Requirment,Salary } = req.body;
+  console.log('this is the data we got ', req.body)
+  if (!jobTitle || !jobDescription || !Employers_contact || !Category || !EMPLOYER_EMAIL || !Employers_Name) {
+    res.status(400)
+    throw new Error('Please add a text field')
+  }
   
-    res.status(200).json(JobExists)
-  })
-  const setJob = asyncHandler(async (req, res) => {
-    const {user,jobTitle,jobDescription,Employers_contact,DeadlineDate,Category,EMPLOYER_EMAIL,Employers_Name,Location} = req.body;
-    if (!jobTitle, !jobDescription, !Employers_contact, !DeadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
-      res.status(400)
-      throw new Error('Please add a text field')
-    }
-  
-    const job = await Jobs.create({
-      user,
+  console.log(Requirment)
+  // Assuming you have an existing job instance, you can update it like this:
+  const existingJob = await JobsOfTheDay.findOneAndUpdate(
+    { /* Find the existing job based on your criteria */ },
+    {
       jobTitle,
       jobDescription,
       Employers_contact,
@@ -26,9 +31,50 @@ const getJobs = asyncHandler(async (req, res) => {
       Category,
       EMPLOYER_EMAIL,
       Location,
-      Employers_Name
+      Employers_Name,
+      Requirment,
+      Salary
+    },
+    { new: true } // This option returns the updated job instance
+  );
 
-    })
+  if (!existingJob) {
+    res.status(404)
+    throw new Error('Job not found')
+  }
+console.log(existingJob)
+  res.status(200).json(existingJob);
+});
+
+
+
+
+
+const getJobs = asyncHandler(async (req, res) => {
+    const JobExists = await Jobs.find({})
+  
+    res.status(200).json(JobExists)
+  })
+
+const setJob = asyncHandler(async (req, res) => {
+  const {user,jobTitle,jobDescription,Employers_contact,DeadlineDate,Category,EMPLOYER_EMAIL,Employers_Name,Location} = req.body;
+  if (!jobTitle, !jobDescription, !Employers_contact, !DeadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
+    res.status(400)
+    throw new Error('Please add a text field')
+  }
+
+  const job = await Jobs.create({
+    user,
+    jobTitle,
+    jobDescription,
+    Employers_contact,
+    DeadlineDate,
+    Category,
+    EMPLOYER_EMAIL,
+    Location,
+    Employers_Name
+
+  })
 
   
     res.status(200).json(job)
@@ -153,6 +199,6 @@ console.log(req.body)
   }
 }
 */})
-export {setJob, getJobs,getOneJob,updateJob,deleteJob,ExcelToMongoDB};
+export {setJob, getJobs,getOneJob,updateJob,deleteJob,ExcelToMongoDB,getJobsOfTheDay,setJobsOfTheDay};
 
 
