@@ -51,10 +51,6 @@ const getsms = asyncHandler(async (req, res) => {
       jobsTitle.push(job.jobTitle);
     });
     let jobDescription = [];
-    let Employers_contact =[]
-    jobs.forEach((job) => {
-      Employers_contact.push(job.job.Employers_contact)
-    })
     jobs.forEach((job) => {
       jobDescription.push(job.jobDescription);
     });
@@ -202,7 +198,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
       // Rest of your code to send the message
     }  
       else {
-          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]} for more information contact this number${Employers_contact[i]}`;
+          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]}`;
         // sender is in the numbers array
       }
      console.log(message);
