@@ -233,6 +233,18 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             break;
           }
 
+          _context2.next = 25;
+          return regeneratorRuntime.awrap(_darajaModels["default"].create({
+            phoneNumber: id,
+            Subscription: true,
+            lengthOfSubscription: daysToExpiry,
+            amount: amount,
+            SubscriptionDate: today,
+            expiry: expiry
+          }));
+
+        case 25:
+          Subscription = _context2.sent;
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -251,18 +263,6 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
               "message": 'Thank you for subscribing to TwendeJob. We have confirmed you subscription'
             }
           });
-          _context2.next = 26;
-          return regeneratorRuntime.awrap(_darajaModels["default"].create({
-            phoneNumber: id,
-            Subscription: true,
-            lengthOfSubscription: daysToExpiry,
-            amount: amount,
-            SubscriptionDate: today,
-            expiry: expiry
-          }));
-
-        case 26:
-          Subscription = _context2.sent;
           console.log(Subscription); // Send a success response
 
           res.status(200).json({

@@ -246,24 +246,6 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     
     if (req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.') {
 
-        request(  {
-            method: "POST",
-            url: url,
-            path: '/send',
-            'maxRedirects': 20,
-            headers: {
-              "Authorization": auth,
-              "Content-Type": "application/json",
-              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
-            },
-            json:{
-              "sender": 23551,
-              "recipient": id,
-              "link_id": linkId,
-              'bulk':0,
-              "message": 'Thank you for subscribing to TwendeJob. We have confirmed you subscription' 
-            },
-          },)
 
 
           
@@ -275,6 +257,25 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
         SubscriptionDate: today,
         expiry: expiry,
       });
+      
+      request(  {
+        method: "POST",
+        url: url,
+        path: '/send',
+        'maxRedirects': 20,
+        headers: {
+          "Authorization": auth,
+          "Content-Type": "application/json",
+          'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+        },
+        json:{
+          "sender": 23551,
+          "recipient": id,
+          "link_id": linkId,
+          'bulk':0,
+          "message": 'Thank you for subscribing to TwendeJob. We have confirmed you subscription' 
+        },
+      },);
       console.log(Subscription);
       // Send a success response
       res.status(200).json({ message: 'Subscription created successfully' });
