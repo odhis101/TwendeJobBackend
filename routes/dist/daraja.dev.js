@@ -190,7 +190,7 @@ router.post('/subscriptions', _daraja.Getsubscribers);
 router.get('/Allsubscriptions', _daraja.GetAllsubscribers);
 router["delete"]('/Deletesubscribers/:id', _daraja.Deletesubscribers);
 router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
-  var id, amount, daysToExpiry, today, expiry, Subscription;
+  var id, amount, linkId, daysToExpiry, today, expiry, Subscription;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
@@ -199,40 +199,59 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log('test2');
           id = req.query.number;
           amount = req.query.amount;
+          linkId = req.query.linkId;
           console.log(req.query);
           console.log(_typeof(amount));
           daysToExpiry = 0;
           _context2.t0 = amount;
-          _context2.next = _context2.t0 === '10' ? 10 : _context2.t0 === '49' ? 12 : _context2.t0 === '199' ? 14 : 16;
+          _context2.next = _context2.t0 === '10' ? 11 : _context2.t0 === '49' ? 13 : _context2.t0 === '199' ? 15 : 17;
           break;
 
-        case 10:
+        case 11:
           daysToExpiry = 1;
-          return _context2.abrupt("break", 17);
+          return _context2.abrupt("break", 18);
 
-        case 12:
+        case 13:
           daysToExpiry = 7;
-          return _context2.abrupt("break", 17);
+          return _context2.abrupt("break", 18);
 
-        case 14:
+        case 15:
           daysToExpiry = 30;
-          return _context2.abrupt("break", 17);
-
-        case 16:
-          daysToExpiry = 0;
+          return _context2.abrupt("break", 18);
 
         case 17:
+          daysToExpiry = 0;
+
+        case 18:
           today = new Date().toISOString().slice(0, 10);
           console.log(daysToExpiry);
           expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
           console.log(expiry);
 
           if (!(req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.')) {
-            _context2.next = 29;
+            _context2.next = 31;
             break;
           }
 
-          _context2.next = 24;
+          (0, _request["default"])({
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": 23551,
+              "recipient": id,
+              "link_id": linkId,
+              'bulk': 0,
+              "message": 'Thank you for subscribing to TwendeJob. We have confirmed you subscription'
+            }
+          });
+          _context2.next = 26;
           return regeneratorRuntime.awrap(_darajaModels["default"].create({
             phoneNumber: id,
             Subscription: true,
@@ -242,24 +261,24 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             expiry: expiry
           }));
 
-        case 24:
+        case 26:
           Subscription = _context2.sent;
           console.log(Subscription); // Send a success response
 
           res.status(200).json({
             message: 'Subscription created successfully'
           });
-          _context2.next = 31;
+          _context2.next = 33;
           break;
 
-        case 29:
+        case 31:
           console.log('something went wrong'); // Send an error response
 
           res.status(500).json({
             error: 'Something went wrong'
           });
 
-        case 31:
+        case 33:
         case "end":
           return _context2.stop();
       }

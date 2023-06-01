@@ -132,7 +132,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             return timestamp;
           };
 
-          makeSTKPushRequest = function makeSTKPushRequest(number, amount) {
+          makeSTKPushRequest = function makeSTKPushRequest(number, amount, linkId) {
             var _url, access_token, _auth, passkey, timestamp, Passwords;
 
             return regeneratorRuntime.async(function makeSTKPushRequest$(_context) {
@@ -172,7 +172,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
                         "PartyA": number,
                         "PartyB": "494977",
                         "PhoneNumber": number,
-                        "CallBackURL": "https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=".concat(number, "&amount=").concat(amount),
+                        "CallBackURL": "https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=".concat(number, "&amount=").concat(amount, "&link_id=").concat(linkId),
                         "AccountReference": "Twendejob",
                         "TransactionDesc": "Twendejob Subscription"
                       }
@@ -299,7 +299,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           access_token = _context2.sent;
           console.log('this is access_token', access_token);
           _context2.next = 57;
-          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 10, access_token));
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 10, linkId));
 
         case 57:
           darajaResponse = _context2.sent;
@@ -345,7 +345,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
           _context2.prev = 69;
           _context2.next = 72;
-          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 49, getaccess_token));
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 49, linkId));
 
         case 72:
           _darajaResponse = _context2.sent;
@@ -390,7 +390,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
           subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
           _context2.prev = 84;
           _context2.next = 87;
-          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 199, getaccess_token));
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 199, linkId));
 
         case 87:
           _darajaResponse2 = _context2.sent;

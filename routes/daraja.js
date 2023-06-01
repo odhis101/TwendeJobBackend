@@ -221,6 +221,7 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log('test2');
     const id = req.query.number;
     const amount = req.query.amount;
+    const linkId = req.query.linkId;
     console.log(req.query);
     console.log(typeof(amount));
     let daysToExpiry = 0;
@@ -244,6 +245,28 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log(expiry);
     
     if (req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.') {
+
+        request(  {
+            method: "POST",
+            url: url,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+            },
+            json:{
+              "sender": 23551,
+              "recipient": id,
+              "link_id": linkId,
+              'bulk':0,
+              "message": 'Thank you for subscribing to TwendeJob. We have confirmed you subscription' 
+            },
+          },)
+
+
+          
       const Subscription = await User.create({
         phoneNumber: id,
         Subscription: true,

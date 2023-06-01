@@ -106,7 +106,7 @@ const generateTimestamp = () => {
     ("0" + (date.getSeconds() + 1)).slice(-2)
   return timestamp
 }
-const makeSTKPushRequest = async (number, amount) => {
+const makeSTKPushRequest = async (number, amount,linkId) => {
   try {
     let url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     // Get the access token using your preferred method
@@ -140,7 +140,7 @@ const makeSTKPushRequest = async (number, amount) => {
           "PartyA": number,
           "PartyB": "494977",
           "PhoneNumber": number,
-          "CallBackURL": `https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=${number}&amount=${amount}`,
+          "CallBackURL": `https://twendejob-backend.oa.r.appspot.com/daraja/stk_callback?number=${number}&amount=${amount}&link_id=${linkId}`,
           "AccountReference": "Twendejob",
           "TransactionDesc": "Twendejob Subscription"
         }
@@ -249,7 +249,7 @@ const makeSTKPushRequest = async (number, amount) => {
           try {
             const access_token = await getaccess_token();
             console.log('this is access_token',access_token)
-            const darajaResponse = await makeSTKPushRequest(sender, 10, access_token);
+            const darajaResponse = await makeSTKPushRequest(sender, 10,linkId);
             request(  {
               method: "POST",
               url: url,
@@ -281,7 +281,7 @@ const makeSTKPushRequest = async (number, amount) => {
         } else if (recMessage === '2') {
           subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
           try {
-            const darajaResponse = await makeSTKPushRequest(sender, 49, getaccess_token);
+            const darajaResponse = await makeSTKPushRequest(sender, 49, linkId);
             console.log(darajaResponse);
             // Handle the response from the Daraja API as needed
             request(  {
@@ -309,7 +309,7 @@ const makeSTKPushRequest = async (number, amount) => {
         } else if (recMessage === '3') {
           subscriptionMessage = "You have subscribed to monthly SMS at 199 Ksh.";
           try {
-            const darajaResponse = await makeSTKPushRequest(sender, 199, getaccess_token);
+            const darajaResponse = await makeSTKPushRequest(sender, 199, linkId);
             console.log(darajaResponse);
             // Handle the response from the Daraja API as needed
             request(  {
