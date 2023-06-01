@@ -233,7 +233,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
             message += "2. Send 2 for weekly SMS @ 49 Ksh\n";
             message += "3. Send 3 for monthly SMS @ 199 Ksh"; // Rest of your code to send the message
           } else {
-            message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i]); // sender is in the numbers array
+            message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i], " contact this number{").concat(Employers_contact, "} for more information or send your resume to this Email $"); // sender is in the numbers array
           }
 
           console.log(message);
