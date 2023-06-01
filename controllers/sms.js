@@ -428,7 +428,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
             'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
           },
           json:{
-            "sender": '23551',
+            "sender": 23551,
             "recipient": phoneNumber,
             "link_id": '',
             'bulk':1,
@@ -499,7 +499,7 @@ if(!userExists){
         'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
       },
       json:{
-        "sender": '23551',
+        "sender": 23551,
         "recipient": phoneNumber,
         "link_id": '',
         'bulk':1,
