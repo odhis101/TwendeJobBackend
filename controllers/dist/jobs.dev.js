@@ -290,72 +290,75 @@ var deleteJob = (0, _expressAsyncHandler["default"])(function _callee7(req, res)
 });
 exports.deleteJob = deleteJob;
 var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req, res) {
-  var i, data, start_date, APPLICATIONS_DEADLINE_DATE, deadlineDate, Employers_Name, EMPLOYER_EMAIL, Employers_contact, jobTitle, jobDescription, Category, job;
+  var i, data, start_date, numDate, APPLICATIONS_DEADLINE_DATE, deadlineDate, Employers_Name, EMPLOYER_EMAIL, Employers_contact, jobTitle, jobDescription, Category, Location, job;
   return regeneratorRuntime.async(function _callee8$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
-          console.log("bub");
+          console.log("bubssss");
           console.log(req.body); // looping through the json data to save in jobs collection
 
           i = 0;
 
         case 3:
           if (!(i < req.body.length)) {
-            _context8.next = 31;
+            _context8.next = 34;
             break;
           }
 
           data = req.body[i]; //console.log(data);
 
           console.log(data);
-          start_date = data.Start_Date;
-          start_date = (0, _moment["default"])('1900-01-01').add(start_date - 1, 'days').toDate(); //var numDate= new Date(start_date).toISOString().slice(0, 10);
-          //console.log(numDate)
+          start_date = data.Start_Date; //console.log('this is start date',start_date)
 
+          start_date = (0, _moment["default"])('1900-01-01').add(start_date - 1, 'days').toDate();
+          numDate = new Date(start_date).toISOString().slice(0, 10);
+          console.log('this is numdate ', numDate);
           APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE;
           APPLICATIONS_DEADLINE_DATE = (0, _moment["default"])('1900-01-01').add(APPLICATIONS_DEADLINE_DATE - 1, 'days').toDate();
           deadlineDate = new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
-          console.log(deadlineDate);
+          console.log('this is deadline date', deadlineDate);
           Employers_Name = data.Employers_Name;
           EMPLOYER_EMAIL = data.EMPLOYERS_EMAIL;
           Employers_contact = data.Employers_Contact;
           jobTitle = data.Job_Post_Title;
           jobDescription = data.Job_Description;
           Category = data.Job_category;
-          console.log(jobTitle);
+          Location = data.Location;
+          console.log('this is email', EMPLOYER_EMAIL);
 
           if (!(!jobTitle, !jobDescription, !Employers_contact, !deadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name)) {
-            _context8.next = 24;
+            _context8.next = 27;
             break;
           }
 
           res.status(400);
           throw new Error('Please add a text field');
 
-        case 24:
-          _context8.next = 26;
+        case 27:
+          _context8.next = 29;
           return regeneratorRuntime.awrap(_JobsModel["default"].create({
             jobTitle: jobTitle,
             jobDescription: jobDescription,
             Employers_contact: Employers_contact,
-            DeadlineDate: APPLICATIONS_DEADLINE_DATE,
+            DeadlineDate: deadlineDate,
             Category: Category,
             EMPLOYER_EMAIL: EMPLOYER_EMAIL,
             Employers_Name: Employers_Name,
-            Start_Date: start_date
+            Start_Date: numDate,
+            Location: Location
           }));
 
-        case 26:
+        case 29:
           job = _context8.sent;
           res.status(200).json(job);
 
-        case 28:
+        case 31:
           i++;
           _context8.next = 3;
           break;
 
-        case 31:
+        case 34:
         case "end":
           return _context8.stop();
       }

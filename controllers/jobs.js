@@ -130,7 +130,7 @@ const deleteJob = asyncHandler(async (req, res) => {
   }
 })
 const ExcelToMongoDB = asyncHandler(async (req, res) => {
-  console.log("bub")
+  console.log("bubssss")
 console.log(req.body)
   // looping through the json data to save in jobs collection
   for (var i = 0; i < req.body.length; i++) {
@@ -139,24 +139,26 @@ console.log(req.body)
     console.log(data)
   
     let start_date = data.Start_Date
+   //console.log('this is start date',start_date)
    start_date = moment('1900-01-01').add(start_date - 1, 'days').toDate();
 
 
-    //var numDate= new Date(start_date).toISOString().slice(0, 10);
-    //console.log(numDate)
+    var numDate= new Date(start_date).toISOString().slice(0, 10);
+    console.log('this is numdate ',numDate)
     let APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE
     APPLICATIONS_DEADLINE_DATE = moment('1900-01-01').add(APPLICATIONS_DEADLINE_DATE - 1, 'days').toDate();
 
 
     var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
-    console.log(deadlineDate) 
+    console.log('this is deadline date',deadlineDate) 
     const Employers_Name = data.Employers_Name
     const EMPLOYER_EMAIL = data.EMPLOYERS_EMAIL
     const Employers_contact = data.Employers_Contact
     const jobTitle = data.Job_Post_Title
     const jobDescription = data.Job_Description
     const Category = data.Job_category
-    console.log(jobTitle)
+    const Location = data.Location
+    console.log('this is email',EMPLOYER_EMAIL)
 
     if (!jobTitle, !jobDescription, !Employers_contact, !deadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
       res.status(400)
@@ -167,17 +169,29 @@ console.log(req.body)
       jobTitle,
       jobDescription,
       Employers_contact,
-      DeadlineDate:APPLICATIONS_DEADLINE_DATE,
+      DeadlineDate:deadlineDate,
       Category,
       EMPLOYER_EMAIL,
       Employers_Name,
-      Start_Date:start_date
+      Start_Date:numDate,
+      Location
+
     })
     res.status(200).json(job)
   }
   
   }
-
+/*
+    user,
+    jobTitle,
+    jobDescription,
+    Employers_contact,
+    DeadlineDate,
+    Category,
+    EMPLOYER_EMAIL,
+    Location,
+    Employers_Name
+*/
 
 
 // get data from a file 
