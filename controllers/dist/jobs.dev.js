@@ -21,6 +21,8 @@ var _JobsModel = _interopRequireDefault(require("../models/JobsModel.js"));
 
 var _JobsofTheDay = _interopRequireDefault(require("../models/JobsofTheDay.js"));
 
+var _moment = _interopRequireDefault(require("moment"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var getJobsOfTheDay = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
@@ -288,7 +290,7 @@ var deleteJob = (0, _expressAsyncHandler["default"])(function _callee7(req, res)
 });
 exports.deleteJob = deleteJob;
 var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req, res) {
-  var i, data, start_date, numDate, APPLICATIONS_DEADLINE_DATE, deadlineDate, Employers_Name, EMPLOYER_EMAIL, Employers_contact, jobTitle, jobDescription, Category, job;
+  var i, data, start_date, APPLICATIONS_DEADLINE_DATE, deadlineDate, Employers_Name, EMPLOYER_EMAIL, Employers_contact, jobTitle, jobDescription, Category, job;
   return regeneratorRuntime.async(function _callee8$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
@@ -308,9 +310,11 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
 
           console.log(data);
           start_date = data.Start_Date;
-          numDate = new Date(start_date).toISOString().slice(0, 10);
-          console.log(numDate);
+          start_date = (0, _moment["default"])('1900-01-01').add(start_date - 1, 'days').toDate(); //var numDate= new Date(start_date).toISOString().slice(0, 10);
+          //console.log(numDate)
+
           APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE;
+          APPLICATIONS_DEADLINE_DATE = (0, _moment["default"])('1900-01-01').add(APPLICATIONS_DEADLINE_DATE - 1, 'days').toDate();
           deadlineDate = new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
           console.log(deadlineDate);
           Employers_Name = data.Employers_Name;
@@ -335,11 +339,11 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
             jobTitle: jobTitle,
             jobDescription: jobDescription,
             Employers_contact: Employers_contact,
-            DeadlineDate: deadlineDate,
+            DeadlineDate: APPLICATIONS_DEADLINE_DATE,
             Category: Category,
             EMPLOYER_EMAIL: EMPLOYER_EMAIL,
             Employers_Name: Employers_Name,
-            Start_Date: numDate
+            Start_Date: start_date
           }));
 
         case 26:

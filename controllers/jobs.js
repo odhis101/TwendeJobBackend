@@ -6,6 +6,7 @@ import asyncHandler from 'express-async-handler';
 import User from "../models/userModels.js" 
 import Jobs from '../models/JobsModel.js';
 import JobsOfTheDay from '../models/JobsofTheDay.js';
+import moment from 'moment';
 
 const getJobsOfTheDay = asyncHandler(async (req, res) => {
   const JobExists = await JobsOfTheDay.find({})
@@ -138,9 +139,15 @@ console.log(req.body)
     console.log(data)
   
     let start_date = data.Start_Date
-    var numDate= new Date(start_date).toISOString().slice(0, 10);
-    console.log(numDate)
+   start_date = moment('1900-01-01').add(start_date - 1, 'days').toDate();
+
+
+    //var numDate= new Date(start_date).toISOString().slice(0, 10);
+    //console.log(numDate)
     let APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE
+    APPLICATIONS_DEADLINE_DATE = moment('1900-01-01').add(APPLICATIONS_DEADLINE_DATE - 1, 'days').toDate();
+
+
     var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
     console.log(deadlineDate) 
     const Employers_Name = data.Employers_Name
@@ -160,11 +167,11 @@ console.log(req.body)
       jobTitle,
       jobDescription,
       Employers_contact,
-      DeadlineDate:deadlineDate,
+      DeadlineDate:APPLICATIONS_DEADLINE_DATE,
       Category,
       EMPLOYER_EMAIL,
       Employers_Name,
-      Start_Date:numDate
+      Start_Date:start_date
     })
     res.status(200).json(job)
   }
