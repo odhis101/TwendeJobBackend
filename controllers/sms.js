@@ -12,11 +12,12 @@ import User from "../models/userModels.js"
 import Admin from "../models/adminModels.js"
 import dotenv from 'dotenv';
 import axios from 'axios';
-const PATA_SMS_URL ="https://api.patasms.com/send_one"
-const PATA_SMS_USERNAME = 'twende.jobs'
-const PATA_SMS_PASSWORD = 'P@ssw0rd'
+dotenv.config();
+const PATA_SMS_URL =process.env.PATA_SMS_URL
+const PATA_SMS_USERNAME = process.env.PATA_SMS_USERNAME
+const PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD
 
-
+console.log('here is some enve stuff ',process.env.PATA_SMS_USERNAME);
 
       
      

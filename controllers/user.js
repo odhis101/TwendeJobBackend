@@ -8,12 +8,10 @@ import Admin from "../models/adminModels.js"
 import twilio from 'twilio';
 import request from 'request';
 import dotenv from 'dotenv';
-
 dotenv.config();
-
-const PATA_SMS_URL ="https://api.patasms.com/send_one"
-const PATA_SMS_USERNAME = 'twende.jobs'
-const PATA_SMS_PASSWORD = 'P@ssw0rd'
+const PATA_SMS_URL =process.env.PATA_SMS_URL
+const PATA_SMS_USERNAME = process.env.PATA_SMS_USERNAME
+const PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD
 //const jwt = require('jsonwebtoken');
 const sendOtpForNewUser = asyncHandler(async (req, res) => {
     let {phoneNumber, password } = req.body;

@@ -45,9 +45,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var PATA_SMS_URL = "https://api.patasms.com/send_one";
-var PATA_SMS_USERNAME = 'twende.jobs';
-var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
+_dotenv["default"].config();
+
+var PATA_SMS_URL = process.env.PATA_SMS_URL;
+var PATA_SMS_USERNAME = process.env.PATA_SMS_USERNAME;
+var PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD;
+console.log('here is some enve stuff ', process.env.PATA_SMS_USERNAME); //const jwt = require('jsonwebtoken');
 
 var consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 var consumer_secret = 'h2gwMdxszxc2tJ35';

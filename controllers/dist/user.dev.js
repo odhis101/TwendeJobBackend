@@ -31,9 +31,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 _dotenv["default"].config();
 
-var PATA_SMS_URL = "https://api.patasms.com/send_one";
-var PATA_SMS_USERNAME = 'twende.jobs';
-var PATA_SMS_PASSWORD = 'P@ssw0rd'; //const jwt = require('jsonwebtoken');
+var PATA_SMS_URL = process.env.PATA_SMS_URL;
+var PATA_SMS_USERNAME = process.env.PATA_SMS_USERNAME;
+var PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD; //const jwt = require('jsonwebtoken');
 
 var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
   var _req$body, phoneNumber, password, url, username, Password, auth, userExists, otp, message, salt, hashedPassword, user, response;
