@@ -25,6 +25,112 @@ console.log('here is some enve stuff ',process.env.PATA_SMS_URL);
 //const jwt = require('jsonwebtoken');
 const consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 const consumer_secret  = 'h2gwMdxszxc2tJ35'; 
+const cronSchedule = '0 9 * * *';
+
+cron.schedule(cronSchedule, async () => {
+  //const JobExists = await Jobs.find({})
+
+  console.log('hit the route') 
+  // i want to update i after every cron schedule 
+
+  let url = PATA_SMS_URL;
+  let username = PATA_SMS_USERNAME
+  let password = PATA_SMS_PASSWORD
+  let auth =  "Basic " + new Buffer.from(username + ":" + password).toString("base64");
+  const subscribers =await Subscribers.find({});
+  const jobs = await Jobs.find({});
+  // create an array of jobs 
+  let jobsTitle = [];
+  console.log('testing');
+  jobs.forEach((job) => {
+    jobsTitle.push(job.jobTitle);
+  });
+  let jobDescription = [];
+  jobs.forEach((job) => {
+    jobDescription.push(job.jobDescription);
+  });
+  let Employers_contact= []
+  jobs.forEach((job) => {
+    Employers_contact.push(job.Employers_contact);
+   })
+  //console.log(jobsTitle);
+  //console.log(subscribers);
+  let NumbersArray = [];
+  const currentDate = new Date().toISOString().slice(0, 10)
+  const number = Math.floor(Math.random() * jobsTitle.length);
+ let message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[number]} ${jobDescription[number]} contact ${Employers_contact[number]} for more information`
+ //console.log(message );
+  subscribers.forEach((subscriber) => {
+    //numbersArray.push(subscriber.phoneNumber);
+
+    if (subscriber.expiry > currentDate) {
+      //these are the ones that are not expired 
+      NumbersArray.push(subscriber.phoneNumber);
+      try {
+        request(  {
+          method: "POST",
+          url: url,
+          path: '/send',
+          'maxRedirects': 20,
+          headers: {
+            "Authorization": auth,
+            "Content-Type": "application/json",
+            'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+          },
+          json:{
+            "sender": "TWENDEJOBS",
+            "recipient": subscriber.phoneNumber,
+            "link_id": '',
+            'bulk':1,
+            "message": message,
+          },
+    
+        },
+         
+         function (error, response, body) {
+            if (error) {
+                console.log(error);
+              
+            } else {
+              console.log(body);
+              
+              
+            }
+         }
+        )
+        
+        // Save the OTP in the database
+        
+        if(user){
+          res.status(200).json({ message: 'OTP sent successfully' });
+
+        }
+        else{
+          res.status(400).json({ message: 'User not found' });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while sending OTP' });
+      }
+     
+
+
+
+    }
+    else{
+      console.log('they are no subscribers')
+    }
+
+  });
+
+
+  
+  
+
+  });
+
+
+
 const getsms = asyncHandler(async (req, res) => {
     //const JobExists = await Jobs.find({})
  
