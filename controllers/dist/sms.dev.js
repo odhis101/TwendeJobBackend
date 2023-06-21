@@ -45,12 +45,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+var PATA_SMS_URL = process.env.PATA_SMS_URL;
+var PATA_SMS_USERNAME = 'Twende Job';
+var PATA_SMS_PASSWORD = 'P@ssw0rd';
+
 _dotenv["default"].config();
 
-var PATA_SMS_URL = process.env.PATA_SMS_URL;
-var PATA_SMS_USERNAME = process.env.PATA_SMS_USERNAME;
-var PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD;
-console.log('here is some enve stuff ', process.env.PATA_SMS_USERNAME); //const jwt = require('jsonwebtoken');
+console.log('here is some enve stuff ', process.env.PATA_SMS_URL); //const jwt = require('jsonwebtoken');
 
 var consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 var consumer_secret = 'h2gwMdxszxc2tJ35';
@@ -556,7 +557,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee4(req, res) {
               'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
             },
             json: {
-              "sender": "Titan",
+              "sender": "TWENDEJOBS",
               "recipient": phoneNumber,
               "link_id": '',
               'bulk': 1,
@@ -666,7 +667,7 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee5(req, r
               'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
             },
             json: {
-              "sender": 'Titan',
+              "sender": 'TWENDEJOBS',
               "recipient": phoneNumber,
               "link_id": '',
               'bulk': 1,
