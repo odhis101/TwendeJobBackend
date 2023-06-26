@@ -7,6 +7,7 @@ import User from "../models/userModels.js"
 import Jobs from '../models/JobsModel.js';
 import JobsOfTheDay from '../models/JobsofTheDay.js';
 import moment from 'moment';
+import XLSX  from 'xlsx';
 
 const getJobsOfTheDay = asyncHandler(async (req, res) => {
   const JobExists = await JobsOfTheDay.find({})
@@ -122,35 +123,38 @@ const deleteJob = asyncHandler(async (req, res) => {
   
   const JobExists = await Jobs.findById(_id)
   if (JobExists) {
+    console.log('job removed')
     await JobExists.remove()
     res.json({message: 'Job removed'})
   } else {
     res.status(404)
+    console.log('Job not found')
     throw new Error('Job not found')
   }
 })
 const ExcelToMongoDB = asyncHandler(async (req, res) => {
   console.log("bubssss")
-console.log(req.body)
+  const savedJobs = []; // Array to store the saved jobs
+
+//console.log(req.body)
   // looping through the json data to save in jobs collection
   for (var i = 0; i < req.body.length; i++) {
     var data= req.body[i];
     //console.log(data);
-    console.log(data)
+    //console.log(data)
   
     let start_date = data.Start_Date
    //console.log('this is start date',start_date)
-   start_date = moment('1900-01-01').add(start_date - 1, 'days').toDate();
+   //start_date = moment('1900-01-01').add(start_date - 1, 'days').toDate();
 
 
-    var numDate= new Date(start_date).toISOString().slice(0, 10);
-    console.log('this is numdate ',numDate)
-    let APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE
-    APPLICATIONS_DEADLINE_DATE = moment('1900-01-01').add(APPLICATIONS_DEADLINE_DATE - 1, 'days').toDate();
+    //var numDate= new Date(start_date).toISOString().slice(0, 10);
+    //console.log('this is numdate ',numDate)
+    let APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE;
 
-
-    var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
-    console.log('this is deadline date',deadlineDate) 
+    
+    //var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
+    //console.log('this is deadline date',deadlineDate) 
     const Employers_Name = data.Employers_Name
     const EMPLOYER_EMAIL = data.EMPLOYERS_EMAIL
     const Employers_contact = data.Employers_Contact
@@ -158,68 +162,30 @@ console.log(req.body)
     const jobDescription = data.Job_Description
     const Category = data.Job_category
     const Location = data.Location
-    console.log('this is email',EMPLOYER_EMAIL)
+    console.log('this is start date ',APPLICATIONS_DEADLINE_DATE)
 
-    if (!jobTitle, !jobDescription, !Employers_contact, !deadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
-      res.status(400)
-      throw new Error('Please add a text field')
-    }
-    else{
+
+
     const job = await Jobs.create({
       jobTitle,
       jobDescription,
       Employers_contact,
-      DeadlineDate:deadlineDate,
+      DeadlineDate:APPLICATIONS_DEADLINE_DATE,
       Category,
       EMPLOYER_EMAIL,
       Employers_Name,
-      Start_Date:numDate,
+      Start_Date:start_date,
       Location
 
     })
-    res.status(200).json(job)
+
+ 
+    savedJobs.push(job); // Add the saved job to the array
+
   }
+ res.status(200).json(savedJobs); // Send the response with all saved jobs
   
-  }
-/*
-    user,
-    jobTitle,
-    jobDescription,
-    Employers_contact,
-    DeadlineDate,
-    Category,
-    EMPLOYER_EMAIL,
-    Location,
-    Employers_Name
-*/
-
-
-// get data from a file 
-  /*
-  const {user,jobTitle,jobDescription,Employers_contact,DeadlineDate,Category,EMPLOYER_EMAIL,Employers_Name} = req.body;
-  if (!jobTitle, !jobDescription, !Employers_contact, !DeadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name) {
-    res.status(400)
-    throw new Error('Please add a text field')
-  }
-  else if (jobTitle, jobDescription, Employers_contact, DeadlineDate, Category, EMPLOYER_EMAIL, Employers_Name) {
-    const job = await Jobs.create({
-      user,
-      jobTitle,
-      jobDescription,
-      Employers_contact,
-      DeadlineDate,
-      Category,
-      EMPLOYER_EMAIL,
-      Employers_Name
-    })
-    res.status(200).json(job)
-  }
-  else{
-    res.status(400)
-    throw new Error('Please add a text field')
-  }
-}
-*/})
+})
 export {setJob, getJobs,getOneJob,updateJob,deleteJob,ExcelToMongoDB,getJobsOfTheDay,setJobsOfTheDay};
 
 
