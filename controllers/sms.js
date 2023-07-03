@@ -300,7 +300,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
       console.log('sender is not in the numbers array');
       message = `Please subscribe to our service to get the latest jobs:\n\n`;
       message += `1. Send 1 for daily SMS @ 10 Ksh\n`;
-      message += `2. Send 2 for weekly SMS @ 49 Ksh\n`;
+      message += `2. Send 2 for weekly SMS @ 85 Ksh\n`;
       message += `3. Send 3 for monthly SMS @ 199 Ksh`;
     
       // Rest of your code to send the message
@@ -387,9 +387,9 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
             console.error(error);
           }
         } else if (recMessage === '2') {
-          subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
+          subscriptionMessage = "You have subscribed to weekly SMS at 85 Ksh.";
           try {
-            const darajaResponse = await makeSTKPushRequest(sender, 49, linkId);
+            const darajaResponse = await makeSTKPushRequest(sender, 85, linkId);
             console.log(darajaResponse);
             // Handle the response from the Daraja API as needed
             request(  {

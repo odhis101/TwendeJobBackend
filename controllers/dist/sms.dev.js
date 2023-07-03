@@ -340,7 +340,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             console.log('sender is not in the numbers array');
             message = "Please subscribe to our service to get the latest jobs:\n\n";
             message += "1. Send 1 for daily SMS @ 10 Ksh\n";
-            message += "2. Send 2 for weekly SMS @ 49 Ksh\n";
+            message += "2. Send 2 for weekly SMS @ 85 Ksh\n";
             message += "3. Send 3 for monthly SMS @ 199 Ksh"; // Rest of your code to send the message
           } else {
             message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i]); // sender is in the numbers array
@@ -450,10 +450,10 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             break;
           }
 
-          subscriptionMessage = "You have subscribed to weekly SMS at 49 Ksh.";
+          subscriptionMessage = "You have subscribed to weekly SMS at 85 Ksh.";
           _context3.prev = 69;
           _context3.next = 72;
-          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 49, linkId));
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 85, linkId));
 
         case 72:
           _darajaResponse = _context3.sent;
