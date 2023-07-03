@@ -348,7 +348,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
 
           console.log(message);
 
-          if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs')) {
+          if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' || recMessage.toLowerCase().replace(/\s/g, '') === 'kazi')) {
             _context3.next = 46;
             break;
           }
@@ -550,7 +550,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               "recipient": sender,
               "link_id": linkId,
               'bulk': 0,
-              "message": '  Please write "jobs" if you want to get the latest jobs'
+              "message": 'Please write "jobs" if you want to get the latest jobs'
             }
           }, function (error, response, body) {
             if (error) {

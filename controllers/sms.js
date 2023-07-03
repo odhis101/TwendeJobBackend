@@ -310,7 +310,10 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
         // sender is in the numbers array
       }
      console.log(message);
-      if (recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' ) {
+     if (
+      recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' ||
+      recMessage.toLowerCase().replace(/\s/g, '') === 'kazi'
+    ) {
         request(  {
         method: "POST",
         url: url,
@@ -463,7 +466,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
             "recipient": sender,
             "link_id": linkId,
             'bulk':0,
-            "message": '  Please write "jobs" if you want to get the latest jobs',
+            "message": 'Please write "jobs" if you want to get the latest jobs',
           },
     
         },
