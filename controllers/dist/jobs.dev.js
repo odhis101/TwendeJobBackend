@@ -23,6 +23,8 @@ var _JobsofTheDay = _interopRequireDefault(require("../models/JobsofTheDay.js"))
 
 var _moment = _interopRequireDefault(require("moment"));
 
+var _xlsx = _interopRequireDefault(require("xlsx"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var getJobsOfTheDay = (0, _expressAsyncHandler["default"])(function _callee(req, res) {
@@ -263,25 +265,27 @@ var deleteJob = (0, _expressAsyncHandler["default"])(function _callee7(req, res)
           JobExists = _context7.sent;
 
           if (!JobExists) {
-            _context7.next = 12;
+            _context7.next = 13;
             break;
           }
 
-          _context7.next = 9;
+          console.log('job removed');
+          _context7.next = 10;
           return regeneratorRuntime.awrap(JobExists.remove());
 
-        case 9:
+        case 10:
           res.json({
             message: 'Job removed'
           });
-          _context7.next = 14;
+          _context7.next = 16;
           break;
 
-        case 12:
+        case 13:
           res.status(404);
+          console.log('Job not found');
           throw new Error('Job not found');
 
-        case 14:
+        case 16:
         case "end":
           return _context7.stop();
       }
@@ -290,34 +294,35 @@ var deleteJob = (0, _expressAsyncHandler["default"])(function _callee7(req, res)
 });
 exports.deleteJob = deleteJob;
 var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req, res) {
-  var i, data, start_date, numDate, APPLICATIONS_DEADLINE_DATE, deadlineDate, Employers_Name, EMPLOYER_EMAIL, Employers_contact, jobTitle, jobDescription, Category, Location, job;
+  var savedJobs, i, data, start_date, APPLICATIONS_DEADLINE_DATE, Employers_Name, EMPLOYER_EMAIL, Employers_contact, jobTitle, jobDescription, Category, Location, job;
   return regeneratorRuntime.async(function _callee8$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
           console.log("bubssss");
-          console.log(req.body); // looping through the json data to save in jobs collection
+          savedJobs = []; // Array to store the saved jobs
+          //console.log(req.body)
+          // looping through the json data to save in jobs collection
 
           i = 0;
 
         case 3:
           if (!(i < req.body.length)) {
-            _context8.next = 34;
+            _context8.next = 22;
             break;
           }
 
           data = req.body[i]; //console.log(data);
+          //console.log(data)
 
-          console.log(data);
           start_date = data.Start_Date; //console.log('this is start date',start_date)
+          //start_date = moment('1900-01-01').add(start_date - 1, 'days').toDate();
+          //var numDate= new Date(start_date).toISOString().slice(0, 10);
+          //console.log('this is numdate ',numDate)
 
-          start_date = (0, _moment["default"])('1900-01-01').add(start_date - 1, 'days').toDate();
-          numDate = new Date(start_date).toISOString().slice(0, 10);
-          console.log('this is numdate ', numDate);
-          APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE;
-          APPLICATIONS_DEADLINE_DATE = (0, _moment["default"])('1900-01-01').add(APPLICATIONS_DEADLINE_DATE - 1, 'days').toDate();
-          deadlineDate = new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
-          console.log('this is deadline date', deadlineDate);
+          APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE; //var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
+          //console.log('this is deadline date',deadlineDate) 
+
           Employers_Name = data.Employers_Name;
           EMPLOYER_EMAIL = data.EMPLOYERS_EMAIL;
           Employers_contact = data.Employers_Contact;
@@ -325,40 +330,33 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
           jobDescription = data.Job_Description;
           Category = data.Job_category;
           Location = data.Location;
-          console.log('this is email', EMPLOYER_EMAIL);
-
-          if (!(!jobTitle, !jobDescription, !Employers_contact, !deadlineDate, !Category, !EMPLOYER_EMAIL, !Employers_Name)) {
-            _context8.next = 27;
-            break;
-          }
-
-          res.status(400);
-          throw new Error('Please add a text field');
-
-        case 27:
-          _context8.next = 29;
+          console.log('this is start date ', APPLICATIONS_DEADLINE_DATE);
+          _context8.next = 17;
           return regeneratorRuntime.awrap(_JobsModel["default"].create({
             jobTitle: jobTitle,
             jobDescription: jobDescription,
             Employers_contact: Employers_contact,
-            DeadlineDate: deadlineDate,
+            DeadlineDate: APPLICATIONS_DEADLINE_DATE,
             Category: Category,
             EMPLOYER_EMAIL: EMPLOYER_EMAIL,
             Employers_Name: Employers_Name,
-            Start_Date: numDate,
+            Start_Date: start_date,
             Location: Location
           }));
 
-        case 29:
+        case 17:
           job = _context8.sent;
-          res.status(200).json(job);
+          savedJobs.push(job); // Add the saved job to the array
 
-        case 31:
+        case 19:
           i++;
           _context8.next = 3;
           break;
 
-        case 34:
+        case 22:
+          res.status(200).json(savedJobs); // Send the response with all saved jobs
+
+        case 23:
         case "end":
           return _context8.stop();
       }

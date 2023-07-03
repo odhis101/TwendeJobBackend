@@ -12,38 +12,46 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var postedJobs = _mongoose["default"].Schema({
   jobTitle: {
     type: String,
-    required: [true, 'Please enter the job title']
+    "default": 'N/A' //required: [true, 'Please enter the job title'],
+
   },
   jobDescription: {
-    type: String,
-    required: [true, 'Please enter the job description']
+    type: String //required: [true, 'Please enter the job description'],
+
   },
   Employers_contact: {
     type: String,
-    required: [true, 'Please enter the Employers contact']
+    "default": 'N/A' // required: [true, 'Please enter the Employers contact'],
+
   },
   DeadlineDate: {
     type: Date,
-    required: [false, 'Please enter the DeadlineDate']
+    "default": 12 / 10 / 2023 // required: [false, 'Please enter the DeadlineDate'],
+
   },
   Category: {
     type: String,
-    required: [true, 'Please enter the Category']
+    "default": 'N/A' // required: [true, 'Please enter the Category'],
+
   },
   EMPLOYER_EMAIL: {
     type: String,
-    required: [true, 'Please enter the EMPLOYER EMAIL']
+    "default": 'N/A' //required: [true, 'Please enter the EMPLOYER EMAIL'],
+
   },
   Employers_Name: {
     type: String,
-    required: [true, 'Please enter the Employers Name']
+    "default": 'N/A' // required: [true, 'Please enter the Employers Name'], 
+
   },
   Location: {
     type: String,
-    required: [true, 'Please enter the Location']
+    "default": 'N/A' // required: [true, 'Please enter the Location'], 
+
   },
   Salary: {
-    type: String
+    type: String,
+    "default": 'N/A'
   },
   createdAt: {
     type: Date,

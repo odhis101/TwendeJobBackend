@@ -3,6 +3,7 @@ import {getsms,call_back,getallsms,sendOtp,verifyOTP,sendOtpAdmin} from "../cont
 import cron from 'node-cron';
 
 const router = express.Router();
+
 router.post ('/sms', getsms);
 router.get ('/getall', getallsms);
 router.post ('/sendOtp', sendOtp);
