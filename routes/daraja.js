@@ -245,10 +245,6 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log(expiry);
     
     if (req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.') {
-
-
-
-          
       const Subscription = await User.create({
         phoneNumber: id,
         Subscription: true,
