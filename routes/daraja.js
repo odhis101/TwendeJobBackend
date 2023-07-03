@@ -229,7 +229,7 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
       case '10':
         daysToExpiry = 1;
         break;
-      case '49':
+      case '85':
         daysToExpiry = 7;
         break;
       case '199':

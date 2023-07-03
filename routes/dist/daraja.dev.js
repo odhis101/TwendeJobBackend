@@ -204,7 +204,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log(_typeof(amount));
           daysToExpiry = 0;
           _context2.t0 = amount;
-          _context2.next = _context2.t0 === '10' ? 11 : _context2.t0 === '49' ? 13 : _context2.t0 === '199' ? 15 : 17;
+          _context2.next = _context2.t0 === '10' ? 11 : _context2.t0 === '85' ? 13 : _context2.t0 === '199' ? 15 : 17;
           break;
 
         case 11:

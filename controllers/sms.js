@@ -14,7 +14,7 @@ import dotenv from 'dotenv';
 import axios from 'axios';
 
 const PATA_SMS_URL =process.env.PATA_SMS_URL
-const PATA_SMS_USERNAME = 'Twende Job'
+const PATA_SMS_USERNAME = 'twende.jobs'
 const PATA_SMS_PASSWORD = 'P@ssw0rd'
 dotenv.config();
 
