@@ -19,6 +19,8 @@ var _daraja = require("../controllers/daraja.js");
 
 var _mongoose = require("mongoose");
 
+var _dotenv = _interopRequireDefault(require("dotenv"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -28,9 +30,12 @@ var router = _express["default"].Router();
 var consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 var consumer_secret = 'h2gwMdxszxc2tJ35';
 var Backend_url = 'https://twendejob-backend.oa.r.appspot.com';
-var url1 = PATA_SMS_URL;
-var username1 = PATA_SMS_USERNAME;
-var password1 = PATA_SMS_PASSWORD;
+
+_dotenv["default"].config();
+
+var url1 = process.env.PATA_SMS_URL;
+var username1 = process.env.PATA_SMS_USERNAME;
+var password1 = process.env.PATA_SMS_PASSWORD;
 var auth1 = "Basic " + new Buffer.from(username1 + ":" + password1).toString("base64");
 router.get('/access_token', getaccess_token, function (req, res) {
   res.status(200).json({

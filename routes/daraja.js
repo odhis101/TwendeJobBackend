@@ -8,14 +8,15 @@ import User from "../models/darajaModels.js"
 
 import { Getsubscribers,GetAllsubscribers, Deletesubscribers} from "../controllers/daraja.js";
 import { get } from "mongoose";
-
+import dotenv from 'dotenv';
 const router = express.Router();
 const consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 const consumer_secret  = 'h2gwMdxszxc2tJ35';
 const Backend_url = 'https://twendejob-backend.oa.r.appspot.com';
-let url1 = PATA_SMS_URL;
-let username1 = PATA_SMS_USERNAME
-let password1 = PATA_SMS_PASSWORD
+dotenv.config();
+let url1 = process.env.PATA_SMS_URL;
+let username1 = process.env.PATA_SMS_USERNAME
+let password1 = process.env.PATA_SMS_PASSWORD
 let auth1 =  "Basic " + new Buffer.from(username1 + ":" + password1).toString("base64");
 
 router.get ('/access_token', getaccess_token, (req, res)=>{
