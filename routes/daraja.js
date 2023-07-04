@@ -13,16 +13,17 @@ const router = express.Router();
 const consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 const consumer_secret  = 'h2gwMdxszxc2tJ35';
 const Backend_url = 'https://twendejob-backend.oa.r.appspot.com';
+let url1 = PATA_SMS_URL;
+let username1 = PATA_SMS_USERNAME
+let password1 = PATA_SMS_PASSWORD
+let auth1 =  "Basic " + new Buffer.from(username1 + ":" + password1).toString("base64");
+
 router.get ('/access_token', getaccess_token, (req, res)=>{
     res.status (200).json({
         access_token: req.access_token
     })
 
 });    
-
-
-
-
 
 router.get ('/register', getaccess_token,(req, res)=>{
     let url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
@@ -41,8 +42,6 @@ router.get ('/register', getaccess_token,(req, res)=>{
                 "ResponseType": "Completed",
                 "ConfirmationURL": `${Backend_url}/daraja/confirmation`,// chang
                 "ValidationURL": `${Backend_url}/daraja/validation`
-                
-
               }
 
 
@@ -226,13 +225,10 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log(typeof(amount));
     let daysToExpiry = 0;
     switch (amount) {
-      case '10':
-        daysToExpiry = 1;
-        break;
-      case '49':
+      case '85':
         daysToExpiry = 7;
         break;
-      case '199':
+      case '250':
         daysToExpiry = 30;
         break;
       default:
@@ -245,10 +241,8 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log(expiry);
     
     if (req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.') {
-
-
-
-          
+        
+        
       const Subscription = await User.create({
         phoneNumber: id,
         Subscription: true,
@@ -257,34 +251,43 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
         SubscriptionDate: today,
         expiry: expiry,
       });
-      
+
       request(  {
         method: "POST",
-        url: url,
+        url: url1,
         path: '/send',
         'maxRedirects': 20,
         headers: {
-          "Authorization": auth,
+          "Authorization": auth1,
           "Content-Type": "application/json",
           'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
         },
         json:{
-          "sender": 23551,
-          "recipient": id,
-          "link_id": linkId,
-          'bulk':0,
-          "message": 'Thank you for subscribing to TwendeJob. We have confirmed you subscription' 
+          "sender": "TWENDEJOBS",
+          "recipient": phoneNumber,
+          "link_id": '',
+          'bulk':1,
+          "message": "Welcome to Kazi Chap!  Tailored job tips, Kazi match, and instant notifications. Your journey to opportunities starts here. Enjoy!",
         },
-      },);
-      console.log(Subscription);
-      // Send a success response
-      res.status(200).json({ message: 'Subscription created successfully' });
-    } else {
-      console.log('something went wrong');
-      // Send an error response
-      res.status(500).json({ error: 'Something went wrong' });
-    }
-  }));
+  
+      },
+       
+       function (error, response, body) {
+          if (error) {
+              console.log(error);
+            
+          } else {
+            console.log(body);
+            
+            
+          }
+       }
+      )
+      
+ 
+  
+    }})
+      );
   
 
 export default router;

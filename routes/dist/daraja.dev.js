@@ -28,6 +28,10 @@ var router = _express["default"].Router();
 var consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 var consumer_secret = 'h2gwMdxszxc2tJ35';
 var Backend_url = 'https://twendejob-backend.oa.r.appspot.com';
+var url1 = PATA_SMS_URL;
+var username1 = PATA_SMS_USERNAME;
+var password1 = PATA_SMS_PASSWORD;
+var auth1 = "Basic " + new Buffer.from(username1 + ":" + password1).toString("base64");
 router.get('/access_token', getaccess_token, function (req, res) {
   res.status(200).json({
     access_token: req.access_token
@@ -204,36 +208,32 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log(_typeof(amount));
           daysToExpiry = 0;
           _context2.t0 = amount;
-          _context2.next = _context2.t0 === '10' ? 11 : _context2.t0 === '49' ? 13 : _context2.t0 === '199' ? 15 : 17;
+          _context2.next = _context2.t0 === '85' ? 11 : _context2.t0 === '250' ? 13 : 15;
           break;
 
         case 11:
-          daysToExpiry = 1;
-          return _context2.abrupt("break", 18);
+          daysToExpiry = 7;
+          return _context2.abrupt("break", 16);
 
         case 13:
-          daysToExpiry = 7;
-          return _context2.abrupt("break", 18);
+          daysToExpiry = 30;
+          return _context2.abrupt("break", 16);
 
         case 15:
-          daysToExpiry = 30;
-          return _context2.abrupt("break", 18);
-
-        case 17:
           daysToExpiry = 0;
 
-        case 18:
+        case 16:
           today = new Date().toISOString().slice(0, 10);
           console.log(daysToExpiry);
           expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
           console.log(expiry);
 
           if (!(req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.')) {
-            _context2.next = 31;
+            _context2.next = 25;
             break;
           }
 
-          _context2.next = 25;
+          _context2.next = 23;
           return regeneratorRuntime.awrap(_darajaModels["default"].create({
             phoneNumber: id,
             Subscription: true,
@@ -243,42 +243,34 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             expiry: expiry
           }));
 
-        case 25:
+        case 23:
           Subscription = _context2.sent;
           (0, _request["default"])({
             method: "POST",
-            url: url,
+            url: url1,
             path: '/send',
             'maxRedirects': 20,
             headers: {
-              "Authorization": auth,
+              "Authorization": auth1,
               "Content-Type": "application/json",
               'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
             },
             json: {
-              "sender": 23551,
-              "recipient": id,
-              "link_id": linkId,
-              'bulk': 0,
-              "message": 'Thank you for subscribing to TwendeJob. We have confirmed you subscription'
+              "sender": "TWENDEJOBS",
+              "recipient": phoneNumber,
+              "link_id": '',
+              'bulk': 1,
+              "message": "Welcome to Kazi Chap!  Tailored job tips, Kazi match, and instant notifications. Your journey to opportunities starts here. Enjoy!"
+            }
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(body);
             }
           });
-          console.log(Subscription); // Send a success response
 
-          res.status(200).json({
-            message: 'Subscription created successfully'
-          });
-          _context2.next = 33;
-          break;
-
-        case 31:
-          console.log('something went wrong'); // Send an error response
-
-          res.status(500).json({
-            error: 'Something went wrong'
-          });
-
-        case 33:
+        case 25:
         case "end":
           return _context2.stop();
       }
