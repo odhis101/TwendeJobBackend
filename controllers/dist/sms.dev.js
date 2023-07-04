@@ -46,7 +46,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var PATA_SMS_URL = process.env.PATA_SMS_URL;
-var PATA_SMS_USERNAME = 'Twende Job';
+var PATA_SMS_USERNAME = 'twende.jobs';
 var PATA_SMS_PASSWORD = 'P@ssw0rd';
 
 _dotenv["default"].config();
@@ -347,7 +347,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
 
           console.log(message);
 
-          if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs')) {
+          if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' || recMessage.toLowerCase().replace(/\s/g, '') === 'kazi')) {
             _context3.next = 46;
             break;
           }
@@ -549,7 +549,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               "recipient": sender,
               "link_id": linkId,
               'bulk': 0,
-              "message": '  Please write "jobs" if you want to get the latest jobs'
+              "message": 'Please write "jobs" if you want to get the latest jobs'
             }
           }, function (error, response, body) {
             if (error) {

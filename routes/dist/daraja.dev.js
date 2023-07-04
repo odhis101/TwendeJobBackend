@@ -227,13 +227,14 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log(daysToExpiry);
           expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
           console.log(expiry);
+          console.log(req.body.Body);
 
           if (!(req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.')) {
-            _context2.next = 25;
+            _context2.next = 26;
             break;
           }
 
-          _context2.next = 23;
+          _context2.next = 24;
           return regeneratorRuntime.awrap(_darajaModels["default"].create({
             phoneNumber: id,
             Subscription: true,
@@ -243,7 +244,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             expiry: expiry
           }));
 
-        case 23:
+        case 24:
           Subscription = _context2.sent;
           (0, _request["default"])({
             method: "POST",
@@ -270,7 +271,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             }
           });
 
-        case 25:
+        case 26:
         case "end":
           return _context2.stop();
       }

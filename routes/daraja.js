@@ -239,6 +239,7 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log(daysToExpiry);
     let expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
     console.log(expiry);
+    console.log(req.body.Body)
     
     if (req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.') {
         
