@@ -306,7 +306,7 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
               "recipient": phoneNumber,
               "link_id": '',
               'bulk':1,
-              "message": "Welcome to Kazi Chap!  Tailored job tips, Kazi match, and instant notifications. Your journey to opportunities starts here. Enjoy!",
+              "message": "Sorry, we were unable to process your subcription. Please try again later",
             },
       
           },
