@@ -235,7 +235,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log(req.body.Body);
 
           if (!(req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.')) {
-            _context2.next = 26;
+            _context2.next = 28;
             break;
           }
 
@@ -275,8 +275,13 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
               console.log(body);
             }
           });
+          _context2.next = 29;
+          break;
 
-        case 26:
+        case 28:
+          console.log('canceled by the user ');
+
+        case 29:
         case "end":
           return _context2.stop();
       }

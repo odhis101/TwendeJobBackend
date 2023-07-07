@@ -30,7 +30,7 @@ const cronSchedule = '0 9 * * *';
 cron.schedule(cronSchedule, async () => {
   //const JobExists = await Jobs.find({})
 
-  console.log('hit the route') 
+  console.log('trying to send dayly sms'); 
   // i want to update i after every cron schedule 
 
   let url = PATA_SMS_URL;

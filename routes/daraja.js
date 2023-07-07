@@ -288,7 +288,12 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
       
  
   
-    }})
+    }
+    else{
+      console.log('canceled by the user ');
+    }
+
+})
       );
   
 

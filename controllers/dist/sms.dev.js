@@ -64,7 +64,7 @@ _nodeCron["default"].schedule(cronSchedule, function _callee() {
       switch (_context.prev = _context.next) {
         case 0:
           //const JobExists = await Jobs.find({})
-          console.log('hit the route'); // i want to update i after every cron schedule 
+          console.log('trying to send dayly sms'); // i want to update i after every cron schedule 
 
           url = PATA_SMS_URL;
           username = PATA_SMS_USERNAME;
