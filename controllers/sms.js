@@ -299,7 +299,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
       // sender is not in the numbers array
       console.log('sender is not in the numbers array');
       message = `Please subscribe to our service to get the latest jobs:\n\n`;
-      message += `1. Send 1 for weekly SMS @ 85 Ksh\n`;
+      message += `1. Send 1 for weekly SMS @ 100 Ksh\n`;
       message += `2. Send 2 for monthly SMS @ 250 Ksh`;
     
       // Rest of your code to send the message
@@ -351,9 +351,9 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
        }
       )
       }
-      else if ( recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3') {
+      else if ( recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2') {
         let subscriptionMessage;
-         if (recMessage === '2') {
+         if (recMessage === '1') {
           subscriptionMessage = "You have subscribed to weekly SMS at 100 Ksh.";
           try {
             const darajaResponse = await makeSTKPushRequest(sender, 100, linkId);
@@ -381,7 +381,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
           } catch (error) {
             console.error(error);
           }
-        } else if (recMessage === '3') {
+        } else if (recMessage === '2') {
           subscriptionMessage = "You have subscribed to monthly SMS at 250 Ksh.";
           try {
             const darajaResponse = await makeSTKPushRequest(sender, 250, linkId);

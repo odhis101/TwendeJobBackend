@@ -339,7 +339,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             // sender is not in the numbers array
             console.log('sender is not in the numbers array');
             message = "Please subscribe to our service to get the latest jobs:\n\n";
-            message += "1. Send 1 for weekly SMS @ 85 Ksh\n";
+            message += "1. Send 1 for weekly SMS @ 100 Ksh\n";
             message += "2. Send 2 for monthly SMS @ 250 Ksh"; // Rest of your code to send the message
           } else {
             message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i]); // sender is in the numbers array
@@ -386,12 +386,12 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
           break;
 
         case 46:
-          if (!(recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
+          if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2')) {
             _context3.next = 77;
             break;
           }
 
-          if (!(recMessage === '2')) {
+          if (!(recMessage === '1')) {
             _context3.next = 62;
             break;
           }
@@ -436,7 +436,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
           break;
 
         case 62:
-          if (!(recMessage === '3')) {
+          if (!(recMessage === '2')) {
             _context3.next = 75;
             break;
           }
