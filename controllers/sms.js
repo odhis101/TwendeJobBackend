@@ -351,47 +351,12 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
        }
       )
       }
-      else if (recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3') {
+      else if ( recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3') {
         let subscriptionMessage;
-        if (recMessage === '1') {
-          console.log('user pressed 1 ');
-          subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
+         if (recMessage === '2') {
+          subscriptionMessage = "You have subscribed to weekly SMS at 100 Ksh.";
           try {
-            const access_token = await getaccess_token();
-            console.log('this is access_token',access_token)
-            const darajaResponse = await makeSTKPushRequest(sender, 10,linkId);
-            request(  {
-              method: "POST",
-              url: url,
-              path: '/send',
-              'maxRedirects': 20,
-              headers: {
-                "Authorization": auth,
-                "Content-Type": "application/json",
-                'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
-              },
-              json:{
-                "sender": 23551,
-                "recipient": sender,
-                "link_id": linkId,
-                'bulk':0,
-                "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds',
-              },
-            },
-            )
-            
-            // get the callback message 
-
-
-            console.log(darajaResponse);
-            // Handle the response from the Daraja API as needed
-          } catch (error) {
-            console.error(error);
-          }
-        } else if (recMessage === '2') {
-          subscriptionMessage = "You have subscribed to weekly SMS at 85 Ksh.";
-          try {
-            const darajaResponse = await makeSTKPushRequest(sender, 85, linkId);
+            const darajaResponse = await makeSTKPushRequest(sender, 100, linkId);
             console.log(darajaResponse);
             // Handle the response from the Daraja API as needed
             request(  {

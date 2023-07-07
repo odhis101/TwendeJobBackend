@@ -162,7 +162,7 @@ _nodeCron["default"].schedule(cronSchedule, function _callee() {
 });
 
 var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
-  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeSTKPushRequest, numbers, i, checker, numbers0, message, subscriptionMessage, access_token, darajaResponse, _darajaResponse, _darajaResponse2;
+  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeSTKPushRequest, numbers, i, checker, numbers0, message, subscriptionMessage, darajaResponse, _darajaResponse;
 
   return regeneratorRuntime.async(function _callee2$(_context3) {
     while (1) {
@@ -382,34 +382,29 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               console.log(body);
             }
           });
-          _context3.next = 98;
+          _context3.next = 78;
           break;
 
         case 46:
-          if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
-            _context3.next = 97;
+          if (!(recMessage.toLowerCase().replace(/\s/g, '') === '2' || recMessage.toLowerCase().replace(/\s/g, '') === '3')) {
+            _context3.next = 77;
             break;
           }
 
-          if (!(recMessage === '1')) {
-            _context3.next = 67;
+          if (!(recMessage === '2')) {
+            _context3.next = 62;
             break;
           }
 
-          console.log('user pressed 1 ');
-          subscriptionMessage = "You have subscribed to daily SMS at 10 Ksh.";
-          _context3.prev = 50;
-          _context3.next = 53;
-          return regeneratorRuntime.awrap(getaccess_token());
+          subscriptionMessage = "You have subscribed to weekly SMS at 100 Ksh.";
+          _context3.prev = 49;
+          _context3.next = 52;
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 100, linkId));
 
-        case 53:
-          access_token = _context3.sent;
-          console.log('this is access_token', access_token);
-          _context3.next = 57;
-          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 10, linkId));
-
-        case 57:
+        case 52:
           darajaResponse = _context3.sent;
+          console.log(darajaResponse); // Handle the response from the Daraja API as needed
+
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -427,34 +422,31 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               'bulk': 0,
               "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
             }
-          }); // get the callback message 
+          });
+          _context3.next = 60;
+          break;
 
-          console.log(darajaResponse); // Handle the response from the Daraja API as needed
+        case 57:
+          _context3.prev = 57;
+          _context3.t0 = _context3["catch"](49);
+          console.error(_context3.t0);
 
-          _context3.next = 65;
+        case 60:
+          _context3.next = 75;
           break;
 
         case 62:
-          _context3.prev = 62;
-          _context3.t0 = _context3["catch"](50);
-          console.error(_context3.t0);
-
-        case 65:
-          _context3.next = 95;
-          break;
-
-        case 67:
-          if (!(recMessage === '2')) {
-            _context3.next = 82;
+          if (!(recMessage === '3')) {
+            _context3.next = 75;
             break;
           }
 
-          subscriptionMessage = "You have subscribed to weekly SMS at 85 Ksh.";
-          _context3.prev = 69;
-          _context3.next = 72;
-          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 85, linkId));
+          subscriptionMessage = "You have subscribed to monthly SMS at 250 Ksh.";
+          _context3.prev = 64;
+          _context3.next = 67;
+          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 250, linkId));
 
-        case 72:
+        case 67:
           _darajaResponse = _context3.sent;
           console.log(_darajaResponse); // Handle the response from the Daraja API as needed
 
@@ -476,64 +468,19 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
             }
           });
-          _context3.next = 80;
+          _context3.next = 75;
+          break;
+
+        case 72:
+          _context3.prev = 72;
+          _context3.t1 = _context3["catch"](64);
+          console.error(_context3.t1);
+
+        case 75:
+          _context3.next = 78;
           break;
 
         case 77:
-          _context3.prev = 77;
-          _context3.t1 = _context3["catch"](69);
-          console.error(_context3.t1);
-
-        case 80:
-          _context3.next = 95;
-          break;
-
-        case 82:
-          if (!(recMessage === '3')) {
-            _context3.next = 95;
-            break;
-          }
-
-          subscriptionMessage = "You have subscribed to monthly SMS at 250 Ksh.";
-          _context3.prev = 84;
-          _context3.next = 87;
-          return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 250, linkId));
-
-        case 87:
-          _darajaResponse2 = _context3.sent;
-          console.log(_darajaResponse2); // Handle the response from the Daraja API as needed
-
-          (0, _request["default"])({
-            method: "POST",
-            url: url,
-            path: '/send',
-            'maxRedirects': 20,
-            headers: {
-              "Authorization": auth,
-              "Content-Type": "application/json",
-              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
-            },
-            json: {
-              "sender": 23551,
-              "recipient": sender,
-              "link_id": linkId,
-              'bulk': 0,
-              "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
-            }
-          });
-          _context3.next = 95;
-          break;
-
-        case 92:
-          _context3.prev = 92;
-          _context3.t2 = _context3["catch"](84);
-          console.error(_context3.t2);
-
-        case 95:
-          _context3.next = 98;
-          break;
-
-        case 97:
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -559,15 +506,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             }
           });
 
-        case 98:
+        case 78:
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 99:
+        case 79:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[50, 62], [69, 77], [84, 92]]);
+  }, null, null, [[49, 57], [64, 72]]);
 });
 exports.getsms = getsms;
 var call_back = (0, _expressAsyncHandler["default"])(function _callee3(req, res) {
