@@ -279,7 +279,31 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           break;
 
         case 28:
-          console.log('canceled by the user ');
+          // send a message that we have failed to subscribe
+          (0, _request["default"])({
+            method: "POST",
+            url: url1,
+            path: '/send',
+            'maxRedirects': 20,
+            headers: {
+              "Authorization": auth1,
+              "Content-Type": "application/json",
+              'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
+            },
+            json: {
+              "sender": "TWENDEJOBS",
+              "recipient": phoneNumber,
+              "link_id": '',
+              'bulk': 1,
+              "message": "Welcome to Kazi Chap!  Tailored job tips, Kazi match, and instant notifications. Your journey to opportunities starts here. Enjoy!"
+            }
+          }, function (error, response, body) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(body);
+            }
+          });
 
         case 29:
         case "end":
