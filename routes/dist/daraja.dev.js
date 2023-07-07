@@ -213,7 +213,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log(_typeof(amount));
           daysToExpiry = 0;
           _context2.t0 = amount;
-          _context2.next = _context2.t0 === '85' ? 11 : _context2.t0 === '250' ? 13 : 15;
+          _context2.next = _context2.t0 === '100' ? 11 : _context2.t0 === '250' ? 13 : 15;
           break;
 
         case 11:
@@ -263,7 +263,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             },
             json: {
               "sender": "TWENDEJOBS",
-              "recipient": phoneNumber,
+              "recipient": id,
               "link_id": '',
               'bulk': 1,
               "message": "Welcome to Kazi Chap!  Tailored job tips, Kazi match, and instant notifications. Your journey to opportunities starts here. Enjoy!"
@@ -292,7 +292,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             },
             json: {
               "sender": "TWENDEJOBS",
-              "recipient": phoneNumber,
+              "recipient": id,
               "link_id": '',
               'bulk': 1,
               "message": "Sorry, we were unable to process your subcription. Please try again later"

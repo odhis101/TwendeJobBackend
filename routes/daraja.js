@@ -226,7 +226,7 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log(typeof(amount));
     let daysToExpiry = 0;
     switch (amount) {
-      case '85':
+      case '100':
         daysToExpiry = 7;
         break;
       case '250':
@@ -266,7 +266,7 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
         },
         json:{
           "sender": "TWENDEJOBS",
-          "recipient": phoneNumber,
+          "recipient": id,
           "link_id": '',
           'bulk':1,
           "message": "Welcome to Kazi Chap!  Tailored job tips, Kazi match, and instant notifications. Your journey to opportunities starts here. Enjoy!",
@@ -303,7 +303,7 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
             },
             json:{
               "sender": "TWENDEJOBS",
-              "recipient": phoneNumber,
+              "recipient": id,
               "link_id": '',
               'bulk':1,
               "message": "Sorry, we were unable to process your subcription. Please try again later",
