@@ -66,44 +66,37 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
         case 12:
           userExists = _context.sent;
 
-          if (!userExists) {
-            _context.next = 16;
-            break;
-          }
-
-          res.status(400).json({
-            message: 'User already exists'
-          });
-          return _context.abrupt("return");
-
-        case 16:
+          /*  
+             if (userExists) {
+               res.status(400).json({ message: 'User already exists' });
+               return;
+             }
+           */
           // Generate OTP and message body
           otp = Math.floor(100000 + Math.random() * 900000);
           message = "Your verification code is ".concat(otp);
           console.log(otp); // Store user credentials and OTP in the database
 
-          _context.next = 21;
+          _context.next = 18;
           return regeneratorRuntime.awrap(_bcryptjs["default"].genSalt(10));
 
-        case 21:
+        case 18:
           salt = _context.sent;
-          _context.next = 24;
+          _context.next = 21;
           return regeneratorRuntime.awrap(_bcryptjs["default"].hash(password, salt));
 
-        case 24:
+        case 21:
           hashedPassword = _context.sent;
-          _context.next = 27;
+          _context.next = 24;
           return regeneratorRuntime.awrap(_userModels["default"].create({
             phoneNumber: phoneNumber,
             password: hashedPassword,
             otpCode: otp
           }));
 
-        case 27:
+        case 24:
           user = _context.sent;
 
-          //console.log(user)
-          // Send OTP to the user
           try {
             (0, _request["default"])({
               method: "POST",
@@ -116,7 +109,7 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
                 'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
               },
               json: {
-                "sender": 'Titan',
+                "sender": "TWENDEJOBS",
                 "recipient": phoneNumber,
                 "link_id": '',
                 'bulk': 1,
@@ -146,7 +139,7 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
             });
           }
 
-        case 29:
+        case 26:
         case "end":
           return _context.stop();
       }

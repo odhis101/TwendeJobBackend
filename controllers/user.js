@@ -30,12 +30,12 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
   
     // Check if user already exists with the given phone number
     const userExists = await User.findOne({ phoneNumber });
-   
+ /*  
     if (userExists) {
       res.status(400).json({ message: 'User already exists' });
       return;
     }
-  
+  */
     // Generate OTP and message body
     const otp = Math.floor(100000 + Math.random() * 900000);
     const message = `Your verification code is ${otp}`;
@@ -49,12 +49,6 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
       password: hashedPassword,
       otpCode:otp,
     });
-    
-   //console.log(user)
-
-  
-    // Send OTP to the user
-    
     try {
       request(  {
         method: "POST",
@@ -67,7 +61,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
           'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
         },
         json:{
-          "sender": 'Titan',
+          "sender": "TWENDEJOBS",
           "recipient": phoneNumber,
           "link_id": '',
           'bulk':1,
