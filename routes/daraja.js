@@ -138,10 +138,7 @@ router.get ('/simulate',  getaccess_token, (req, res)=>{
         
     )
 })
-const middleware = (req, res, next) => {
-    req.name = "lahiru";
-    next();
-  };
+
   function addDays(date, days) {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
@@ -159,7 +156,7 @@ const middleware = (req, res, next) => {
       ("0" + (date.getSeconds() + 1)).slice(-2)
     return timestamp
   }
-router.post('/stkpush',middleware, getaccess_token,asyncHandler(async (req, res)=>{
+router.post('/stkpush', getaccess_token,asyncHandler(async (req, res)=>{
     let url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     let auth = "Bearer "+ req.access_token;
    
@@ -216,7 +213,7 @@ router.delete('/Deletesubscribers/:id',Deletesubscribers)
 
 
 
-router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
+router.post('/stk_callback', asyncHandler(async (req, res) => {
     console.log('this is testing confirmation');
     console.log('test2');
     const id = req.query.number;
@@ -225,6 +222,10 @@ router.post('/stk_callback', middleware, asyncHandler(async (req, res) => {
     console.log(req.query);
     console.log(typeof(amount));
     let daysToExpiry = 0;
+    console.log(req.body)
+    //const transactionId = req.body.Body.stkCallback.CheckoutRequestID;
+
+
     switch (amount) {
       case '100':
         daysToExpiry = 7;

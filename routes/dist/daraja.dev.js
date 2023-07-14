@@ -128,11 +128,6 @@ router.get('/simulate', getaccess_token, function (req, res) {
   });
 });
 
-var middleware = function middleware(req, res, next) {
-  req.name = "lahiru";
-  next();
-};
-
 function addDays(date, days) {
   var result = new Date(date);
   result.setDate(result.getDate() + days);
@@ -145,7 +140,7 @@ var generateTimestamp = function generateTimestamp() {
   return timestamp;
 };
 
-router.post('/stkpush', middleware, getaccess_token, (0, _expressAsyncHandler["default"])(function _callee(req, res) {
+router.post('/stkpush', getaccess_token, (0, _expressAsyncHandler["default"])(function _callee(req, res) {
   var url, auth, _req$body, number, amount, id, passkey, timestamp, Passwords;
 
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -198,7 +193,7 @@ router.post('/stkpush', middleware, getaccess_token, (0, _expressAsyncHandler["d
 router.post('/subscriptions', _daraja.Getsubscribers);
 router.get('/Allsubscriptions', _daraja.GetAllsubscribers);
 router["delete"]('/Deletesubscribers/:id', _daraja.Deletesubscribers);
-router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
+router.post('/stk_callback', (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
   var id, amount, linkId, daysToExpiry, today, expiry, Subscription;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
@@ -212,22 +207,24 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log(req.query);
           console.log(_typeof(amount));
           daysToExpiry = 0;
+          console.log(req.body); //const transactionId = req.body.Body.stkCallback.CheckoutRequestID;
+
           _context2.t0 = amount;
-          _context2.next = _context2.t0 === '100' ? 11 : _context2.t0 === '250' ? 13 : 15;
+          _context2.next = _context2.t0 === '100' ? 12 : _context2.t0 === '250' ? 14 : 16;
           break;
 
-        case 11:
+        case 12:
           daysToExpiry = 7;
-          return _context2.abrupt("break", 16);
+          return _context2.abrupt("break", 17);
 
-        case 13:
+        case 14:
           daysToExpiry = 30;
-          return _context2.abrupt("break", 16);
-
-        case 15:
-          daysToExpiry = 0;
+          return _context2.abrupt("break", 17);
 
         case 16:
+          daysToExpiry = 0;
+
+        case 17:
           today = new Date().toISOString().slice(0, 10);
           console.log(daysToExpiry);
           expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
@@ -235,11 +232,11 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
           console.log(req.body.Body);
 
           if (!(req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.')) {
-            _context2.next = 28;
+            _context2.next = 29;
             break;
           }
 
-          _context2.next = 24;
+          _context2.next = 25;
           return regeneratorRuntime.awrap(_darajaModels["default"].create({
             phoneNumber: id,
             Subscription: true,
@@ -249,7 +246,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             expiry: expiry
           }));
 
-        case 24:
+        case 25:
           Subscription = _context2.sent;
           (0, _request["default"])({
             method: "POST",
@@ -275,10 +272,10 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
               console.log(body);
             }
           });
-          _context2.next = 29;
+          _context2.next = 30;
           break;
 
-        case 28:
+        case 29:
           // send a message that we have failed to subscribe
           (0, _request["default"])({
             method: "POST",
@@ -305,7 +302,7 @@ router.post('/stk_callback', middleware, (0, _expressAsyncHandler["default"])(fu
             }
           });
 
-        case 29:
+        case 30:
         case "end":
           return _context2.stop();
       }
