@@ -152,7 +152,7 @@ _nodeCron["default"].schedule(cronSchedule, function _callee() {
 });
 
 var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
-  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, numbersArray, currentDate, getaccess_token, generateTimestamp, makeSTKPushRequest, numbers, i, checker, numbers0, message, subscriptionMessage, darajaResponse, _darajaResponse;
+  var sender, shortcode, linkId, recMessage, url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, jobID, numbersArray, currentDate, getaccess_token, generateTimestamp, makeSTKPushRequest, numbers, i, checker, numbers0, message, subscriptionMessage, darajaResponse, _darajaResponse;
 
   return regeneratorRuntime.async(function _callee2$(_context3) {
     while (1) {
@@ -190,6 +190,11 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
           jobDescription = [];
           jobs.forEach(function (job) {
             jobDescription.push(job.jobDescription);
+          }); // get jobID so that we can dynamically link 
+
+          jobID = [];
+          jobs.forEach(function (job) {
+            jobID.push(job._id);
           });
           console.log(jobsTitle); //console.log(subscribers);
 
@@ -331,15 +336,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             message = "Please subscribe to our service to get the latest jobs:\n\n";
             message += "1. Send 1 for weekly SMS @ 100 Ksh\n";
             message += "2. Send 2 for monthly SMS @ 250 Ksh"; // Rest of your code to send the message
-          } // 
+          } //
           else {
-              message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i], " "); // sender is in the numbers array
+              message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i], " for more details visit https://twendejob.com/jobs/").concat(jobID[i], " "); // sender is in the numbers array
             }
 
           console.log(message);
 
           if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' || recMessage.toLowerCase().replace(/\s/g, '') === 'kazi')) {
-            _context3.next = 46;
+            _context3.next = 48;
             break;
           }
 
@@ -373,26 +378,26 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               console.log(body);
             }
           });
-          _context3.next = 78;
+          _context3.next = 80;
           break;
 
-        case 46:
+        case 48:
           if (!(recMessage.toLowerCase().replace(/\s/g, '') === '1' || recMessage.toLowerCase().replace(/\s/g, '') === '2')) {
-            _context3.next = 77;
+            _context3.next = 79;
             break;
           }
 
           if (!(recMessage === '1')) {
-            _context3.next = 62;
+            _context3.next = 64;
             break;
           }
 
           subscriptionMessage = "You have subscribed to weekly SMS at 100 Ksh.";
-          _context3.prev = 49;
-          _context3.next = 52;
+          _context3.prev = 51;
+          _context3.next = 54;
           return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 100, linkId));
 
-        case 52:
+        case 54:
           darajaResponse = _context3.sent;
           console.log(darajaResponse); // Handle the response from the Daraja API as needed
 
@@ -414,30 +419,30 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
             }
           });
-          _context3.next = 60;
+          _context3.next = 62;
           break;
 
-        case 57:
-          _context3.prev = 57;
-          _context3.t0 = _context3["catch"](49);
+        case 59:
+          _context3.prev = 59;
+          _context3.t0 = _context3["catch"](51);
           console.error(_context3.t0);
 
-        case 60:
-          _context3.next = 75;
+        case 62:
+          _context3.next = 77;
           break;
 
-        case 62:
+        case 64:
           if (!(recMessage === '2')) {
-            _context3.next = 75;
+            _context3.next = 77;
             break;
           }
 
           subscriptionMessage = "You have subscribed to monthly SMS at 250 Ksh.";
-          _context3.prev = 64;
-          _context3.next = 67;
+          _context3.prev = 66;
+          _context3.next = 69;
           return regeneratorRuntime.awrap(makeSTKPushRequest(sender, 250, linkId));
 
-        case 67:
+        case 69:
           _darajaResponse = _context3.sent;
           console.log(_darajaResponse); // Handle the response from the Daraja API as needed
 
@@ -459,19 +464,19 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
               "message": 'Thanks for Subscribing, we are processing your request, Please send Jobs after 30 Seconds'
             }
           });
-          _context3.next = 75;
+          _context3.next = 77;
           break;
 
-        case 72:
-          _context3.prev = 72;
-          _context3.t1 = _context3["catch"](64);
+        case 74:
+          _context3.prev = 74;
+          _context3.t1 = _context3["catch"](66);
           console.error(_context3.t1);
 
-        case 75:
-          _context3.next = 78;
+        case 77:
+          _context3.next = 80;
           break;
 
-        case 77:
+        case 79:
           (0, _request["default"])({
             method: "POST",
             url: url,
@@ -497,15 +502,15 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             }
           });
 
-        case 78:
+        case 80:
           console.log(jobsTitle[i]); // print jobtitle[i] and jobdescription[i]
 
-        case 79:
+        case 81:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[49, 57], [64, 72]]);
+  }, null, null, [[51, 59], [66, 74]]);
 });
 exports.getsms = getsms;
 var call_back = (0, _expressAsyncHandler["default"])(function _callee3(req, res) {

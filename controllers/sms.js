@@ -156,6 +156,13 @@ const getsms = asyncHandler(async (req, res) => {
     jobs.forEach((job) => {
       jobDescription.push(job.jobDescription);
     });
+    // get jobID so that we can dynamically link 
+    let jobID = [];
+    jobs.forEach((job) => {
+      jobID.push(job._id);
+    });
+
+
     console.log(jobsTitle);
     //console.log(subscribers);
     let numbersArray = [];
@@ -299,9 +306,9 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
       // Rest of your code to send the message
     }  
 
-    // 
+    //
       else {
-          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]} `;
+          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]} for more details visit https://twendejob.com/jobs/${jobID[i]} `;
         // sender is in the numbers array
       }
      console.log(message);
