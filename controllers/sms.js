@@ -26,6 +26,8 @@ console.log('here is some enve stuff ',process.env.PATA_SMS_URL);
 const consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 const consumer_secret  = 'h2gwMdxszxc2tJ35'; 
 const cronSchedule = '0 9 * * *';
+//const cronSchedule = '*/10 * * * * *'; // Run every 10 seconds
+
 
 cron.schedule(cronSchedule, async () => {
   //const JobExists = await Jobs.find({})
@@ -34,8 +36,8 @@ cron.schedule(cronSchedule, async () => {
   // i want to update i after every cron schedule 
 
   let url = PATA_SMS_URL;
-  let username = PATA_SMS_USERNAME
-  let password = PATA_SMS_PASSWORD
+  let username = process.env.PATA_SMS_USERNAME
+  let password = process.env.PATA_SMS_PASSWORD
   let auth =  "Basic " + new Buffer.from(username + ":" + password).toString("base64");
   const subscribers =await Subscribers.find({});
   const jobs = await Jobs.find({});
@@ -58,7 +60,7 @@ cron.schedule(cronSchedule, async () => {
   let NumbersArray = [];
   const currentDate = new Date().toISOString().slice(0, 10)
   const number = Math.floor(Math.random() * jobsTitle.length);
- let message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[number]} ${jobDescription[number]} contact ${Employers_contact[number]} for more information`
+ let message = `Daily Message From Twende Job , we have new jobs for you. ${jobsTitle[number]} ${jobDescription[number]} contact ${Employers_contact[number]} for more information`
  //console.log(message );
   subscribers.forEach((subscriber) => {
     //numbersArray.push(subscriber.phoneNumber);
@@ -100,17 +102,9 @@ cron.schedule(cronSchedule, async () => {
         )
         
         // Save the OTP in the database
-        
-        if(user){
-          res.status(200).json({ message: 'OTP sent successfully' });
-
-        }
-        else{
-          res.status(400).json({ message: 'User not found' });
-        }
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'An error occurred while sending OTP' });
+        res.status(500).json({ message: 'An error occurred while sending Daily jobs' });
       }
      
 

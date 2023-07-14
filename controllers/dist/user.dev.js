@@ -55,6 +55,7 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
 
           if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.replace('0', '254');
+            console.log(phoneNumber);
           } // Check if user already exists with the given phone number
 
 
@@ -116,7 +117,7 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
                 'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn'
               },
               json: {
-                "sender": 'Titan',
+                "sender": 'TWENDEJOBS',
                 "recipient": phoneNumber,
                 "link_id": '',
                 'bulk': 1,

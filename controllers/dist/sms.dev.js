@@ -55,7 +55,7 @@ console.log('here is some enve stuff ', process.env.PATA_SMS_URL); //const jwt =
 
 var consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 var consumer_secret = 'h2gwMdxszxc2tJ35';
-var cronSchedule = '0 9 * * *';
+var cronSchedule = '0 9 * * *'; //const cronSchedule = '*/10 * * * * *'; // Run every 10 seconds
 
 _nodeCron["default"].schedule(cronSchedule, function _callee() {
   var url, username, password, auth, subscribers, jobs, jobsTitle, jobDescription, Employers_contact, NumbersArray, currentDate, number, message;
@@ -67,8 +67,8 @@ _nodeCron["default"].schedule(cronSchedule, function _callee() {
           console.log('trying to send dayly sms'); // i want to update i after every cron schedule 
 
           url = PATA_SMS_URL;
-          username = PATA_SMS_USERNAME;
-          password = PATA_SMS_PASSWORD;
+          username = process.env.PATA_SMS_USERNAME;
+          password = process.env.PATA_SMS_PASSWORD;
           auth = "Basic " + new Buffer.from(username + ":" + password).toString("base64");
           _context.next = 7;
           return regeneratorRuntime.awrap(_darajaModels["default"].find({}));
@@ -99,7 +99,7 @@ _nodeCron["default"].schedule(cronSchedule, function _callee() {
           NumbersArray = [];
           currentDate = new Date().toISOString().slice(0, 10);
           number = Math.floor(Math.random() * jobsTitle.length);
-          message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[number], " ").concat(jobDescription[number], " contact ").concat(Employers_contact[number], " for more information"); //console.log(message );
+          message = "Daily Message From Twende Job , we have new jobs for you. ".concat(jobsTitle[number], " ").concat(jobDescription[number], " contact ").concat(Employers_contact[number], " for more information"); //console.log(message );
 
           subscribers.forEach(function (subscriber) {
             //numbersArray.push(subscriber.phoneNumber);
@@ -132,20 +132,10 @@ _nodeCron["default"].schedule(cronSchedule, function _callee() {
                     console.log(body);
                   }
                 }); // Save the OTP in the database
-
-                if (user) {
-                  res.status(200).json({
-                    message: 'OTP sent successfully'
-                  });
-                } else {
-                  res.status(400).json({
-                    message: 'User not found'
-                  });
-                }
               } catch (error) {
                 console.error(error);
                 res.status(500).json({
-                  message: 'An error occurred while sending OTP'
+                  message: 'An error occurred while sending Daily jobs'
                 });
               }
             } else {
@@ -556,8 +546,7 @@ var getallsms = (0, _expressAsyncHandler["default"])(function _callee4(req, res)
 });
 exports.getallsms = getallsms;
 var sendOtp = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
-  var url, username, Password, auth, phoneNumber, userExists, otp, message, _user;
-
+  var url, username, Password, auth, phoneNumber, userExists, otp, message, user;
   return regeneratorRuntime.async(function _callee5$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -635,10 +624,10 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
           }));
 
         case 23:
-          _user = _context6.sent;
-          console.log(_user);
+          user = _context6.sent;
+          console.log(user);
 
-          if (_user) {
+          if (user) {
             res.status(200).json({
               message: 'OTP sent successfully'
             });
@@ -668,8 +657,7 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
 });
 exports.sendOtp = sendOtp;
 var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee6(req, res) {
-  var url, username, Password, auth, phoneNumber, userExists, otp, message, _user2;
-
+  var url, username, Password, auth, phoneNumber, userExists, otp, message, user;
   return regeneratorRuntime.async(function _callee6$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
@@ -746,10 +734,10 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee6(req, r
           }));
 
         case 22:
-          _user2 = _context7.sent;
-          console.log(_user2);
+          user = _context7.sent;
+          console.log(user);
 
-          if (_user2) {
+          if (user) {
             res.status(200).json({
               message: 'OTP sent successfully'
             });
@@ -779,7 +767,7 @@ var sendOtpAdmin = (0, _expressAsyncHandler["default"])(function _callee6(req, r
 });
 exports.sendOtpAdmin = sendOtpAdmin;
 var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee7(req, res) {
-  var _req$body, phoneNumber, otp, _user3;
+  var _req$body, phoneNumber, otp, user;
 
   return regeneratorRuntime.async(function _callee7$(_context8) {
     while (1) {
@@ -799,9 +787,9 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee7(req, res)
           }));
 
         case 6:
-          _user3 = _context8.sent;
+          user = _context8.sent;
 
-          if (_user3) {
+          if (user) {
             _context8.next = 9;
             break;
           }
@@ -811,10 +799,10 @@ var verifyOTP = (0, _expressAsyncHandler["default"])(function _callee7(req, res)
           }));
 
         case 9:
-          console.log('here is the stored otp', _user3.otpCode, 'here is the otp sent', otp);
-          console.log(_typeof(_user3.otpCode), _typeof(otp)); // Check if the OTP matches
+          console.log('here is the stored otp', user.otpCode, 'here is the otp sent', otp);
+          console.log(_typeof(user.otpCode), _typeof(otp)); // Check if the OTP matches
 
-          if (!(_user3.otpCode === otp)) {
+          if (!(user.otpCode === otp)) {
             _context8.next = 17;
             break;
           }

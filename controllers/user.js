@@ -26,6 +26,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     console.log(typeof phoneNumber)
     if(phoneNumber.startsWith('0')  ){
       phoneNumber = phoneNumber.replace('0', '254');    
+      console.log(phoneNumber)
   }
   
     // Check if user already exists with the given phone number
@@ -35,6 +36,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
       res.status(400).json({ message: 'User already exists' });
       return;
     }
+    
   
     // Generate OTP and message body
     const otp = Math.floor(100000 + Math.random() * 900000);
@@ -67,7 +69,7 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
           'Cookie': 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
         },
         json:{
-          "sender": 'Titan',
+          "sender": 'TWENDEJOBS',
           "recipient": phoneNumber,
           "link_id": '',
           'bulk':1,
