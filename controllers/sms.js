@@ -466,8 +466,8 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
       console.log('hit the sendOtp route');
       console.log(req.body);
       let url = PATA_SMS_URL;
-      let username = PATA_SMS_USERNAME
-      let Password = PATA_SMS_PASSWORD
+      let username = process.env.PATA_SMS_USERNAME
+      let Password = process.env.PATA_SMS_PASSWORD
       let auth =  "Basic " + new Buffer.from(username + ":" + Password).toString("base64");
     
       let { phoneNumber } = req.body;

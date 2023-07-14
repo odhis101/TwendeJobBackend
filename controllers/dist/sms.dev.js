@@ -554,8 +554,8 @@ var sendOtp = (0, _expressAsyncHandler["default"])(function _callee5(req, res) {
           console.log('hit the sendOtp route');
           console.log(req.body);
           url = PATA_SMS_URL;
-          username = PATA_SMS_USERNAME;
-          Password = PATA_SMS_PASSWORD;
+          username = process.env.PATA_SMS_USERNAME;
+          Password = process.env.PATA_SMS_PASSWORD;
           auth = "Basic " + new Buffer.from(username + ":" + Password).toString("base64");
           phoneNumber = req.body.phoneNumber;
 
