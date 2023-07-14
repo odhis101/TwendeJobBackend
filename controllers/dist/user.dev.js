@@ -103,8 +103,6 @@ var sendOtpForNewUser = (0, _expressAsyncHandler["default"])(function _callee(re
         case 27:
           user = _context.sent;
 
-          //console.log(user)
-          // Send OTP to the user
           try {
             (0, _request["default"])({
               method: "POST",

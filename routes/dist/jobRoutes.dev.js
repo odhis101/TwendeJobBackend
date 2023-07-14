@@ -19,7 +19,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var router = _express["default"].Router();
 
 router.post('/setJob', _jobs.setJob);
-router.get('/getJobs', _jobs.getJobs);
+router.get('/getJobs', _authMiddleware["default"], _jobs.getJobs);
 router.get('/getJobs/:id', _jobs.getOneJob);
 router.post('/updateJobs/:id', _jobs.updateJob);
 router["delete"]('/deleteJobs/:id', _jobs.deleteJob);
