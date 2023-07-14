@@ -26,7 +26,7 @@ var callbackSchema = new _mongoose["default"].Schema({
 
 });
 
-var Transactions = _mongoose["default"].model('Admin', callbackSchema);
+var Transactions = _mongoose["default"].model('Callback', callbackSchema);
 
 var _default = Transactions;
 exports["default"] = _default;

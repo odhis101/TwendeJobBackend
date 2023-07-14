@@ -17,6 +17,6 @@ const callbackSchema = new mongoose.Schema({
     // Add other fields as needed
   });
 
-var Transactions = mongoose.model('Admin', callbackSchema);
+var Transactions = mongoose.model('Callback', callbackSchema);
 
 export default Transactions;
