@@ -331,9 +331,10 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             message = "Please subscribe to our service to get the latest jobs:\n\n";
             message += "1. Send 1 for weekly SMS @ 100 Ksh\n";
             message += "2. Send 2 for monthly SMS @ 250 Ksh"; // Rest of your code to send the message
-          } else {
-            message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i]); // sender is in the numbers array
-          }
+          } // 
+          else {
+              message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i], " "); // sender is in the numbers array
+            }
 
           console.log(message);
 
