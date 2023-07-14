@@ -9,6 +9,9 @@ import User from "../models/darajaModels.js"
 import { Getsubscribers,GetAllsubscribers, Deletesubscribers} from "../controllers/daraja.js";
 import { get } from "mongoose";
 import dotenv from 'dotenv';
+
+import Callback from "../models/mpesaModels.js";
+
 const router = express.Router();
 const consumer_key = 'R2kA2Avi3cOFAdkdvR7zVgOZjKibRCOm';
 const consumer_secret  = 'h2gwMdxszxc2tJ35';
@@ -214,6 +217,27 @@ router.delete('/Deletesubscribers/:id',Deletesubscribers)
 
 
 router.post('/stk_callback', asyncHandler(async (req, res) => {
+
+    const { CheckoutRequestID, PhoneNumber, Amount, ResultDesc } = req.body.Body.stkCallback;
+
+
+    const transactionId = req.body.Body.stkCallback.CheckoutRequestID;
+    const existingCallback = await Callback.findOne({ transactionId });
+
+    if (existingCallback) {
+      console.log(`Duplicate callback received for transaction ID: ${transactionId}`);
+      return res.status(200).end(); // Return a response to Safaricom without further processing
+    }
+    const newCallback = new Callback({
+        transactionId: CheckoutRequestID,
+        phoneNumber: PhoneNumber,
+        amount: Amount,
+        resultDesc: ResultDesc,
+        // Add more fields as needed
+      });
+    
+      await newCallback.save();
+
     console.log('this is testing confirmation');
     console.log('test2');
     const id = req.query.number;
@@ -244,7 +268,6 @@ router.post('/stk_callback', asyncHandler(async (req, res) => {
     console.log(req.body.Body)
     
     if (req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.') {
-        
         
       const Subscription = await User.create({
         phoneNumber: id,

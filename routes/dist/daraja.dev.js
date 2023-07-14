@@ -21,6 +21,8 @@ var _mongoose = require("mongoose");
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
+var _mpesaModels = _interopRequireDefault(require("../models/mpesaModels.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -194,11 +196,42 @@ router.post('/subscriptions', _daraja.Getsubscribers);
 router.get('/Allsubscriptions', _daraja.GetAllsubscribers);
 router["delete"]('/Deletesubscribers/:id', _daraja.Deletesubscribers);
 router.post('/stk_callback', (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
-  var id, amount, linkId, daysToExpiry, today, expiry, Subscription;
+  var _req$body$Body$stkCal, CheckoutRequestID, PhoneNumber, Amount, ResultDesc, transactionId, existingCallback, newCallback, id, amount, linkId, daysToExpiry, today, expiry, Subscription;
+
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
+          _req$body$Body$stkCal = req.body.Body.stkCallback, CheckoutRequestID = _req$body$Body$stkCal.CheckoutRequestID, PhoneNumber = _req$body$Body$stkCal.PhoneNumber, Amount = _req$body$Body$stkCal.Amount, ResultDesc = _req$body$Body$stkCal.ResultDesc;
+          transactionId = req.body.Body.stkCallback.CheckoutRequestID;
+          _context2.next = 4;
+          return regeneratorRuntime.awrap(_mpesaModels["default"].findOne({
+            transactionId: transactionId
+          }));
+
+        case 4:
+          existingCallback = _context2.sent;
+
+          if (!existingCallback) {
+            _context2.next = 8;
+            break;
+          }
+
+          console.log("Duplicate callback received for transaction ID: ".concat(transactionId));
+          return _context2.abrupt("return", res.status(200).end());
+
+        case 8:
+          newCallback = new _mpesaModels["default"]({
+            transactionId: CheckoutRequestID,
+            phoneNumber: PhoneNumber,
+            amount: Amount,
+            resultDesc: ResultDesc // Add more fields as needed
+
+          });
+          _context2.next = 11;
+          return regeneratorRuntime.awrap(newCallback.save());
+
+        case 11:
           console.log('this is testing confirmation');
           console.log('test2');
           id = req.query.number;
@@ -210,21 +243,21 @@ router.post('/stk_callback', (0, _expressAsyncHandler["default"])(function _call
           console.log(req.body); //const transactionId = req.body.Body.stkCallback.CheckoutRequestID;
 
           _context2.t0 = amount;
-          _context2.next = _context2.t0 === '100' ? 12 : _context2.t0 === '250' ? 14 : 16;
+          _context2.next = _context2.t0 === '100' ? 23 : _context2.t0 === '250' ? 25 : 27;
           break;
 
-        case 12:
+        case 23:
           daysToExpiry = 7;
-          return _context2.abrupt("break", 17);
+          return _context2.abrupt("break", 28);
 
-        case 14:
+        case 25:
           daysToExpiry = 30;
-          return _context2.abrupt("break", 17);
+          return _context2.abrupt("break", 28);
 
-        case 16:
+        case 27:
           daysToExpiry = 0;
 
-        case 17:
+        case 28:
           today = new Date().toISOString().slice(0, 10);
           console.log(daysToExpiry);
           expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
@@ -232,11 +265,11 @@ router.post('/stk_callback', (0, _expressAsyncHandler["default"])(function _call
           console.log(req.body.Body);
 
           if (!(req.body.Body.stkCallback.ResultDesc === 'The service request is processed successfully.')) {
-            _context2.next = 29;
+            _context2.next = 40;
             break;
           }
 
-          _context2.next = 25;
+          _context2.next = 36;
           return regeneratorRuntime.awrap(_darajaModels["default"].create({
             phoneNumber: id,
             Subscription: true,
@@ -246,7 +279,7 @@ router.post('/stk_callback', (0, _expressAsyncHandler["default"])(function _call
             expiry: expiry
           }));
 
-        case 25:
+        case 36:
           Subscription = _context2.sent;
           (0, _request["default"])({
             method: "POST",
@@ -272,10 +305,10 @@ router.post('/stk_callback', (0, _expressAsyncHandler["default"])(function _call
               console.log(body);
             }
           });
-          _context2.next = 30;
+          _context2.next = 41;
           break;
 
-        case 29:
+        case 40:
           // send a message that we have failed to subscribe
           (0, _request["default"])({
             method: "POST",
@@ -302,7 +335,7 @@ router.post('/stk_callback', (0, _expressAsyncHandler["default"])(function _call
             }
           });
 
-        case 30:
+        case 41:
         case "end":
           return _context2.stop();
       }
