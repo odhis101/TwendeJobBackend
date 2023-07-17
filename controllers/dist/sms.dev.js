@@ -333,9 +333,10 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
           if (!numbers0.includes(checker)) {
             // sender is not in the numbers array
             console.log('sender is not in the numbers array');
-            message = "Please subscribe to our service to get the latest jobs:\n\n";
-            message += "1. Send 1 for weekly SMS @ 100 Ksh\n";
-            message += "2. Send 2 for monthly SMS @ 250 Ksh"; // Rest of your code to send the message
+            message = "Welcome! Enjoy exclusive opportunities. Start your journey now!:\n\n";
+            message += "1. Reply 1 for weekly @100 Juliswa notifications \n";
+            message += "2. Reply 2 for monthly 250. \n";
+            message += "Use www.twendejob.co.ke to create your profile"; // Rest of your code to send the message
           } //
           else {
               message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i], " for more details visit https://twendejob.com/jobs/").concat(jobID[i], " "); // sender is in the numbers array
