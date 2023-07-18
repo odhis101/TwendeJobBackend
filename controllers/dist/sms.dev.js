@@ -339,7 +339,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
             message += "Use www.twendejob.co.ke to create your profile"; // Rest of your code to send the message
           } //
           else {
-              message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i], " for more details visit https://twendejob.com/jobs/").concat(jobID[i], " "); // sender is in the numbers array
+              message = "Hello From Twende Job, we have new jobs for you. ".concat(jobsTitle[i], " ").concat(jobDescription[i], " for more details visit https://twendejob.co.ke/details/").concat(jobID[i], " "); // sender is in the numbers array
             }
 
           console.log(message);
