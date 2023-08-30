@@ -344,7 +344,7 @@ var getsms = (0, _expressAsyncHandler["default"])(function _callee2(req, res) {
 
           console.log(message);
 
-          if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' || recMessage.toLowerCase().replace(/\s/g, '') === 'kazi')) {
+          if (!(recMessage.toLowerCase().replace(/\s/g, '') === 'jobs' || recMessage.toLowerCase().replace(/\s/g, '') === 'kazi' || recMessage.toLowerCase().replace(/\s/g, '') === 'job')) {
             _context3.next = 48;
             break;
           }

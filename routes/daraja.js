@@ -22,6 +22,9 @@ let username1 = process.env.PATA_SMS_USERNAME
 let password1 = process.env.PATA_SMS_PASSWORD
 let auth1 =  "Basic " + new Buffer.from(username1 + ":" + password1).toString("base64");
 
+
+
+
 router.get ('/access_token', getaccess_token, (req, res)=>{
     res.status (200).json({
         access_token: req.access_token
@@ -261,9 +264,11 @@ router.post('/stk_callback', asyncHandler(async (req, res) => {
         daysToExpiry = 0;
     }
     
+    
     let today = new Date().toISOString().slice(0, 10);
     console.log(daysToExpiry);
     let expiry = addDays(today, daysToExpiry).toISOString().slice(0, 10);
+
     console.log(expiry);
     console.log(req.body.Body)
     
