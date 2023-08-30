@@ -310,7 +310,7 @@ const makeSTKPushRequest = async (number, amount,linkId) => {
 
     //
       else {
-          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]} for more details visit https://twendejob.com/jobs/${jobID[i]} `;
+          message = `Hello From Twende Job, we have new jobs for you. ${jobsTitle[i]} ${jobDescription[i]} for more details visit https://twendejob.co.ke/details/${jobID[i]} `;
         // sender is in the numbers array
       }
      console.log(message);
