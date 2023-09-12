@@ -22,7 +22,7 @@ const setJobsOfTheDay = asyncHandler(async (req, res) => {
   }
   
   console.log(Requirment)
-  // Assuming you have an existing job instance, you can update it like this:
+  // Assuming you have an existing job instance, you can update it like thiss:
   const existingJob = await JobsOfTheDay.findOneAndUpdate(
     { /* Find the existing job based on your criteria */ },
     {
