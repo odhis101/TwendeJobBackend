@@ -12,7 +12,7 @@ dotenv.config();
 const PATA_SMS_URL =process.env.PATA_SMS_URL
 const PATA_SMS_USERNAME = process.env.PATA_SMS_USERNAME
 const PATA_SMS_PASSWORD = process.env.PATA_SMS_PASSWORD
-//const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken')s;
 const sendOtpForNewUser = asyncHandler(async (req, res) => {
     let {phoneNumber, password } = req.body;
     console.log(req.body)
