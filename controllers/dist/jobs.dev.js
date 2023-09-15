@@ -277,15 +277,16 @@ var deleteJob = (0, _expressAsyncHandler["default"])(function _callee7(req, res)
           res.json({
             message: 'Job removed'
           });
-          _context7.next = 16;
+          _context7.next = 17;
           break;
 
         case 13:
+          np;
           res.status(404);
           console.log('Job not found');
           throw new Error('Job not found');
 
-        case 16:
+        case 17:
         case "end":
           return _context7.stop();
       }
@@ -308,19 +309,21 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
 
         case 3:
           if (!(i < req.body.length)) {
-            _context8.next = 22;
+            _context8.next = 24;
             break;
           }
 
           data = req.body[i]; //console.log(data);
           //console.log(data)
 
-          start_date = data.Start_Date; //console.log('this is start date',start_date)
+          start_date = data.Start_Date;
+          start_date = new Date((start_date - 1) * 24 * 60 * 60 * 1000 + new Date('1900-01-01').getTime()); //console.log('this is start date',start_date)
           //start_date = moment('1900-01-01').add(start_date - 1, 'days').toDate();
           //var numDate= new Date(start_date).toISOString().slice(0, 10);
           //console.log('this is numdate ',numDate)
 
-          APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE; //var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
+          APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE;
+          APPLICATIONS_DEADLINE_DATE = new Date((APPLICATIONS_DEADLINE_DATE - 1) * 24 * 60 * 60 * 1000 + new Date('1900-01-01').getTime()); //var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
           //console.log('this is deadline date',deadlineDate) 
 
           Employers_Name = data.Employers_Name;
@@ -330,8 +333,9 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
           jobDescription = data.Job_Description;
           Category = data.Job_category;
           Location = data.Location;
-          console.log('this is start date ', APPLICATIONS_DEADLINE_DATE);
-          _context8.next = 17;
+          console.log('this is deadline date ', APPLICATIONS_DEADLINE_DATE);
+          console.log('this is start date ', start_date);
+          _context8.next = 20;
           return regeneratorRuntime.awrap(_JobsModel["default"].create({
             jobTitle: jobTitle,
             jobDescription: jobDescription,
@@ -344,19 +348,18 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
             Location: Location
           }));
 
-        case 17:
+        case 20:
           job = _context8.sent;
-          savedJobs.push(job); // Add the saved job to the array
 
-        case 19:
+        case 21:
           i++;
           _context8.next = 3;
           break;
 
-        case 22:
+        case 24:
           res.status(200).json(savedJobs); // Send the response with all saved jobs
 
-        case 23:
+        case 25:
         case "end":
           return _context8.stop();
       }

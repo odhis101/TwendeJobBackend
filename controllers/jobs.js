@@ -144,6 +144,7 @@ const ExcelToMongoDB = asyncHandler(async (req, res) => {
     //console.log(data)
   
     let start_date = data.Start_Date
+    start_date=new Date((start_date - 1) * 24 * 60 * 60 * 1000 + new Date('1900-01-01').getTime());
    //console.log('this is start date',start_date)
    //start_date = moment('1900-01-01').add(start_date - 1, 'days').toDate();
 
@@ -151,6 +152,7 @@ const ExcelToMongoDB = asyncHandler(async (req, res) => {
     //var numDate= new Date(start_date).toISOString().slice(0, 10);
     //console.log('this is numdate ',numDate)
     let APPLICATIONS_DEADLINE_DATE = data.APPLICATIONS_DEADLINE_DATE;
+    APPLICATIONS_DEADLINE_DATE=new Date((APPLICATIONS_DEADLINE_DATE - 1) * 24 * 60 * 60 * 1000 + new Date('1900-01-01').getTime());
 
     
     //var deadlineDate= new Date(APPLICATIONS_DEADLINE_DATE).toISOString().slice(0, 10);
@@ -162,7 +164,8 @@ const ExcelToMongoDB = asyncHandler(async (req, res) => {
     const jobDescription = data.Job_Description
     const Category = data.Job_category
     const Location = data.Location
-    console.log('this is start date ',APPLICATIONS_DEADLINE_DATE)
+    console.log('this is deadline date ',APPLICATIONS_DEADLINE_DATE)
+    console.log('this is start date ',start_date)
 
 
 
@@ -180,7 +183,7 @@ const ExcelToMongoDB = asyncHandler(async (req, res) => {
     })
 
  
-    savedJobs.push(job); // Add the saved job to the array
+    //savedJobs.push(job); // Add the saved job to the array
 
   }
  res.status(200).json(savedJobs); // Send the response with all saved jobs
