@@ -309,7 +309,7 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
 
         case 3:
           if (!(i < req.body.length)) {
-            _context8.next = 24;
+            _context8.next = 25;
             break;
           }
 
@@ -350,16 +350,17 @@ var ExcelToMongoDB = (0, _expressAsyncHandler["default"])(function _callee8(req,
 
         case 20:
           job = _context8.sent;
+          savedJobs.push(job); // Add the saved job to the array
 
-        case 21:
+        case 22:
           i++;
           _context8.next = 3;
           break;
 
-        case 24:
+        case 25:
           res.status(200).json(savedJobs); // Send the response with all saved jobs
 
-        case 25:
+        case 26:
         case "end":
           return _context8.stop();
       }

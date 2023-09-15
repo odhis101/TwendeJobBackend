@@ -183,7 +183,7 @@ const ExcelToMongoDB = asyncHandler(async (req, res) => {
     })
 
  
-    //savedJobs.push(job); // Add the saved job to the array
+    savedJobs.push(job); // Add the saved job to the array
 
   }
  res.status(200).json(savedJobs); // Send the response with all saved jobs
