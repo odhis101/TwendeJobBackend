@@ -13,6 +13,7 @@ import skillRoutes from './routes/skillRoutes.js';
 import dotenv from 'dotenv';
 import sms from './routes/sms.js';
 import fileupload from 'express-fileupload';
+import JobModel from './models/JobsModel.js';
 
 
 const app = express();
@@ -35,6 +36,7 @@ const PORT = process.env.PORT || 8080;
 const now = new Date();
 const hours = now.getHours();
 const minutes = now.getMinutes();
+
 
 console.log(`The time i s ${hours}:${minutes}`);
 mongoose.connect(CONNECTION_URL,{useNewUrlParser:true,useUnifiedTopology:true})

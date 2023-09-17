@@ -24,6 +24,8 @@ var _sms = _interopRequireDefault(require("./routes/sms.js"));
 
 var _expressFileupload = _interopRequireDefault(require("express-fileupload"));
 
+var _JobsModel = _interopRequireDefault(require("./models/JobsModel.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 //import jobRoutes from './routes/jobRoutes.js';

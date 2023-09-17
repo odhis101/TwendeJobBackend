@@ -97,6 +97,73 @@ const sendOtpForNewUser = asyncHandler(async (req, res) => {
     }
   });
 
+  const sendOtpAgainForNewUser = asyncHandler(async (req, res) => {
+    let { phoneNumber } = req.body;
+    if(phoneNumber.startsWith('0')  ){
+      phoneNumber = phoneNumber.replace('0', '254');    
+      console.log(phoneNumber)
+  }
+    // Check if the user with the given phone number exists
+    const user = await User.findOne({ phoneNumber });
+    console.log("hit this route")
+    console.log(phoneNumber)
+  
+    if (!user) {
+      res.status(400).json({ message: 'User not found' });
+      return;
+    }
+  
+    // Generate a new OTP
+    const newOtp = Math.floor(100000 + Math.random() * 900000);
+    const message = `Your new verification code is ${newOtp}`;
+  
+    try {
+      // Send the new OTP via SMS
+      request({
+        method: 'POST',
+        url: PATA_SMS_URL,
+        path: '/send',
+        maxRedirects: 20,
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            PATA_SMS_USERNAME + ':' + PATA_SMS_PASSWORD
+          ).toString('base64')}`,
+          'Content-Type': 'application/json',
+          Cookie: 'CAKEPHP=207vs9u597a35i68b2eder2jvn',
+        },
+        json: {
+          sender: 'TWENDEJOBS',
+          recipient: phoneNumber,
+          link_id: '',
+          bulk: 1,
+          message: message,
+        },
+      },
+      function (error, response, body) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(body);
+        }
+      });
+  
+      // Update the user's OTP in the database
+      user.otpCode = newOtp;
+      await user.save();
+  
+      const response = {
+        message: 'New OTP sent successfully',
+        data: { phoneNumber, newOtp },
+      };
+  
+      res.status(200).json(response);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred while sending the new OTP' });
+    }
+  });
+  
+
   const sendOtpForNewAdmin= asyncHandler(async (req, res) => {
     let {phoneNumber} = req.body;
     console.log(req.body)
@@ -462,5 +529,5 @@ res.status(200).json(userExists)
     });
 }
 
-export {deleteNumber,updateNumber,updatePasswordAdmin,verifyOtpForNewAdmin,sendOtpForNewAdmin,sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword};
+export {sendOtpAgainForNewUser,deleteNumber,updateNumber,updatePasswordAdmin,verifyOtpForNewAdmin,sendOtpForNewAdmin,sendOtpForNewUser,verifyOtpForNewUser,loginUser,Getme,getUsers,loginAdmin,registerAdmin,updatePassword};
 
